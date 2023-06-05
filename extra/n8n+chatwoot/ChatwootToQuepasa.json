@@ -183,7 +183,7 @@
       "parameters": {
         "baseUrl": "={{$json.query.qphost}}",
         "token": "={{$json.query.qptoken}}",
-        "messageId": "={{ $json.query.account }}-{{ $json.query.inbox }}-{{ $json.payload.messageid }}",
+        "messageId": "={{ $json.query.account }}-{{ $json.query.inbox }}-{{ $json.payload.messageid ?? Math.random() }}",
         "text": "={{$json.payload.content}}",
         "chatId": "={{$json.payload.chatid}}",
         "trackId": "chatwoot"
@@ -203,7 +203,7 @@
       "parameters": {
         "baseUrl": "={{$json.query.qphost}}",
         "token": "={{$json.query.qptoken}}",
-        "messageId": "={{ $json.query.account }}-{{ $json.query.inbox }}-{{ $json.payload.messageid }}",
+        "messageId": "={{ $json.query.account }}-{{ $json.query.inbox }}-{{ $json.payload.messageid ?? Math.random() }}",
         "method": "sendurl",
         "text": "={{$json.payload.content}}",
         "chatId": "={{$json.payload.chatid}}",
@@ -692,74 +692,6 @@
     },
     {
       "parameters": {
-        "keepOnlySet": true,
-        "values": {
-          "string": [
-            {
-              "name": "payload.chatid",
-              "value": "={{ $json.body.meta.sender.identifier }}"
-            },
-            {
-              "name": "payload.content",
-              "value": "-----------------------------------------------------\nSeu atendimento foi marcado como *concluído* !\nQualquer mensagem ou reação após este anúncio, irá iniciar uma *nova* conversa.\n-----------------------------------------------------"
-            },
-            {
-              "name": "query.qphost",
-              "value": "={{ $json.query.qphost }}"
-            },
-            {
-              "name": "query.qptoken",
-              "value": "={{ $json.query.qptoken }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "6cf65bdc-46e1-4071-b44b-3880e86ca249",
-      "name": "Payload Without CSAT",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [
-        -520,
-        3480
-      ]
-    },
-    {
-      "parameters": {
-        "keepOnlySet": true,
-        "values": {
-          "string": [
-            {
-              "name": "payload.chatid",
-              "value": "={{ $json.body.meta.sender.identifier }}"
-            },
-            {
-              "name": "query.qphost",
-              "value": "={{ $json.query.qphost }}"
-            },
-            {
-              "name": "query.qptoken",
-              "value": "={{ $json.query.qptoken }}"
-            },
-            {
-              "name": "payload.content",
-              "value": "=*{{ $json[\"body\"][\"meta\"][\"sender\"][\"name\"] }}* seu atendimento de Ticket de nº *{{ $json[\"body\"][\"messages\"][0][\"conversation_id\"] }}* foi finalizado ! Caso tenha alguma dúvida só enviar uma nova mensagem !\n\nAproveite e avalie nosso atendimento. Sua opinião é muito importante para nós e nos ajudará a identificar áreas de melhorias e continuar oferecendo um serviço de qualidade. 😎\n\nAvalie meu atendimento !\n{{ ($json.query.cwpublic ?? $json.query.cwhost).trimEnd('/') }}/survey/responses/{{ $json[\"uuid\"] }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "68b2e8b7-325e-4ef3-820d-cb6ff1e6da1e",
-      "name": "Payload With CSAT",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [
-        -520,
-        3320
-      ]
-    },
-    {
-      "parameters": {
         "mode": "combine",
         "combinationMode": "multiplex",
         "options": {}
@@ -909,10 +841,10 @@
     {
       "parameters": {
         "conditions": {
-          "string": [
+          "boolean": [
             {
-              "value1": "={{ $json.body.custom_attributes?.skipevaluation }}",
-              "operation": "isNotEmpty"
+              "value1": "={{ $json.body.custom_attributes?.skipevaluation ?? false }}",
+              "value2": true
             }
           ]
         }
@@ -964,12 +896,10 @@
             {
               "value1": "={{ $json.body.meta?.sender?.custom_attributes?.hasOwnProperty('skipevaluation') }}",
               "value2": true
-            }
-          ],
-          "string": [
+            },
             {
-              "value1": "={{ $json.body.meta?.sender?.custom_attributes?.skipevaluation }}",
-              "operation": "isNotEmpty"
+              "value1": "={{ $json.body.meta?.sender?.custom_attributes?.skipevaluation ?? false }}",
+              "value2": true
             }
           ]
         }
@@ -1079,6 +1009,98 @@
       ],
       "retryOnFail": true,
       "maxTries": 2
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "payload.chatid",
+              "value": "={{ $json.body.meta.sender.identifier }}"
+            },
+            {
+              "name": "payload.messageid",
+              "value": "={{ $json.body.messages[0].id }}"
+            },
+            {
+              "name": "query.qphost",
+              "value": "={{ $json.query.qphost }}"
+            },
+            {
+              "name": "query.qptoken",
+              "value": "={{ $json.query.qptoken }}"
+            },
+            {
+              "name": "query.account",
+              "value": "={{ $json.query.account }}"
+            },
+            {
+              "name": "query.inbox",
+              "value": "={{ $json.query.inbox }}"
+            },
+            {
+              "name": "payload.content",
+              "value": "=*{{ $json[\"body\"][\"meta\"][\"sender\"][\"name\"] }}* seu atendimento de Ticket de nº *{{ $json[\"body\"][\"messages\"][0][\"conversation_id\"] }}* foi finalizado ! Caso tenha alguma dúvida só enviar uma nova mensagem !\n\nAproveite e avalie nosso atendimento. Sua opinião é muito importante para nós e nos ajudará a identificar áreas de melhorias e continuar oferecendo um serviço de qualidade. 😎\n\nAvalie meu atendimento !\n{{ ($json.query.cwpublic ?? $json.query.cwhost).trimEnd('/') }}/survey/responses/{{ $json[\"uuid\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dd874cde-97ba-47fc-ba98-94c7056a4367",
+      "name": "Payload With CSAT",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        3300
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "query.qphost",
+              "value": "={{ $json.query.qphost }}"
+            },
+            {
+              "name": "query.qptoken",
+              "value": "={{ $json.query.qptoken }}"
+            },
+            {
+              "name": "query.account",
+              "value": "={{ $json.query.account }}"
+            },
+            {
+              "name": "query.inbox",
+              "value": "={{ $json.query.inbox }}"
+            },
+            {
+              "name": "payload.chatid",
+              "value": "={{ $json.body.meta.sender.identifier }}"
+            },
+            {
+              "name": "payload.messageid",
+              "value": "={{ $json.body.messages[0].id }}"
+            },
+            {
+              "name": "payload.content",
+              "value": "-----------------------------------------------------\nSeu atendimento foi marcado como *concluído* !\nQualquer mensagem ou reação após este anúncio, irá iniciar uma *nova* conversa.\n-----------------------------------------------------"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ab79bea9-1b69-4555-a7a5-6fa2ea8f98b4",
+      "name": "Payload Without CSAT",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        3480
+      ]
     }
   ],
   "pinData": {},
@@ -1426,28 +1448,6 @@
         ]
       ]
     },
-    "Payload Without CSAT": {
-      "main": [
-        [
-          {
-            "node": "Evaluation Message Payload Ready To Quepasa",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Payload With CSAT": {
-      "main": [
-        [
-          {
-            "node": "Evaluation Message Payload Ready To Quepasa",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Merge": {
       "main": [
         [
@@ -1683,11 +1683,33 @@
           }
         ]
       ]
+    },
+    "Payload With CSAT": {
+      "main": [
+        [
+          {
+            "node": "Evaluation Message Payload Ready To Quepasa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Payload Without CSAT": {
+      "main": [
+        [
+          {
+            "node": "Evaluation Message Payload Ready To Quepasa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {},
-  "versionId": "e5791814-6c14-44f0-9ac9-6d2fbaf4b476",
+  "versionId": "47a03311-2796-470b-bc6e-452a427cc867",
   "id": "2",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

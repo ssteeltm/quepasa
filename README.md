@@ -278,7 +278,7 @@ bash /opt/quepasa-source/helpers/install.sh
 
 [![License GNU AGPL v3.0](https://img.shields.io/badge/License-AGPL%203.0-lightgrey.svg)](https://github.com/nocodeleaks/quepasa-fork/blob/master/LICENSE.md)
 
-QuePasa is a free software project licensed under the GNU Affero General Public License v3.0 (GNU AGPLv3) by [Sufficit Soluções](https://www.sufficit.com.br).
+QuePasa is a free software project licensed under the GNU Affero General Public License v3.0 (GNU AGPLv3) by "Someone Who Cares About You".
 
 [0]: https://whatsapp.com
 [1]: https://github.com/tulir/whatsmeow

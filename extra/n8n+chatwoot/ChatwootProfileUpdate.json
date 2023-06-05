@@ -11,10 +11,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        -1120,
-        2160
+        -380,
+        0
       ],
-      "id": "45527660-a7b6-4ede-b24e-2cfb5bbf9a4a",
+      "id": "d661b56a-0964-47f6-bfbd-738462b759e2",
       "continueOnFail": true,
       "notes": "Important to use \"source_id\" to respond messages"
     },
@@ -26,10 +26,10 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 1,
       "position": [
-        -540,
-        2020
+        200,
+        -140
       ],
-      "id": "3bd40d55-5335-4c87-98ec-52ce41136aaf"
+      "id": "3a3b243a-0c36-4e09-a537-10dbf2e4fa09"
     },
     {
       "parameters": {
@@ -48,10 +48,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -720,
-        2140
+        20,
+        -20
       ],
-      "id": "220a9ad0-9b22-4507-9834-50c8f719d647"
+      "id": "4154595b-68b1-4ee9-9016-eea0254110f1"
     },
     {
       "parameters": {
@@ -64,13 +64,13 @@
           ]
         }
       },
-      "id": "c46fdb4d-8361-416a-869a-26fcda2426b2",
+      "id": "0091ccf7-2a56-4782-ac00-d31932d2791e",
       "name": "Success on get picture ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -920,
-        2160
+        -180,
+        0
       ]
     },
     {
@@ -104,10 +104,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        -280,
-        2020
+        460,
+        -140
       ],
-      "id": "71ab08dc-dbeb-496e-9961-431a4c84a62e",
+      "id": "930b0f7c-f500-462b-8646-7608f9a25a10",
       "retryOnFail": true,
       "notes": "Missing filter by:\nContact Id\nInbox Id\nStatus = open | pending"
     },
@@ -122,26 +122,26 @@
           ]
         }
       },
-      "id": "277dfa4d-249d-4287-9bc7-e5c221810703",
+      "id": "bb4002a5-bdd3-40b6-b0cd-7e3bef51399a",
       "name": "If Found ChatId",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -1900,
-        1740
+        -1160,
+        -420
       ]
     },
     {
       "parameters": {
         "errorMessage": "Chat Id not found !"
       },
-      "id": "a364a3e5-a25c-4e31-83c5-893e2e547791",
+      "id": "bbdb3493-c664-4f98-a9de-1aa8afd47f2f",
       "name": "Stop And Error",
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        -1700,
-        1940
+        -960,
+        -220
       ]
     },
     {
@@ -150,73 +150,13 @@
         "height": 628.3922996878252,
         "width": 527.0811654526535
       },
-      "id": "2ad5f706-f855-4767-8dfc-e29e8e06b91e",
+      "id": "652b8fc3-1649-45a1-8763-7a0895b4c799",
       "name": "Note",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -3000,
-        1360
-      ]
-    },
-    {
-      "parameters": {
-        "url": "={{$json.cwhost}}/api/v1/accounts/{{$json.account}}/contacts/{{$json.contactid}}",
-        "allowUnauthorizedCerts": true,
-        "options": {},
-        "headerParametersUi": {
-          "parameter": [
-            {
-              "name": "api_access_token",
-              "value": "={{$json.utoken}}"
-            }
-          ]
-        }
-      },
-      "name": "Get Contact Info",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        -1160,
-        1560
-      ],
-      "id": "a8fba4fa-1280-4683-b470-448b82a092cc",
-      "retryOnFail": true,
-      "notes": "Missing filter by:\nContact Id\nInbox Id\nStatus = open | pending"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{$json.payload}}",
-              "operation": "isNotEmpty"
-            }
-          ]
-        }
-      },
-      "id": "837f9700-a5fc-481d-9189-37028fc97ad1",
-      "name": "If Success",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -1000,
-        1560
-      ]
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combinationMode": "multiplex",
-        "options": {}
-      },
-      "id": "82b3a4bc-a8d8-4490-b9a4-5ed71706b1c9",
-      "name": "Merge",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 2,
-      "position": [
-        -800,
-        1440
+        -2260,
+        -800
       ]
     },
     {
@@ -246,57 +186,33 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        -40,
-        1340
+        -160,
+        -660
       ],
-      "id": "53f89a90-2fc9-4790-819d-27b7259bee96",
+      "id": "cbc90db4-0d08-4a7c-a1a0-3d1f88c9b2c2",
       "retryOnFail": false,
       "continueOnFail": true
     },
     {
       "parameters": {},
-      "id": "30bebd03-3f8c-42d0-8835-d9856ff74895",
+      "id": "ecc11dde-1ef8-4d8d-b7de-0d81a5851fb8",
       "name": "When Called By Another Workflow",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        -2780,
-        1740
+        -2040,
+        -420
       ]
     },
     {
       "parameters": {},
-      "id": "c30440c9-41a7-4b4a-b364-3e2247d8c399",
-      "name": "NoOp",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        -1380,
-        1420
-      ]
-    },
-    {
-      "parameters": {},
-      "id": "9264e37a-373b-4386-9193-3a408279af1d",
+      "id": "e3496963-8daa-4098-b947-38b1d807fea7",
       "name": "NoOp1",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -1380,
-        2000
-      ]
-    },
-    {
-      "parameters": {
-        "errorMessage": "Chat Id not found !"
-      },
-      "id": "cb335ad1-2737-4d40-aae0-1d6698ec3e92",
-      "name": "Stop And Error1",
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        -800,
-        1660
+        -640,
+        -160
       ]
     },
     {
@@ -304,13 +220,13 @@
         "respondWith": "noData",
         "options": {}
       },
-      "id": "57a8b4e5-a1ea-467e-b3b3-9b5903a8634e",
+      "id": "10c8dbf1-a973-40a0-b227-150eab751f44",
       "name": "Respond to Webhook",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        240,
-        1840
+        980,
+        -320
       ]
     },
     {
@@ -318,20 +234,20 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{$json.payload?.identifier}}",
+              "value1": "={{$json.identifier}}",
               "operation": "isEmpty"
             }
           ]
         },
         "combineOperation": "any"
       },
-      "id": "aa9d73e0-16e8-492d-99a8-b15a463902af",
+      "id": "815b09f9-f346-4ed6-a448-4d58cf1b2bab",
       "name": "If Empty Identifier",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -520,
-        1360
+        -640,
+        -640
       ]
     },
     {
@@ -339,20 +255,20 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{$json.payload?.identifier}}",
+              "value1": "={{$json.identifier}}",
               "operation": "notEqual",
               "value2": "={{$json.chatid}}"
             }
           ]
         }
       },
-      "id": "b15d086c-e89d-410b-9472-711a8830b425",
+      "id": "64fcded6-5e37-49ac-b43b-5fafbd45c97d",
       "name": "If Different Identifier ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -280,
-        1460
+        -400,
+        -540
       ],
       "notesInFlow": true,
       "notes": "Used to sincronize old versions with Quepasa Id"
@@ -360,16 +276,16 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "=SELECT account_id as account FROM contacts WHERE id = '{{ $json.contactid }}'",
+        "query": "=SELECT account_id as account, identifier FROM contacts WHERE id = '{{ $json.contactid }}'",
         "additionalFields": {}
       },
-      "id": "1e87047f-94d1-4055-b5ca-c9239043869d",
+      "id": "468c2332-5975-4bd0-a33a-6d84b0d8618e",
       "name": "Postgres",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        -2600,
-        1820
+        -1860,
+        -340
       ],
       "credentials": {
         "postgres": {
@@ -384,13 +300,13 @@
         "combinationMode": "multiplex",
         "options": {}
       },
-      "id": "ea81d255-359b-4c9d-a09e-80355ef72a54",
+      "id": "aef879bd-d035-49e1-adc4-938da3273cc5",
       "name": "Merge1",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -2400,
-        1760
+        -1660,
+        -400
       ]
     }
   ],
@@ -444,12 +360,12 @@
       "main": [
         [
           {
-            "node": "NoOp",
+            "node": "NoOp1",
             "type": "main",
             "index": 0
           },
           {
-            "node": "NoOp1",
+            "node": "If Empty Identifier",
             "type": "main",
             "index": 0
           }
@@ -457,46 +373,6 @@
         [
           {
             "node": "Stop And Error",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Contact Info": {
-      "main": [
-        [
-          {
-            "node": "If Success",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If Success": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ],
-        [
-          {
-            "node": "Stop And Error1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "If Empty Identifier",
             "type": "main",
             "index": 0
           }
@@ -513,22 +389,6 @@
           },
           {
             "node": "Postgres",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "NoOp": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Get Contact Info",
             "type": "main",
             "index": 0
           }
@@ -627,10 +487,10 @@
   },
   "active": false,
   "settings": {},
-  "versionId": "d9d8a685-0629-459e-ac2b-84bf272d1f77",
+  "versionId": "8c8ce255-c1e3-4182-8b2f-6dc278ebe9f2",
   "id": "5",
   "meta": {
-    "instanceId": "a37a29af0b164c10f8b7ef0e4d5577d19b80c64c836f6cd90dd302c84a178489"
+    "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
   "tags": []
 }
