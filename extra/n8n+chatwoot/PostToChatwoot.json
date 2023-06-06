@@ -66,7 +66,7 @@
         "baseUrl": "={{$json.qphost}}",
         "token": "={{$json.qptoken}}",
         "operation": "download",
-        "messageId": "={{$json[\"payload\"][\"echo_id\"]}}",
+        "messageId": "={{ $json.payload.content_attributes?.items?.quepasa?.msgid ?? $json.payload.echo_id }}",
         "fileName": "={{$json[\"payload\"][\"attachment\"][\"filename\"]}}"
       },
       "id": "514d5518-026d-419a-95dd-3e2547a533ed",
@@ -111,21 +111,8 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        -1220,
-        800
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "function a2hex(str) {\n  var arr = [];\n  for (var i = 0, l = str.length; i < l; i ++) {\n    var hex = Number(str.charCodeAt(i)).toString(16);\n    arr.push(hex);\n  }\n  return arr.join('');\n}\n\nfor (const item of $input.all()) {\n  if (item.json.chatid) {\n    item.json.hex = a2hex(item.json.chatid);\n  }\n}\n\nreturn $input.all();"
-      },
-      "id": "2c58a05c-e4c5-4e88-9a1e-3c35300c399e",
-      "name": "Hex Chat Ids",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [
-        -540,
-        720
+        -640,
+        820
       ]
     },
     {
@@ -186,28 +173,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -340,
+        -280,
         820
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{$json.hex}}",
-              "operation": "isEmpty"
-            }
-          ]
-        }
-      },
-      "id": "db2b4e4b-b7b5-4b4d-aedd-64489efdb6b5",
-      "name": "If Not Hex|Source ID ?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -780,
-        800
       ]
     },
     {
@@ -263,7 +230,9 @@
       "position": [
         1920,
         880
-      ]
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
     },
     {
       "parameters": {},
@@ -436,8 +405,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        -1000,
-        800
+        -460,
+        820
       ]
     }
   ],
@@ -494,40 +463,11 @@
         ]
       ]
     },
-    "Hex Chat Ids": {
-      "main": [
-        [
-          {
-            "node": "Filter Source Payload",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Filter Source Payload": {
       "main": [
         [
           {
             "node": "Direct Message ?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If Not Hex|Source ID ?": {
-      "main": [
-        [
-          {
-            "node": "Hex Chat Ids",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Filter Source Payload",
             "type": "main",
             "index": 0
           }
@@ -692,7 +632,7 @@
       "main": [
         [
           {
-            "node": "If Not Hex|Source ID ?",
+            "node": "Filter Source Payload",
             "type": "main",
             "index": 0
           }
@@ -706,7 +646,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "8b6dfc52-94f2-4e44-bb8c-962209a46d33",
+  "versionId": "4be9123e-d8be-4595-918d-a47c3fee227a",
   "id": "7",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
