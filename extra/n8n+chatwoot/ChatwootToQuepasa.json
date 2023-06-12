@@ -1129,7 +1129,7 @@
         "conditions": {
           "string": [
             {
-              "value1": "query.account",
+              "value1": "={{query.account}}",
               "operation": "isNotEmpty"
             }
           ]
@@ -1847,7 +1847,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "c883c4d0-d710-4c0c-8092-d5f8597a4138",
+  "versionId": "8e162179-8e8a-40d4-98af-e9fa56995926",
   "id": "2",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
