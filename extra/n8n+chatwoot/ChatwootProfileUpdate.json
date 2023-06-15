@@ -3,23 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "url": "={{$json.qphost}}/v3/bot/{{$json.qptoken}}/picinfo/{{$json.chatid}}",
-        "allowUnauthorizedCerts": true,
-        "options": {}
-      },
-      "name": "Quepasa Picture Info",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        -380,
-        0
-      ],
-      "id": "d661b56a-0964-47f6-bfbd-738462b759e2",
-      "continueOnFail": true,
-      "notes": "Important to use \"source_id\" to respond messages"
-    },
-    {
-      "parameters": {
         "mode": "multiplex"
       },
       "name": "Quepasa + Contact",
@@ -48,8 +31,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        20,
-        -20
+        0,
+        -80
       ],
       "id": "4154595b-68b1-4ee9-9016-eea0254110f1"
     },
@@ -69,8 +52,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -180,
-        0
+        -240,
+        -60
       ]
     },
     {
@@ -308,21 +291,50 @@
         -1660,
         -400
       ]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.qphost}}/picinfo/{{$json.chatid}}",
+        "allowUnauthorizedCerts": true,
+        "options": {},
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "X-QUEPASA-TOKEN",
+              "value": "={{$json.qptoken}}"
+            }
+          ]
+        }
+      },
+      "name": "Quepasa Picture Info",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        -60
+      ],
+      "id": "dbb97023-2a8a-4d39-8888-badf86c77c72",
+      "continueOnFail": true,
+      "notes": "Important to use \"source_id\" to respond messages"
+    },
+    {
+      "parameters": {
+        "content": "## (1.0.0) Recommendations \n* Remember set timeout to 20 seconds ",
+        "height": 194.5475077160475,
+        "width": 505.65878958512553
+      },
+      "id": "f785ae9e-3d29-46ca-8367-eb46bf8071a4",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2260,
+        -1020.0826873385008
+      ]
     }
   ],
   "pinData": {},
   "connections": {
-    "Quepasa Picture Info": {
-      "main": [
-        [
-          {
-            "node": "Success on get picture ?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Quepasa + Contact": {
       "main": [
         [
@@ -483,11 +495,26 @@
           }
         ]
       ]
+    },
+    "Quepasa Picture Info": {
+      "main": [
+        [
+          {
+            "node": "Success on get picture ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
-  "settings": {},
-  "versionId": "8c8ce255-c1e3-4182-8b2f-6dc278ebe9f2",
+  "settings": {
+    "saveManualExecutions": false,
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": 20
+  },
+  "versionId": "cf529aa1-568c-4ac9-a4ec-1055f432e873",
   "id": "5",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
