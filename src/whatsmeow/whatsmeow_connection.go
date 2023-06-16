@@ -303,7 +303,7 @@ func (conn *WhatsmeowConnection) UploadAttachment(msg whatsapp.WhatsappMessage) 
 		return
 	}
 
-	result = NewWhatsmeowMessageAttachment(response, msg.Attachment, mediaType)
+	result = NewWhatsmeowMessageAttachment(response, msg, mediaType)
 	return
 }
 

@@ -55,10 +55,12 @@ func ToWhatsmeowMessage(source whatsapp.IWhatsappMessage) (msg *waProto.Message,
 	return
 }
 
-func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, attach *whatsapp.WhatsappAttachment, media whatsmeow.MediaType) (msg *waProto.Message) {
+func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg whatsapp.WhatsappMessage, media whatsmeow.MediaType) (msg *waProto.Message) {
+	attach := waMsg.Attachment
+
 	switch media {
 	case whatsmeow.MediaImage:
-		msg = &waProto.Message{ImageMessage: &waProto.ImageMessage{
+		internal := &waProto.ImageMessage{
 			Url:           proto.String(response.URL),
 			DirectPath:    proto.String(response.DirectPath),
 			MediaKey:      response.MediaKey,
@@ -67,9 +69,9 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, attach *wh
 			FileLength:    proto.Uint64(response.FileLength),
 
 			Mimetype: proto.String(attach.Mimetype),
-			Caption:  proto.String(attach.FileName),
-		},
+			Caption:  proto.String(waMsg.Text),
 		}
+		msg = &waProto.Message{ImageMessage: internal}
 		return
 	case whatsmeow.MediaAudio:
 		internal := &waProto.AudioMessage{
@@ -79,7 +81,7 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, attach *wh
 			FileEncSha256: response.FileEncSHA256,
 			FileSha256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
-			Seconds:       &attach.Seconds,
+			Seconds:       proto.Uint32(attach.Seconds),
 			Mimetype:      proto.String(attach.Mimetype),
 			Ptt:           proto.Bool(ShouldUsePtt(attach.Mimetype)),
 		}
@@ -93,9 +95,9 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, attach *wh
 			FileEncSha256: response.FileEncSHA256,
 			FileSha256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
-
-			Mimetype: proto.String(attach.Mimetype),
-			Caption:  proto.String(attach.FileName),
+			Seconds:       proto.Uint32(attach.Seconds),
+			Mimetype:      proto.String(attach.Mimetype),
+			Caption:       proto.String(waMsg.Text),
 		}
 		msg = &waProto.Message{VideoMessage: internal}
 		return
@@ -110,6 +112,7 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, attach *wh
 
 			Mimetype: proto.String(attach.Mimetype),
 			FileName: proto.String(attach.FileName),
+			Caption:  proto.String(waMsg.Text),
 		}
 		msg = &waProto.Message{DocumentMessage: internal}
 		return
