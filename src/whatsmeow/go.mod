@@ -5,6 +5,8 @@ require (
 	github.com/nocodeleaks/quepasa/whatsapp v0.0.0-00010101000000-000000000000
 )
 
+require go.mau.fi/whatsmeow v0.0.0-20230614142319-2114a3c181bd // indirect
+
 require (
 	filippo.io/edwards25519 v1.0.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
