@@ -79,9 +79,9 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, attach *wh
 			FileEncSha256: response.FileEncSHA256,
 			FileSha256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
-
-			Mimetype: proto.String(attach.Mimetype),
-			Ptt:      proto.Bool(ShouldUsePtt(attach.Mimetype)),
+			Seconds:       &attach.Seconds,
+			Mimetype:      proto.String(attach.Mimetype),
+			Ptt:           proto.Bool(ShouldUsePtt(attach.Mimetype)),
 		}
 		msg = &waProto.Message{AudioMessage: internal}
 		return
