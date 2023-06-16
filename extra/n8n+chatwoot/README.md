@@ -31,3 +31,14 @@ C8Q_POSTTOWEBCALLBACK=11
 
 # used by QuepasaToChatwoot
 C8Q_CHATWOOTTOQUEPASAGREETINGS=4
+
+C8Q_QP_DEFAULT_USER=
+
+# get initial from $N8N_HOST, otherwise from here
+C8Q_CW_PUBLIC_URL=dominiochatwoot
+
+# (optional) set title for sincrony bot for messages from whatsapp
+# C8Q_QP_BOTTITLE=
+
+# (optional) set identifier for quepasa inbox control contact
+# C8Q_QP_CONTACT=
