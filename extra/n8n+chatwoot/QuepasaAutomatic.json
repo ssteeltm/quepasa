@@ -412,23 +412,10 @@
   },
   "active": true,
   "settings": {},
-  "versionId": "c3f5e60c-5742-46a7-8d37-64871de522f7",
+  "versionId": "682ba8bc-ce3a-4a41-993d-2b6790f5d955",
   "id": "1011",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
-  "tags": [    
-    {
-      "name": "QUEPASA"
-    },
-    {
-      "name": "CHATWOOT"
-    ,
-    {
-      "name": "NOCODELEAKS"
-    },
-    {
-      "name": "EngajamentoFlow"
-    }
-  ]
+  "tags": []
 }

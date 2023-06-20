@@ -1074,23 +1074,10 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 60
   },
-  "versionId": "6286dcd6-8ab1-44ce-8da8-429a3607709f",
+  "versionId": "64444fcd-8cdc-46d8-ac0c-9b53ef2da27e",
   "id": "1010",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
-  "tags": [    
-    {
-      "name": "QUEPASA"
-    },
-    {
-      "name": "CHATWOOT"
-    ,
-    {
-      "name": "NOCODELEAKS"
-    },
-    {
-      "name": "EngajamentoFlow"
-    }
-  ]
+  "tags": []
 }
