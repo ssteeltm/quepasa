@@ -112,7 +112,7 @@ func GetPhoneByWId(wid string) string {
 	return out
 }
 
-func Remove9Digit(source string) string {
+func RemoveDigit9(source string) string {
 	response := source
 
 	// if is direct message, not group
