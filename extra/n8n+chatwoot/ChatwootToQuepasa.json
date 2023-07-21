@@ -913,8 +913,8 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        -1820,
-        4540
+        -1620,
+        4520
       ],
       "retryOnFail": true,
       "maxTries": 2
@@ -1121,7 +1121,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.5) Updates\n* avoid csat to broadcast\n\n## (1.0.4) Updates\n* use env vars for csat with prio\n\n## (1.0.3) Updates\n* custom id for evaluation messages\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
+        "content": "## (1.0.6) Updates\n* avoid try delete private msgs\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
         "height": 348.70602969397424,
         "width": 505.65878958512553
       },
@@ -1217,6 +1217,25 @@
         -2320,
         3440
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json[\"body\"][\"private\"]}}"
+            }
+          ]
+        }
+      },
+      "name": "Is Public ?1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1820,
+        4540
+      ],
+      "id": "4ebf708e-a0c3-4d22-bf2e-8780aa44e608"
     }
   ],
   "pinData": {},
@@ -1828,7 +1847,7 @@
       "main": [
         [
           {
-            "node": "Quepasa Revoke",
+            "node": "Is Public ?1",
             "type": "main",
             "index": 0
           }
@@ -1877,6 +1896,17 @@
           }
         ]
       ]
+    },
+    "Is Public ?1": {
+      "main": [
+        [
+          {
+            "node": "Quepasa Revoke",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -1885,20 +1915,17 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "2db5d57a-728e-417b-aad2-04376c8dd719",
-  "id": "1008",
+  "versionId": "83b6e850-87be-46f6-80cd-a98e2b70136a",
+  "id": "2",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
-  "tags": [    
+  "tags": [
     {
-      "name": "QUEPASA"
-    },
-    {
-      "name": "CHATWOOT"
-    },
-    {
-      "name": "NOCODELEAKS"
+      "createdAt": "2022-10-13T04:02:06.783Z",
+      "updatedAt": "2022-10-13T04:02:06.783Z",
+      "id": "1",
+      "name": "SUFFICIT"
     }
   ]
 }
