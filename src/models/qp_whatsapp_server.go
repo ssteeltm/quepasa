@@ -549,12 +549,16 @@ func (server *QpWhatsappServer) Delete() (err error) {
 }
 
 //endregion
-
 //#region SEND
 
 // Default send message method
 func (server *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (response whatsapp.IWhatsappSendResponse, err error) {
 	server.Log.Debugf("sending msg to: %v", msg.Chat.Id)
+
+	// leading with wrongs 9 digits
+	if ENV.ShouldRemoveDigit9() {
+		msg.Chat.Id = library.Remove9Digit(msg.Chat.Id)
+	}
 
 	if msg.HasAttachment() {
 		if len(msg.Text) > 0 {
