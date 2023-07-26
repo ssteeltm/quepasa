@@ -1,7 +1,7 @@
 ### Workflows links
 
 * [(1.0.0) Chatwoot Profile Update](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootProfileUpdate.json)
-* [Chatwoot To Quepasa](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootToQuepasa.json)
+* [(1.0.7) Chatwoot To Quepasa](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootToQuepasa.json)
 * [Chatwoot To Quepasa Greetings](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootToQuepasaGreetings.json)
 * [(1.0.0) Post To Chatwoot](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/PostToChatwoot.json)
 * [Quepasa Automatic](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaAutomatic.json)
@@ -53,3 +53,9 @@
 	
 	# C8Q_SUFFICIT_CONTEXTID
 	> (optional) (string => 00000000-0000-0000-0000-000000000000) sufficit client identification
+
+### Use ChatWoot INBOX Webhook parameters:
+> individual inboxes
+
+	# pat
+	> (boolean) Prepend Agent Title - default true - should include agent title before msg content ?

@@ -20,27 +20,6 @@
     },
     {
       "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "payload.content",
-              "value": "={{ $json.payload.sender ? '*' + $json.payload.sender.trim() + '*: ' : '' }}{{ $json.payload.content }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "name": "Update Content With Sender Name",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [
-        -140,
-        2600
-      ],
-      "id": "587e7645-9005-47b3-aaeb-a925f2fbfcc0"
-    },
-    {
-      "parameters": {
         "respondWith": "text",
         "responseBody": "only for messages",
         "options": {
@@ -163,7 +142,7 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        940,
+        1160,
         2820
       ],
       "retryOnFail": true,
@@ -186,7 +165,7 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        940,
+        1160,
         3060
       ],
       "retryOnFail": true,
@@ -203,7 +182,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        120,
+        340,
         2220
       ]
     },
@@ -222,7 +201,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        660,
+        880,
         2940
       ],
       "id": "7ad835e2-d6c7-4f6b-97d7-6cd56bc18b4c"
@@ -238,7 +217,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        1220,
+        1440,
         2940
       ],
       "id": "953b3a40-38d8-4fa1-b260-e04a1647bfd9"
@@ -360,7 +339,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        -140,
+        80,
         2220
       ],
       "continueOnFail": true
@@ -506,7 +485,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        160,
+        380,
         2740
       ]
     },
@@ -1121,7 +1100,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.6) Updates\n* avoid try delete private msgs\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
+        "content": "## (1.0.7) Updates\n* should prepend agent title (pat) (query)\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
         "height": 348.70602969397424,
         "width": 505.65878958512553
       },
@@ -1236,6 +1215,58 @@
         4540
       ],
       "id": "4ebf708e-a0c3-4d22-bf2e-8780aa44e608"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.query.pat ? Boolean($json.query.pat) : true }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "6d80fe16-a8dc-4135-9465-0416595dd967",
+      "name": "Should Prepend Agent Title ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        2600
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "payload.content",
+              "value": "={{ $json.payload.sender ? '*' + $json.payload.sender.trim() + '*: ' : '' }}{{ $json.payload.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Update Content With Agent Ttitle",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        2520
+      ],
+      "id": "587e7645-9005-47b3-aaeb-a925f2fbfcc0"
+    },
+    {
+      "parameters": {},
+      "id": "bd4a23a5-bfcf-4506-984b-e04a9d3e7070",
+      "name": "Follow after prepend",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        160,
+        2620
+      ]
     }
   ],
   "pinData": {},
@@ -1245,17 +1276,6 @@
         [
           {
             "node": "Defaults",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Update Content With Sender Name": {
-      "main": [
-        [
-          {
-            "node": "No Operation, do nothing1",
             "type": "main",
             "index": 0
           }
@@ -1407,7 +1427,7 @@
         ],
         [
           {
-            "node": "Update Content With Sender Name",
+            "node": "Should Prepend Agent Title ?",
             "type": "main",
             "index": 0
           }
@@ -1907,6 +1927,46 @@
           }
         ]
       ]
+    },
+    "Should Prepend Agent Title ?": {
+      "main": [
+        [
+          {
+            "node": "Update Content With Agent Ttitle",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Follow after prepend",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Content With Agent Ttitle": {
+      "main": [
+        [
+          {
+            "node": "Follow after prepend",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow after prepend": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -1915,7 +1975,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "83b6e850-87be-46f6-80cd-a98e2b70136a",
+  "versionId": "efb1716f-59f1-4277-b616-ed043f5e8ece",
   "id": "2",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
