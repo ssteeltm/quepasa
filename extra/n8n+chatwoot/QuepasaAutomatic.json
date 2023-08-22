@@ -421,27 +421,18 @@
   "active": false,
   "settings": {},
   "versionId": "7d3f185a-5f53-469c-9530-e0bf87b5f896",
-  "id": "12",
+  "id": "1011",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
   "tags": [
     {
-      "createdAt": "2022-10-13T15:26:11.519Z",
-      "updatedAt": "2022-10-13T15:26:11.519Z",
-      "id": "5",
       "name": "QUEPASA"
     },
     {
-      "createdAt": "2023-05-18T18:59:53.449Z",
-      "updatedAt": "2023-05-18T18:59:53.449Z",
-      "id": "7",
       "name": "EngajamentoFlow"
     },
     {
-      "createdAt": "2023-05-19T22:54:38.266Z",
-      "updatedAt": "2023-05-19T22:54:38.266Z",
-      "id": "13",
       "name": "github.com/nocodeleaks"
     }
   ]
