@@ -1100,7 +1100,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.7) Updates\n* should prepend agent title (pat) (query)\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
+        "content": "## (1.0.8) Updates\n* should prepend agent title (pat) (query) issue\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
         "height": 348.70602969397424,
         "width": 505.65878958512553
       },
@@ -1221,7 +1221,7 @@
         "conditions": {
           "boolean": [
             {
-              "value1": "={{ $json.query.pat ? Boolean($json.query.pat) : true }}",
+              "value1": "={{ $json.query.pat ? !!JSON.parse($json.query.pat.toLowerCase()) : true }}",
               "value2": true
             }
           ]
@@ -1975,17 +1975,29 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "efb1716f-59f1-4277-b616-ed043f5e8ece",
+  "versionId": "76a7814b-01c4-4778-90e3-e4d6a99f21d1",
   "id": "2",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
   "tags": [
     {
-      "createdAt": "2022-10-13T04:02:06.783Z",
-      "updatedAt": "2022-10-13T04:02:06.783Z",
-      "id": "1",
-      "name": "SUFFICIT"
+      "createdAt": "2022-10-13T15:26:11.519Z",
+      "updatedAt": "2022-10-13T15:26:11.519Z",
+      "id": "5",
+      "name": "QUEPASA"
+    },
+    {
+      "createdAt": "2023-05-19T22:53:53.833Z",
+      "updatedAt": "2023-05-19T22:53:53.833Z",
+      "id": "12",
+      "name": "github/nocodeleaks"
+    },
+    {
+      "createdAt": "2022-10-13T15:26:19.857Z",
+      "updatedAt": "2022-10-13T15:26:19.857Z",
+      "id": "6",
+      "name": "CHATWOOT"
     }
   ]
 }
