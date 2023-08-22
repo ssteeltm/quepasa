@@ -16,8 +16,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        4340,
-        -1200
+        3760,
+        -1040
       ],
       "id": "c1bfc5a2-d6cc-4f79-aa6f-f43b92813083"
     },
@@ -42,8 +42,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        5140,
-        -1380
+        4560,
+        -1220
       ],
       "id": "39977f43-0f6c-4dc8-86b1-6cfeddbe1ccb"
     },
@@ -62,8 +62,8 @@
       "type": "n8n-nodes-chatwoot.chatwoot",
       "typeVersion": 1,
       "position": [
-        4660,
-        -1360
+        4080,
+        -1200
       ],
       "executeOnce": true,
       "continueOnFail": true
@@ -101,8 +101,8 @@
       "type": "n8n-nodes-chatwoot.chatwoot",
       "typeVersion": 1,
       "position": [
-        1600,
-        -180
+        1700,
+        -260
       ],
       "continueOnFail": true
     },
@@ -117,8 +117,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3960,
-        -1460
+        3380,
+        -1340
       ]
     },
     {
@@ -130,8 +130,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        5140,
-        -1180
+        4560,
+        -1020
       ],
       "id": "2d48a1d1-25a3-4a89-8052-d5a11901d3a0"
     },
@@ -200,8 +200,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        4140,
-        -1200
+        3540,
+        -1040
       ]
     },
     {
@@ -282,8 +282,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        4860,
-        -1360
+        4280,
+        -1200
       ]
     },
     {
@@ -295,8 +295,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3480,
-        -500
+        3060,
+        -580
       ]
     },
     {
@@ -315,23 +315,23 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1400,
+        1420,
         -360
       ]
     },
     {
       "parameters": {
         "content": "## Chat Contact\n",
-        "height": 745.1581608776635,
-        "width": 2753.5877717508984
+        "height": 781.3653139828335,
+        "width": 2328.0967485689935
       },
       "id": "f4ff0b87-3b83-4baf-922f-13f7cc15b3ac",
       "name": "Note6",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        200.1683571255403,
-        -560
+        200,
+        -482.06167109645935
       ]
     },
     {
@@ -345,8 +345,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        3100,
-        -660
+        2680,
+        -680
       ],
       "executeOnce": false
     },
@@ -366,8 +366,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3580,
-        -680
+        3200,
+        -700
       ],
       "notesInFlow": true,
       "notes": "Always false for now"
@@ -383,8 +383,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        6080,
-        -700
+        5180,
+        -740
       ],
       "executeOnce": false
     },
@@ -395,20 +395,11 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        6280,
-        -640
-      ]
-    },
-    {
-      "parameters": {},
-      "id": "1178a4eb-8546-416f-918a-8fe1bfdb7a8e",
-      "name": "Deliver Chat Contact Payload",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        2680,
-        -500
-      ]
+        5380,
+        -680
+      ],
+      "alwaysOutputData": true,
+      "continueOnFail": true
     },
     {
       "parameters": {
@@ -426,8 +417,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3260,
-        -660
+        2860,
+        -680
       ]
     },
     {
@@ -446,8 +437,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1760,
-        -180
+        1860,
+        -260
       ]
     },
     {
@@ -460,8 +451,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        2680,
-        -320
+        2120,
+        -20
       ],
       "webhookId": "57209d6b-e7a6-4d78-b55c-82f677b13d42"
     },
@@ -492,8 +483,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        1600,
-        -500
+        2120,
+        -380
       ],
       "id": "9095763d-ab8e-482f-98bd-ff557ca85f27"
     },
@@ -520,7 +511,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        2420,
+        2120,
         -200
       ],
       "id": "8a71a648-f31b-4265-898b-d42d0ade9e1e"
@@ -534,8 +525,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        2160,
-        -20
+        1940,
+        100
       ]
     },
     {
@@ -561,44 +552,24 @@
     },
     {
       "parameters": {
-        "mode": "chooseBranch"
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput1"
+            }
+          }
+        }
       },
       "id": "987349cf-45f3-4cc3-a0d3-5754a6eed6a9",
       "name": "Merge2",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        2140,
-        -320
+        1600,
+        0
       ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.error ?? \"\" }}",
-              "operation": "contains",
-              "value2": "could not be processed"
-            }
-          ],
-          "number": [
-            {
-              "value1": "={{ $json.attempts ?? 0 }}",
-              "value2": 2
-            }
-          ]
-        }
-      },
-      "id": "9b2df5e7-6170-4d34-9604-992f8c8793c3",
-      "name": "If Error 422 And Has Attempts Remaning ?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        1940,
-        -120
-      ],
-      "executeOnce": false
     },
     {
       "parameters": {},
@@ -607,8 +578,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        2680,
-        -40
+        2320,
+        80
       ]
     },
     {
@@ -631,7 +602,7 @@
       "maxTries": 2,
       "credentials": {
         "postgres": {
-          "id": "1",
+          "id": "MhzIwcIEKVWhYl1G",
           "name": "Postgres account"
         }
       }
@@ -709,7 +680,7 @@
       "maxTries": 2,
       "credentials": {
         "postgres": {
-          "id": "1",
+          "id": "MhzIwcIEKVWhYl1G",
           "name": "Postgres account"
         }
       }
@@ -730,15 +701,15 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        5480,
-        -1280
+        4900,
+        -1120
       ],
       "id": "8ed4a9e0-1a1c-4bad-a709-55f508dc72b8",
       "disabled": true
     },
     {
       "parameters": {
-        "content": "## (1.0.0) Updates\n* implements new chatwoot contacts workflow\n\n## Recommendations \n* Remember set timeout to 20 seconds",
+        "content": "## (1.0.1) Updates\n* issue at creating new contact\n\n## Recommendations \n* Remember set timeout to 20 seconds",
         "height": 201.45401153644474,
         "width": 467.54452018877896
       },
@@ -760,6 +731,59 @@
       "position": [
         -660,
         -700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.error ?? \"\" }}",
+              "operation": "contains",
+              "value2": "could not be processed"
+            }
+          ]
+        }
+      },
+      "id": "3943387a-5d95-4739-9259-3630a064c02c",
+      "name": "If Error 422",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.attempts ?? 0 }}",
+              "value2": 2
+            }
+          ]
+        }
+      },
+      "id": "9b2df5e7-6170-4d34-9604-992f8c8793c3",
+      "name": "If Has Attempts Remaning ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1420,
+        80
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {},
+      "id": "131757dd-b183-4f70-86cc-819375203d45",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        -300
       ]
     }
   ],
@@ -966,17 +990,6 @@
         ]
       ]
     },
-    "Deliver Chat Contact Payload": {
-      "main": [
-        [
-          {
-            "node": "Parameters + Contacts1",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
     "If Chat Exists ?": {
       "main": [
         [
@@ -1006,7 +1019,7 @@
         ],
         [
           {
-            "node": "If Error 422 And Has Attempts Remaning ?",
+            "node": "If Has Attempts Remaning ?",
             "type": "main",
             "index": 0
           }
@@ -1017,7 +1030,7 @@
       "main": [
         [
           {
-            "node": "Deliver Chat Contact Payload",
+            "node": "No Operation, do nothing",
             "type": "main",
             "index": 0
           }
@@ -1028,7 +1041,7 @@
       "main": [
         [
           {
-            "node": "Deliver Chat Contact Payload",
+            "node": "No Operation, do nothing",
             "type": "main",
             "index": 0
           }
@@ -1066,25 +1079,7 @@
       "main": [
         [
           {
-            "node": "Wait a while (5s)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If Error 422 And Has Attempts Remaning ?": {
-      "main": [
-        [
-          {
-            "node": "Merge2",
-            "type": "main",
-            "index": 1
-          }
-        ],
-        [
-          {
-            "node": "! Unknown Error",
+            "node": "If Error 422",
             "type": "main",
             "index": 0
           }
@@ -1174,18 +1169,66 @@
           }
         ]
       ]
+    },
+    "If Error 422": {
+      "main": [
+        [
+          {
+            "node": "Wait a while (5s)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "! Unknown Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Has Attempts Remaning ?": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "! Unknown Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Parameters + Contacts1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "saveManualExecutions": false,
     "callerPolicy": "workflowsFromSameOwner",
-    "executionTimeout": 30
+    "executionTimeout": 20,
+    "executionOrder": "v0"
   },
-  "versionId": "73507489-f969-4880-8c14-fe65846cd434",
+  "versionId": "e7d7e266-97b8-44ea-991e-48220fabca99",
   "id": "1002",
   "meta": {
-    "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
+    "instanceId": "a37a29af0b164c10f8b7ef0e4d5577d19b80c64c836f6cd90dd302c84a178489"
   },
   "tags": [    
     {
