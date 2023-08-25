@@ -112,6 +112,7 @@ func GetPhoneByWId(wid string) string {
 	return out
 }
 
+// Whatsapp issue on understanding mobile phones with ddd bigger than 30, only mobile
 func RemoveDigit9(source string) string {
 	response := source
 
@@ -121,7 +122,7 @@ func RemoveDigit9(source string) string {
 		if len(phonenumber) == 13 {
 
 			// mobile phones with 9 digit
-			r, _ := regexp.Compile("55([4-9]\\d|[3-9][1-9])9\\d\\d\\d\\d\\d\\d\\d\\d$")
+			r, _ := regexp.Compile("55([4-9]\\d|[3-9][6-9])9\\d\\d\\d\\d\\d\\d\\d\\d$")
 			if r.MatchString(phonenumber) {
 
 				prefix := phonenumber[0:4]
