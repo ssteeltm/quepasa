@@ -845,7 +845,7 @@
     },
     {
       "parameters": {
-        "jsCode": "function hex2a(hexx) {\n    var hex = hexx.toString(); //force conversion\n    var str = '';\n    for (var i = 0; i < hex.length; i += 2)\n        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));\n    return str;\n}\n\nfor(let index in items) \n{ \n    if(items[index].json?.chatid){\n        continue;\n    }\n\n    let body = items[index].json[\"body\"];\n    if(body) \n    {\n        // trying to get from external identifier\n        let chatid = body.meta?.sender?.identifier;\n        if(!chatid)\n        {\n            // trying to get from quepasa custom property\n            chatid = body.meta?.sender?.custom_attributes?.quepasa;            \n            if(!chatid)\n            {\n                // trying to get from e-mail\n                chatid = body.meta?.sender?.email;            \n                if(!chatid)\n                {\n                    // trying to unhex from source_id\n                    if(body.contact_inbox?.source_id && body.contact_inbox.source_id.includes(\"@\")){\n                        chatid = hex2a(body.contact_inbox.source_id)\n                    }\n                    \n                    if(!chatid)\n                    {                    \n                        // trying to get from phone number \n                        chatid = body.meta?.sender?.phone_number;\n                        if (chatid) chatid += '@s.whatsapp.net';\n                    }\n                }\n            }\n        }\n        items[index].json.chatid = chatid;\n    }\n}\n\nreturn items;"
+        "jsCode": "function hex2a(hexx) {\n    var hex = hexx.toString(); //force conversion\n    var str = '';\n    for (var i = 0; i < hex.length; i += 2)\n        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));\n    return str;\n}\n\nfor(let index in items) \n{ \n    if(items[index].json?.chatid){\n        continue;\n    }\n\n    let body = items[index].json[\"body\"];\n    if(body) \n    {\n        // trying to get from external identifier\n        let chatid = body.meta?.sender?.identifier;\n        if(!chatid)\n        {\n            // trying to get from quepasa custom property\n            chatid = body.meta?.sender?.custom_attributes?.quepasa;            \n            if(!chatid)\n            {\n                // trying to get from e-mail\n                chatid = body.meta?.sender?.email;            \n                if(!chatid)\n                {\n                    // trying to unhex from source_id\n                    if(body.contact_inbox?.source_id && body.contact_inbox.source_id.includes(\"@\")){\n                        chatid = hex2a(body.contact_inbox.source_id)\n                    }\n                    \n                    if(!chatid)\n                    {                    \n                        // trying to get from phone number \n                        chatid = body.meta?.sender?.phone_number;\n                        if (chatid) { \n                          chatid += '@s.whatsapp.net';\n                          if (chatid.startsWith('+')) chatid = chatid.substring(1);\n                        }\n                    }\n                }\n            }\n        }\n        items[index].json.chatid = chatid;\n    }\n}\n\nreturn items;"
       },
       "id": "813ab8ab-9b42-4970-9e18-d51d62599e85",
       "name": "Getting ChatId From Custom|Email|Source|Phone",
@@ -1100,8 +1100,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.9) Updates\n* append whatsapp extension for contacts created from phone\n\n## (1.0.8) Updates\n* should prepend agent title (pat) (query) issue\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
-        "height": 348.70602969397424,
+        "content": "## (1.0.10) Updates\n* append whatsapp extension for contacts created from phone\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
+        "height": 249.8545445454593,
         "width": 505.65878958512553
       },
       "id": "126175b6-ed49-4de7-bc03-23eaba40f721",
@@ -1110,7 +1110,7 @@
       "typeVersion": 1,
       "position": [
         -4300,
-        2725.7587906835765
+        2824.6102758320935
       ]
     },
     {
@@ -1975,29 +1975,29 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "7a8dd383-4395-4d46-b439-3aa9b3cee5a7",
+  "versionId": "c675ad6a-893d-483a-b87e-5a2aa6fdb32f",
   "id": "1008",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
   "tags": [
     {
-      "createdAt": "2022-10-13T15:26:11.519Z",
-      "updatedAt": "2022-10-13T15:26:11.519Z",
-      "id": "5",
-      "name": "QUEPASA"
-    },
-    {
-      "createdAt": "2022-10-13T15:26:19.857Z",
-      "updatedAt": "2022-10-13T15:26:19.857Z",
-      "id": "6",
-      "name": "CHATWOOT"
-    },
-    {
       "createdAt": "2023-05-19T22:54:38.266Z",
       "updatedAt": "2023-05-19T22:54:38.266Z",
       "id": "13",
       "name": "github.com/nocodeleaks"
+    },
+    {
+      "createdAt": "2022-10-13T15:26:19.857Z",
+      "updatedAt": "2023-08-24T21:01:00.296Z",
+      "id": "6",
+      "name": "chatwoot"
+    },
+    {
+      "createdAt": "2022-10-13T15:26:11.519Z",
+      "updatedAt": "2023-08-25T18:50:53.269Z",
+      "id": "5",
+      "name": "quepasa"
     }
   ]
 }
