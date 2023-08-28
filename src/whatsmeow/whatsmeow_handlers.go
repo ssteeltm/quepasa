@@ -230,6 +230,7 @@ func (handler *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 	handler.log.Trace("event Receipt !")
 
 	message := &whatsapp.WhatsappMessage{Content: evt}
+	message.Id = "readreceipt"
 
 	// basic information
 	message.Timestamp = evt.Timestamp
@@ -247,7 +248,7 @@ func (handler *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 	if handler.WAHandlers != nil {
 
 		// following to internal handlers
-		go handler.WAHandlers.Message(message)
+		go handler.WAHandlers.Receipt(message)
 	}
 }
 

@@ -66,6 +66,21 @@ func (handler *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
 	handler.appendMsgToCache(msg)
 }
 
+// does not cache msg, only update status and webhook dispatch
+func (handler *QPWhatsappHandlers) Receipt(msg *whatsapp.WhatsappMessage) {
+	ids := strings.Split(msg.Text, ",")
+	for _, element := range ids {
+		cached, err := handler.GetMessage(element)
+		if err == nil {
+			// update status
+			handler.server.Log.Tracef("msg recebida/(enviada por outro meio) em models: %s", cached.Id)
+		}
+	}
+
+	// Executando WebHook de forma assincrona
+	handler.Trigger(msg)
+}
+
 /*
 <summary>
 
