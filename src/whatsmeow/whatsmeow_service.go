@@ -18,7 +18,8 @@ import (
 )
 
 type WhatsmeowServiceModel struct {
-	Container *sqlstore.Container
+	Container   *sqlstore.Container
+	ReadReceipt bool
 }
 
 var WhatsmeowService *WhatsmeowServiceModel
@@ -83,8 +84,9 @@ func (service *WhatsmeowServiceModel) CreateConnection(wid string, loggerEntry *
 	}
 
 	handlers := &WhatsmeowHandlers{
-		Client: client,
-		log:    loggerEntry,
+		Client:      client,
+		log:         loggerEntry,
+		ReadReceipt: service.ReadReceipt,
 	}
 
 	err = handlers.Register()

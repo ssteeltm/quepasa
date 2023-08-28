@@ -50,6 +50,18 @@ func (handler *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
 		msg.Chat.Title = handler.server.GetChatTitle(msg.Chat.Id)
 	}
 
+	if len(msg.InReply) > 0 {
+		cached, err := handler.GetMessage(msg.InReply)
+		if err == nil {
+			maxlength := ENV.SynopsisLength() - 4
+			if uint64(len(msg.Text)) > maxlength {
+				msg.Synopsis = cached.Text[0:maxlength] + " ..."
+			} else {
+				msg.Synopsis = cached.Text
+			}
+		}
+	}
+
 	handler.server.Log.Tracef("msg recebida/(enviada por outro meio) em models: %s", msg.Id)
 	handler.appendMsgToCache(msg)
 }

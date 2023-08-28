@@ -15,6 +15,8 @@ const (
 	DEBUG_REQUESTS      = "DEBUGREQUESTS"
 	DEBUG_JSON_MESSAGES = "DEBUGJSONMESSAGES"
 	REMOVEDIGIT9        = "REMOVEDIGIT9"
+	READRECEIPTS        = "READRECEIPTS"
+	SYNOPSISLENGTH      = "SYNOPSISLENGTH"
 )
 
 type Environment struct{}
@@ -122,4 +124,22 @@ func GetEnvStr(key string) (string, error) {
 func (_ *Environment) ShouldRemoveDigit9() bool {
 	value, _ := GetEnvBool(REMOVEDIGIT9, false)
 	return value
+}
+
+func (_ *Environment) ShouldReadReceipts() bool {
+	value, _ := GetEnvBool(READRECEIPTS, false)
+	return value
+}
+
+// MIGRATIONS => Path to database migrations folder
+func (_ *Environment) SynopsisLength() uint64 {
+	stringValue, err := GetEnvStr(SYNOPSISLENGTH)
+	if err == nil {
+		value, err := strconv.ParseUint(stringValue, 10, 32)
+		if err == nil {
+			return value
+		}
+	}
+
+	return 50
 }
