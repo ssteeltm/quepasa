@@ -869,7 +869,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const response = [];\n\nfunction hex2a(hexx) {\n    var hex = hexx.toString(); //force conversion\n    var str = '';\n    for (var i = 0; i < hex.length; i += 2)\n        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));\n    return str;\n}\n\nfor (const item of $input.all()) {\n  const body = item.json.body;\n  if(body) {     \n    let chatId = body.conversation.meta?.sender?.identifier;    \n    if(!chatId)\n    {\n      chatId = body.conversation.meta?.sender?.custom_attributes?.quepasa;\n      if(!chatId){\n        chatId = body.conversation.meta?.sender?.phone_number;\n        if(!chatId){\n          let chatIdEncrypted = body.conversation.contact_inbox.source_id;\n          chatId = hex2a(chatIdEncrypted)\n        }\n      }\n    }\n\n    // attachments\n    for(let message of body.conversation.messages) \n    {  \n      if(message.content){\n\n        // leading with \\ at SHIFT+ENTER\n        message.content = message.content.replace(/\\n\\\\/g,\"\\n\").replace(/ \\\\/g,\"\");\n\n        const payload = {        \n          token: item.json.query.token,\n          chatid: chatId,\n          messageid: message.id,\n          \n          // dont used for nothing, marked for remove\n          sourceid: body.conversation.contact_inbox.source_id,\n          \n          conversationid: body.conversation.id,\n          content: message.content,\n          sender: message.sender?.available_name || message.sender?.name || 'Auto Atendimento'\n        };\n        const msgItem = { \n          payload: payload,\n          query: item.json.query\n        };\n        response.push(msgItem);\n      }\n\n      if(message.attachments){\n        for(let attach of message.attachments) \n        {\n          const payload = {\n            token: item.json.query.token,\n            chatid: chatId,\n            messageid: message.id,          \n            attachment: attach.data_url\n          };\n          const msgItem = { \n            payload: payload,\n            query: item.json.query\n          };\n          response.push(msgItem);\n        }\n      }      \n    }\n  }\n}\n\nreturn response;"
+        "jsCode": "const response = [];\nfor (const item of $input.all()) {\n  const body = item.json.body;\n  if (body) {     \n    let chatId = body.conversation.meta?.sender?.identifier;    \n    if (!chatId)\n    {\n      chatId = body.conversation.meta?.sender?.custom_attributes?.quepasa;\n      if (!chatId) {\n        chatId = body.conversation.meta?.sender?.phone_number;\n      }\n    }\n\n    // attachments\n    for (let message of body.conversation.messages) \n    {  \n      if (message.content_type === 'integrations' && message.content_attributes?.type === 'dyte')      \n        message.content += '\\r\\n *** https://app.dyte.in/meeting/stage/' + message.content_attributes?.data.room_name;      \n      \n      if (message.content) {\n\n        // leading with \\ at SHIFT+ENTER\n        message.content = message.content.replace(/\\n\\\\/g,\"\\n\").replace(/ \\\\/g,\"\");\n\n        const payload = {        \n          token: item.json.query.token,\n          chatid: chatId,\n          messageid: message.id,\n          \n          // dont used for nothing, marked for remove\n          sourceid: body.conversation.contact_inbox.source_id,\n          \n          conversationid: body.conversation.id,\n          content: message.content,\n          sender: message.sender?.available_name || message.sender?.name || 'Auto Atendimento'\n        };\n        const msgItem = { \n          payload: payload,\n          query: item.json.query\n        };\n        response.push(msgItem);\n      }\n\n      if(message.attachments){\n        for(let attach of message.attachments) \n        {\n          const payload = {\n            token: item.json.query.token,\n            chatid: chatId,\n            messageid: message.id,          \n            attachment: attach.data_url\n          };\n          const msgItem = { \n            payload: payload,\n            query: item.json.query\n          };\n          response.push(msgItem);\n        }\n      }      \n    }\n  }\n}\n\nreturn response;"
       },
       "id": "c3876a03-57f4-47b4-8c18-fbca320f0f80",
       "name": "Payload",
@@ -1100,9 +1100,9 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.10) Updates\n* append whatsapp extension for contacts created from phone\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
-        "height": 249.8545445454593,
-        "width": 505.65878958512553
+        "content": "## (1.0.11) Updates\n* removed hex source id treatment\n* dyte messages\n\n## (1.0.10) Updates\n* append whatsapp extension for contacts created from phone\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
+        "height": 301.46414454545936,
+        "width": 574.4715895851256
       },
       "id": "126175b6-ed49-4de7-bc03-23eaba40f721",
       "name": "Sticky Note2",
@@ -1110,7 +1110,7 @@
       "typeVersion": 1,
       "position": [
         -4300,
-        2824.6102758320935
+        2780
       ]
     },
     {
@@ -1975,17 +1975,17 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "c675ad6a-893d-483a-b87e-5a2aa6fdb32f",
+  "versionId": "96363fba-bc95-4ee8-90dc-9b7d8e8600bd",
   "id": "1008",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
   "tags": [
     {
-      "createdAt": "2023-05-19T22:54:38.266Z",
-      "updatedAt": "2023-05-19T22:54:38.266Z",
-      "id": "13",
-      "name": "github.com/nocodeleaks"
+      "createdAt": "2022-10-13T15:26:11.519Z",
+      "updatedAt": "2023-08-25T18:50:53.269Z",
+      "id": "5",
+      "name": "quepasa"
     },
     {
       "createdAt": "2022-10-13T15:26:19.857Z",
@@ -1994,10 +1994,10 @@
       "name": "chatwoot"
     },
     {
-      "createdAt": "2022-10-13T15:26:11.519Z",
-      "updatedAt": "2023-08-25T18:50:53.269Z",
-      "id": "5",
-      "name": "quepasa"
+      "createdAt": "2023-05-19T22:54:38.266Z",
+      "updatedAt": "2023-05-19T22:54:38.266Z",
+      "id": "13",
+      "name": "github.com/nocodeleaks"
     }
   ]
 }
