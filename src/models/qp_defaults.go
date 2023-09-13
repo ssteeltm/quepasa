@@ -1,3 +1,3 @@
 package models
 
-const QPVersion = "3.23.828.1340"
+const QPVersion = "3.23.913.1543"
