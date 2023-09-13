@@ -54,7 +54,7 @@ func (handler *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
 		cached, err := handler.GetMessage(msg.InReply)
 		if err == nil {
 			maxlength := ENV.SynopsisLength() - 4
-			if uint64(len(msg.Text)) > maxlength {
+			if uint64(len(cached.Text)) > maxlength {
 				msg.Synopsis = cached.Text[0:maxlength] + " ..."
 			} else {
 				msg.Synopsis = cached.Text
