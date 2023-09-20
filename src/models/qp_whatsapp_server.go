@@ -569,7 +569,23 @@ func (server *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 
 	// leading with wrongs digit 9
 	if ENV.ShouldRemoveDigit9() {
-		msg.Chat.Id = library.RemoveDigit9(msg.Chat.Id)
+
+		phone, _ := library.ExtractPhoneIfValid(msg.Chat.Id)
+		if len(phone) > 0 {
+			phoneWithout9, _ := library.RemoveDigit9IfElegible(phone)
+			if len(phoneWithout9) > 0 {
+				valids, err := server.connection.IsOnWhatsApp(phone, phoneWithout9)
+				if err != nil {
+					return nil, err
+				}
+
+				for _, valid := range valids {
+					server.Log.Debugf("found valid destination: %s", valid)
+					msg.Chat.Id = valid
+					break
+				}
+			}
+		}
 	}
 
 	if msg.HasAttachment() {
