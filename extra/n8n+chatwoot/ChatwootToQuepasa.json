@@ -332,7 +332,7 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] }}"
+        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}"
       },
       "id": "1229f01c-253a-4479-9f37-00739fc05dfa",
       "name": "Quepasa Chat Control Workflow",
@@ -402,7 +402,7 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_QUEPASAINBOXCONTROL'] }}"
+        "workflowId": "={{ $env['C8Q_QUEPASAINBOXCONTROL'] ?? 1001 }}"
       },
       "id": "6092cfce-a7bb-428e-a5ae-d5e7d2d8fc11",
       "name": "Throw To Quepasa Inbox Control Workflow",
@@ -561,7 +561,7 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_CHATWOOTPROFILEUPDATE'] }}"
+        "workflowId": "={{ $env['C8Q_CHATWOOTPROFILEUPDATE'] ?? 1004 }}"
       },
       "id": "30e9e9e0-dc66-410f-a036-dfb21dd446f1",
       "name": "Throw To Profile Update Workflow",
@@ -869,7 +869,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const response = [];\nfor (const item of $input.all()) {\n  const body = item.json.body;\n  if (body) {     \n    let chatId = body.conversation.meta?.sender?.identifier;    \n    if (!chatId)\n    {\n      chatId = body.conversation.meta?.sender?.custom_attributes?.quepasa;\n      if (!chatId) {\n        chatId = body.conversation.meta?.sender?.phone_number;\n      }\n    }\n\n    // attachments\n    for (let message of body.conversation.messages) \n    {  \n      if (message.content_type === 'integrations' && message.content_attributes?.type === 'dyte')      \n        message.content += '\\r\\n *** https://app.dyte.in/meeting/stage/' + message.content_attributes?.data.room_name;      \n      \n      if (message.content) {\n\n        // leading with \\ at SHIFT+ENTER\n        message.content = message.content.replace(/\\n\\\\/g,\"\\n\").replace(/ \\\\/g,\"\");\n\n        const payload = {        \n          token: item.json.query.token,\n          chatid: chatId,\n          messageid: message.id,\n          \n          // dont used for nothing, marked for remove\n          sourceid: body.conversation.contact_inbox.source_id,\n          \n          conversationid: body.conversation.id,\n          content: message.content,\n          sender: message.sender?.available_name || message.sender?.name || 'Auto Atendimento'\n        };\n        const msgItem = { \n          payload: payload,\n          query: item.json.query\n        };\n        response.push(msgItem);\n      }\n\n      if(message.attachments){\n        for(let attach of message.attachments) \n        {\n          const payload = {\n            token: item.json.query.token,\n            chatid: chatId,\n            messageid: message.id,          \n            attachment: attach.data_url\n          };\n          const msgItem = { \n            payload: payload,\n            query: item.json.query\n          };\n          response.push(msgItem);\n        }\n      }      \n    }\n  }\n}\n\nreturn response;"
+        "jsCode": "const response = [];\nfor (const item of $input.all()) {\n  const body = item.json.body;\n  if (body) {     \n    let chatId = body.conversation.meta?.sender?.identifier;    \n    if (!chatId)\n    {\n      chatId = body.conversation.meta?.sender?.custom_attributes?.quepasa;\n      if (!chatId) {\n        chatId = body.conversation.meta?.sender?.phone_number;\n      }\n    }\n\n    // attachments\n    for (let message of body.conversation.messages) \n    {  \n      if (message.content_type === 'integrations' && message.content_attributes?.type === 'dyte')      \n        message.content += '\\r\\n *** https://app.dyte.in/meeting/stage/' + message.content_attributes?.data.room_name;      \n      \n      if (message.content) {\n\n        // leading with \\ at SHIFT+ENTER\n        message.content = message.content.replace(/\\n\\\\/g,\"\\n\").replace(/ \\\\/g,\"\");\n\n        const payload = {        \n          token: item.json.query.token,\n          chatid: chatId,\n          messageid: message.id,\n          \n          // dont used for nothing, marked for remove\n          sourceid: body.conversation.contact_inbox.source_id,\n          \n          conversationid: body.conversation.id,\n          content: message.content,\n          sender: message.sender?.available_name || message.sender?.name || 'Auto Atendimento'\n        };\n        const msgItem = { \n          payload: payload,\n          query: item.json.query\n        };\n        response.push(msgItem);\n      }\n\n      if (message.attachments) {\n        let counter = 0;\n        for (let attach of message.attachments) \n        {\n          const payload = {\n            token: item.json.query.token,\n            chatid: chatId,\n            messageid: message.id + '-a' + counter,          \n            attachment: attach.data_url\n          };\n          const msgItem = { \n            payload: payload,\n            query: item.json.query\n          };\n          response.push(msgItem);\n          counter++;\n        }\n      }      \n    }\n  }\n}\n\nreturn response;"
       },
       "id": "c3876a03-57f4-47b4-8c18-fbca320f0f80",
       "name": "Payload",
@@ -892,8 +892,8 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        -1620,
-        4520
+        -1520,
+        4400
       ],
       "retryOnFail": true,
       "maxTries": 2
@@ -1100,7 +1100,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.11) Updates\n* removed hex source id treatment\n* dyte messages\n\n## (1.0.10) Updates\n* append whatsapp extension for contacts created from phone\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
+        "content": "## (1.0.12) Updates\n* adjust msg id with attachments\n* revoke always 1º attach, (avoid to send more than 1 by msg)\n\n## (1.0.11) Updates\n* removed hex source id treatment\n* dyte messages\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
         "height": 301.46414454545936,
         "width": 574.4715895851256
       },
@@ -1267,6 +1267,25 @@
         160,
         2620
       ]
+    },
+    {
+      "parameters": {
+        "baseUrl": "={{$json.query.qphost}}",
+        "token": "={{$json.query.qptoken}}",
+        "operation": "revoke",
+        "messageId": "={{ $json.query.account }}-{{ $json.query.inbox }}-{{ $json.body.id }}-a0"
+      },
+      "id": "fabe668e-62ca-4e09-8846-20bb29dd7b19",
+      "name": "Quepasa Revoke Attach-0",
+      "type": "n8n-nodes-quepasa.quepasa",
+      "typeVersion": 1,
+      "position": [
+        -1520,
+        4620
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "continueOnFail": true
     }
   ],
   "pinData": {},
@@ -1924,6 +1943,11 @@
             "node": "Quepasa Revoke",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Quepasa Revoke Attach-0",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -1975,7 +1999,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "96363fba-bc95-4ee8-90dc-9b7d8e8600bd",
+  "versionId": "117b5f06-3021-49c5-901b-183dab78223d",
   "id": "1008",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
