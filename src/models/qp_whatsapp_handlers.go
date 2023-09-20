@@ -144,6 +144,20 @@ func (handler *QPWhatsappHandlers) GetMessages(timestamp time.Time) (messages []
 	return
 }
 
+func (handler *QPWhatsappHandlers) GetMessagesByPrefix(id string) (messages []whatsapp.WhatsappMessage) {
+	handler.sync.Lock() // Sinal vermelho para atividades simultâneas
+	// Apartir deste ponto só se executa um por vez
+
+	for _, item := range handler.messages {
+		if strings.HasPrefix(item.Id, id) {
+			messages = append(messages, item)
+		}
+	}
+
+	handler.sync.Unlock() // Sinal verde !
+	return
+}
+
 // Get a single message if exists
 func (handler *QPWhatsappHandlers) GetMessage(id string) (msg whatsapp.WhatsappMessage, err error) {
 	handler.sync.Lock() // Sinal vermelho para atividades simultâneas
