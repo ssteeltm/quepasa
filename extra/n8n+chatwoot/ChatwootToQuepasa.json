@@ -892,8 +892,8 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        -1520,
-        4400
+        -1600,
+        4520
       ],
       "retryOnFail": true,
       "maxTries": 2
@@ -1100,17 +1100,17 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.12) Updates\n* adjust msg id with attachments\n* revoke always 1º attach, (avoid to send more than 1 by msg)\n\n## (1.0.11) Updates\n* removed hex source id treatment\n* dyte messages\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
-        "height": 301.46414454545936,
-        "width": 574.4715895851256
+        "content": "## (1.0.13) Updates\n* quepasa revoke now, uses msg id as prefix\n\n## (1.0.12) Updates\n* adjust msg id with attachments\n* revoke always 1º attach, (avoid to send more than 1 by msg)\n\n## (1.0.11) Updates\n* removed hex source id treatment\n* dyte messages\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
+        "height": 395.65024080214386,
+        "width": 612.1460280877996
       },
       "id": "126175b6-ed49-4de7-bc03-23eaba40f721",
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -4300,
-        2780
+        -4337.674438502675,
+        2685.813903743314
       ]
     },
     {
@@ -1267,25 +1267,6 @@
         160,
         2620
       ]
-    },
-    {
-      "parameters": {
-        "baseUrl": "={{$json.query.qphost}}",
-        "token": "={{$json.query.qptoken}}",
-        "operation": "revoke",
-        "messageId": "={{ $json.query.account }}-{{ $json.query.inbox }}-{{ $json.body.id }}-a0"
-      },
-      "id": "fabe668e-62ca-4e09-8846-20bb29dd7b19",
-      "name": "Quepasa Revoke Attach-0",
-      "type": "n8n-nodes-quepasa.quepasa",
-      "typeVersion": 1,
-      "position": [
-        -1520,
-        4620
-      ],
-      "retryOnFail": true,
-      "maxTries": 2,
-      "continueOnFail": true
     }
   ],
   "pinData": {},
@@ -1943,11 +1924,6 @@
             "node": "Quepasa Revoke",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Quepasa Revoke Attach-0",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1999,7 +1975,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "117b5f06-3021-49c5-901b-183dab78223d",
+  "versionId": "86656909-f8f2-4fed-a3d6-0430ca4d4a8d",
   "id": "1008",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
