@@ -24,7 +24,6 @@
 [PostMan Shared Documentations](https://www.getpostman.com/collections/569a066d7a2798e8d293)
 [PostMan Public Workspace](https://elements.getpostman.com/redirect?entityId=5047984-bb51f975-8e79-43e8-b895-06f5081a6819&entityType=collection)
 
-
 **Features:**
   * Verify a number with a QR code
   * Persistence of account data and keys
@@ -39,40 +38,8 @@
 
   **This is a third-party effort, and is NOT in any affiliated with [WhatsApp][0].**
 
-
-  
-  **Clone and Install**
-  
-```bash
-git clone https://github.com/nocodeleaks/quepasa /opt/quepasa-source
-bash /opt/quepasa-source/helpers/install.sh
-```
-    
-  ### **Final step**
-
-  - go to http://your.ip.address:31000/setup in the web browser and register an admin user for your system
-  - login on quepasa http://your.ip.address:31000 from previously created user and scan the qr using you whatsapp 
-
-<hr/>
-
-
 <details>
   <summary>Anything is section was not reviewed</summary>
-
-  **Implemented features:**
-
-  * Verify a number with a QR code
-  * Persistence of account data and keys
-  * Exposes HTTP endpoints for:
-    * sending messages
-    * receiving messages
-    * download attachments
-    * set webhook for receiving messages 
-
-  **WARNING: This application has not been audited. It should not be regarded as
-  secure, use at your own risk.**
-
-  **This is a third-party effort, and is NOT in any affiliated with [WhatsApp][0].**
 
   ### Why ?
   
