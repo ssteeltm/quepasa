@@ -38,6 +38,7 @@ func main() {
 	}
 
 	whatsmeow.WhatsmeowService.Start()
+	whatsmeow.WhatsmeowService.LogLevel = models.ENV.WhatsmeowLogLevel()
 	whatsmeow.WhatsmeowService.ReadReceipt = models.ENV.ShouldReadReceipts()
 
 	// must execute after whatsmeow started

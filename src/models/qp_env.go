@@ -17,6 +17,7 @@ const (
 	REMOVEDIGIT9        = "REMOVEDIGIT9"
 	READRECEIPTS        = "READRECEIPTS"
 	SYNOPSISLENGTH      = "SYNOPSISLENGTH"
+	WHATSMEOWLOGLEVEL   = "WHATSMEOWLOGLEVEL"
 )
 
 type Environment struct{}
@@ -70,9 +71,15 @@ func (_ *Environment) MigrationPath() string {
 	}
 }
 
+// Force Default Whatsmeow Log Level
+func (_ *Environment) WhatsmeowLogLevel() string {
+	result, _ := GetEnvStr(WHATSMEOWLOGLEVEL)
+	return result
+}
+
 func (_ *Environment) AppTitle() string {
-	title, _ := GetEnvStr(TITLE)
-	return title
+	result, _ := GetEnvStr(TITLE)
+	return result
 }
 
 func (_ *Environment) DEBUGRequests() bool {

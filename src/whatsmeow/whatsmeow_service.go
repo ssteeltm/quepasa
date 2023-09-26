@@ -20,6 +20,7 @@ import (
 type WhatsmeowServiceModel struct {
 	Container   *sqlstore.Container
 	ReadReceipt bool
+	LogLevel    string
 }
 
 var WhatsmeowService *WhatsmeowServiceModel
@@ -73,7 +74,12 @@ func (service *WhatsmeowServiceModel) CreateEmptyConnection() (conn *WhatsmeowCo
 }
 
 func (service *WhatsmeowServiceModel) CreateConnection(wid string, loggerEntry *log.Entry) (conn *WhatsmeowConnection, err error) {
-	clientLog := waLog.Stdout("Whatsmeow/Client", loggerEntry.Level.String(), true)
+	loglevel := loggerEntry.Level.String()
+	if len(service.LogLevel) > 0 {
+		loglevel = service.LogLevel
+	}
+
+	clientLog := waLog.Stdout("whatsmeow/client", loglevel, true)
 	client, err := service.GetWhatsAppClient(wid, clientLog)
 	if err != nil {
 		return
