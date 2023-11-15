@@ -22,6 +22,9 @@ type QpSendRequest struct {
 
 	Text string `json:"text,omitempty"`
 
+	// Msg in reply of another ? Message ID
+	InReply string `json:"inreply,omitempty"`
+
 	// (Optional) Sugested filename on user download
 	FileName string `json:"fileName,omitempty"`
 
@@ -64,6 +67,7 @@ func (source *QpSendRequest) ToWhatsappMessage() (msg *whatsapp.WhatsappMessage,
 	msg = &whatsapp.WhatsappMessage{
 		Id:           source.Id,
 		TrackId:      source.TrackId,
+		InReply:      source.InReply,
 		Text:         source.Text,
 		Chat:         chat,
 		FromMe:       true,

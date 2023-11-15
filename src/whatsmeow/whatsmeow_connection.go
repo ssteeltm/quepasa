@@ -259,6 +259,9 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 			newMessage = &waProto.Message{ButtonsMessage: internal}
 		} else {
 			internal := &waProto.ExtendedTextMessage{Text: &messageText}
+			if len(msg.InReply) > 0 {
+				internal.ContextInfo = &waProto.ContextInfo{StanzaId: &msg.InReply}
+			}
 			newMessage = &waProto.Message{ExtendedTextMessage: internal}
 		}
 	} else {
@@ -269,15 +272,15 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 	}
 
 	// Formatting destination accordly
-	formatedDestination, _ := whatsapp.FormatEndpoint(msg.GetChatId())
+	formattedDestination, _ := whatsapp.FormatEndpoint(msg.GetChatId())
 
 	// Avoid common issue with incorrect non ascii chat id
-	if !isASCII(formatedDestination) {
-		err = fmt.Errorf("not an ASCII formated chat id")
+	if !isASCII(formattedDestination) {
+		err = fmt.Errorf("not an ASCII formatted chat id")
 		return msg, err
 	}
 
-	jid, err := types.ParseJID(formatedDestination)
+	jid, err := types.ParseJID(formattedDestination)
 	if err != nil {
 		conn.log.Infof("send error on get jid: %s", err)
 		return msg, err
@@ -285,7 +288,7 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 
 	// Generating a new unique MessageID
 	if len(msg.Id) == 0 {
-		msg.Id = whatsmeow.GenerateMessageID()
+		msg.Id = conn.Client.GenerateMessageID()
 	}
 
 	extra := whatsmeow.SendRequestExtra{
@@ -294,7 +297,7 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 
 	resp, err := conn.Client.SendMessage(context.Background(), jid, newMessage, extra)
 	if err != nil {
-		conn.log.Infof("send error: %s", err)
+		conn.log.Errorf("send error: %s", err)
 		return msg, err
 	}
 	msg.Timestamp = resp.Timestamp
