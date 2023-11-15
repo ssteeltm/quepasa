@@ -17,6 +17,7 @@ func GetMessagesToAPIV2(server *models.QpWhatsappServer, timestamp string) (mess
 		if len(timestamp) > 0 {
 			return
 		} else {
+			err = nil
 			searchTimestamp = 0
 		}
 	}
