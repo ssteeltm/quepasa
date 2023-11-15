@@ -32,6 +32,9 @@ func RegisterAPIControllers(r chi.Router) {
 		// SENDING MSG ----------------------------
 		// ----------------------------------------
 
+		r.Get(endpoint+"/message/{messageid}", GetMessageController)
+		r.Get(endpoint+"/message", GetMessageController)
+
 		r.Delete(endpoint+"/message/{messageid}", RevokeController)
 		r.Delete(endpoint+"/message", RevokeController)
 

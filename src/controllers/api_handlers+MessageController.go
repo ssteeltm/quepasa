@@ -10,6 +10,44 @@ import (
 
 //region CONTROLLER - Message
 
+func GetMessageController(w http.ResponseWriter, r *http.Request) {
+
+	// setting default reponse type as json
+	w.Header().Set("Content-Type", "application/json")
+
+	response := &models.QpMessageResponse{}
+
+	server, err := GetServer(r)
+	if err != nil {
+		response.ParseError(err)
+		RespondInterface(w, response)
+		return
+	}
+
+	// Default parameters
+	messageid := GetMessageId(r)
+
+	if len(messageid) == 0 {
+		err = fmt.Errorf("empty message id")
+		response.ParseError(err)
+		RespondInterface(w, response)
+		return
+	} else {
+
+		msg, err := server.Handler.GetMessage(messageid)
+		if err != nil {
+			response.ParseError(err)
+			RespondInterface(w, response)
+			return
+		}
+
+		response.ParseSuccess("found")
+		response.Message = &msg
+		RespondSuccess(w, response)
+	}
+	return
+}
+
 func RevokeController(w http.ResponseWriter, r *http.Request) {
 
 	// setting default reponse type as json
