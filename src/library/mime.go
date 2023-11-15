@@ -7,6 +7,7 @@ package library
 	</summary>
 */
 var MIMEs = map[string]string{
-	"image/webp": ".webp",
+	"application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
 	"video/mp4":  ".mp4",
+	"image/webp": ".webp",
 }
