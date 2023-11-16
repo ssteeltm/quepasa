@@ -33,8 +33,7 @@ func FormReceiveController(w http.ResponseWriter, r *http.Request) {
 		paramTimestamp := queryValues.Get("timestamp")
 		timestamp, err := GetTimestamp(paramTimestamp)
 		if err != nil {
-			RespondServerError(server, w, err)
-			return
+			data.ErrorMessage = fmt.Sprintf("%s; %s", err.Error(), data.ErrorMessage)
 		}
 
 		messages := GetMessages(server, timestamp)
