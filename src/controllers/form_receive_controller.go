@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 
@@ -15,7 +16,9 @@ func FormReceiveController(w http.ResponseWriter, r *http.Request) {
 	server, err := GetServerFromRequest(r)
 	if err != nil {
 		data.ErrorMessage = err.Error()
-	} else {
+	}
+
+	if server != nil {
 		data.Number = server.GetWId()
 		data.Token = server.Token
 		data.DownloadPrefix = GetDownloadPrefix(server.Token)
@@ -23,8 +26,7 @@ func FormReceiveController(w http.ResponseWriter, r *http.Request) {
 		// Evitando tentativa de download de anexos sem o bot estar devidamente sincronizado
 		status := server.GetStatus()
 		if status != whatsapp.Ready {
-			RespondNotReady(w, &ApiServerNotReadyException{Wid: server.GetWId(), Status: status})
-			return
+			data.ErrorMessage = fmt.Sprintf("server (%s) not ready yet ! current status: %s; %s", server.WId, status.String(), data.ErrorMessage)
 		}
 
 		queryValues := r.URL.Query()
