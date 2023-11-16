@@ -115,7 +115,7 @@ func SendAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 
 	// Para manter a compatibilidade
 	response.PreviusV1 = models.QPSendResult{
-		Source:    server.GetWid(),
+		Source:    server.GetWId(),
 		Recipient: waMsg.Chat.Id,
 		MessageId: sendResponse.GetId(),
 	}
@@ -237,7 +237,7 @@ func SendDocumentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 
 	// Para manter a compatibilidade
 	response.PreviusV1 = models.QPSendResult{
-		Source:    server.GetWid(),
+		Source:    server.GetWId(),
 		Recipient: waMsg.Chat.Id,
 		MessageId: sendResponse.GetId(),
 	}
@@ -258,7 +258,7 @@ func AttachmentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	// Checking for ready state
 	status := server.GetStatus()
 	if status != whatsapp.Ready {
-		RespondNotReady(w, &ApiServerNotReadyException{Wid: server.GetWid(), Status: status})
+		RespondNotReady(w, &ApiServerNotReadyException{Wid: server.GetWId(), Status: status})
 		return
 	}
 

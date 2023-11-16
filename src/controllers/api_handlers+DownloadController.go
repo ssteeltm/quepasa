@@ -38,7 +38,7 @@ func DownloadController(w http.ResponseWriter, r *http.Request) {
 	// Checking for ready state
 	status := server.GetStatus()
 	if status != whatsapp.Ready {
-		err = &ApiServerNotReadyException{Wid: server.GetWid(), Status: status}
+		err = &ApiServerNotReadyException{Wid: server.GetWId(), Status: status}
 		response.ParseError(err)
 		RespondInterfaceCode(w, response, http.StatusServiceUnavailable)
 		return

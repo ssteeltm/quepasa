@@ -27,7 +27,7 @@ func ReceiveAPIHandler(w http.ResponseWriter, r *http.Request) {
 	status := server.GetStatus()
 	if status != whatsapp.Ready {
 		metrics.MessageReceiveErrors.Inc()
-		err = &ApiServerNotReadyException{Wid: server.GetWid(), Status: status}
+		err = &ApiServerNotReadyException{Wid: server.GetWId(), Status: status}
 		response.ParseError(err)
 		RespondInterfaceCode(w, response, http.StatusServiceUnavailable)
 		return
@@ -416,7 +416,7 @@ func Send(server *models.QpWhatsappServer, response *models.QpSendResponse, requ
 	// Checking for ready state
 	status := server.GetStatus()
 	if status != whatsapp.Ready {
-		err = &ApiServerNotReadyException{Wid: server.GetWid(), Status: status}
+		err = &ApiServerNotReadyException{Wid: server.GetWId(), Status: status}
 		response.ParseError(err)
 		RespondInterfaceCode(w, response, http.StatusServiceUnavailable)
 		return
@@ -434,7 +434,7 @@ func Send(server *models.QpWhatsappServer, response *models.QpSendResponse, requ
 	metrics.MessagesSent.Inc()
 
 	result := &models.QpSendResponseMessage{}
-	result.Wid = server.GetWid()
+	result.Wid = server.GetWId()
 	result.Id = sendResponse.GetId()
 	result.ChatId = waMsg.Chat.Id
 	result.TrackId = waMsg.TrackId

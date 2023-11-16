@@ -16,14 +16,14 @@ func FormReceiveController(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		data.ErrorMessage = err.Error()
 	} else {
-		data.Number = server.GetWid()
+		data.Number = server.GetWId()
 		data.Token = server.Token
 		data.DownloadPrefix = GetDownloadPrefix(server.Token)
 
 		// Evitando tentativa de download de anexos sem o bot estar devidamente sincronizado
 		status := server.GetStatus()
 		if status != whatsapp.Ready {
-			RespondNotReady(w, &ApiServerNotReadyException{Wid: server.GetWid(), Status: status})
+			RespondNotReady(w, &ApiServerNotReadyException{Wid: server.GetWId(), Status: status})
 			return
 		}
 

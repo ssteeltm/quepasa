@@ -1,10 +1,11 @@
 {{ define "content" }}
-{{ $DOWNLOADPREFIX := .DownloadPrefix }}
-{{ if .ErrorMessage }}
-  <div class="notification is-warning">
-    {{ .ErrorMessage }}
-  </div>
-{{ else }}
+  {{ $DOWNLOADPREFIX := .DownloadPrefix }}
+  {{ if .ErrorMessage }}
+    <div class="notification is-warning">
+      {{ .ErrorMessage }}
+    </div>
+  {{ end }}
+
   <h2 class="title is-2">Messages for {{ .Number }}</h2>
   {{ range .Messages }}
     <pre>
@@ -17,6 +18,5 @@
     </pre>
     <br />
   {{ end }}
-{{ end }}
   <a style="padding: 2rem;" href="/form/account">Back</a>
 {{ end }}

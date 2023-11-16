@@ -20,8 +20,8 @@ type QpWhatsappServer struct {
 	syncMessages   *sync.Mutex                  `json:"-"` // Objeto de sinaleiro para evitar chamadas simultâneas a este objeto
 	Battery        *WhatsAppBateryStatus        `json:"battery,omitempty"`
 	StartTime      time.Time                    `json:"starttime,omitempty"`
-	Handler        *QPWhatsappHandlers          `json:"messagehandler,omitempty"`
-	WebHook        *QPWebhookHandler            `json:"webhookhandler,omitempty"`
+	Handler        *QPWhatsappHandlers          `json:"-"`
+	WebHook        *QPWebhookHandler            `json:"-"`
 
 	stopRequested bool                   `json:"-"`
 	Log           *log.Entry             `json:"-"`
@@ -38,7 +38,6 @@ func (server *QpWhatsappServer) HandlerEnsure() {
 
 		handlerMessages := make(map[string]whatsapp.WhatsappMessage)
 		handler := &QPWhatsappHandlers{
-			WId:          server.WId,
 			server:       server,
 			messages:     handlerMessages,
 			sync:         &sync.Mutex{},
@@ -52,10 +51,7 @@ func (server *QpWhatsappServer) HandlerEnsure() {
 // Ensure default webhook handler
 func (server *QpWhatsappServer) WebHookEnsure() {
 	if server.WebHook == nil {
-		server.WebHook = &QPWebhookHandler{
-			server: server,
-			WId:    server.WId,
-		}
+		server.WebHook = &QPWebhookHandler{server}
 	}
 }
 
@@ -87,8 +83,8 @@ func (server *QpWhatsappServer) GetStatus() whatsapp.WhatsappConnectionState {
 
 // Returns whatsapp controller id on E164
 // Ex: 5521967609095
-func (server *QpWhatsappServer) GetWid() string {
-	return server.WId
+func (server QpWhatsappServer) GetWId() string {
+	return server.QpServer.WId
 }
 
 func (server *QpWhatsappServer) DownloadData(id string) ([]byte, error) {
@@ -182,11 +178,7 @@ func (server *QpWhatsappServer) UpdateConnection(connection whatsapp.IWhatsappCo
 	server.connection.UpdateHandler(server.Handler)
 
 	// Registrando webhook
-	webhookDispatcher := &QPWebhookHandler{
-		server: server,
-		WId:    server.WId,
-	}
-
+	webhookDispatcher := &QPWebhookHandler{server}
 	if !server.Handler.IsAttached() {
 		server.Handler.Register(webhookDispatcher)
 	}

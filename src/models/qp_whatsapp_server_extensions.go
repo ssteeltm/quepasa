@@ -11,7 +11,7 @@ import (
 
 // Encaminha msg ao WebHook específicado
 func PostToWebHookFromServer(server *QpWhatsappServer, message *whatsapp.WhatsappMessage) (err error) {
-	wid := server.GetWid()
+	wid := server.GetWId()
 
 	// Ignorando certificado ao realizar o post
 	// Não cabe a nós a segurança do cliente
@@ -26,7 +26,7 @@ func PostToWebHookFromServer(server *QpWhatsappServer, message *whatsapp.Whatsap
 	return
 }
 
-//region FIND|SEARCH WHATSAPP SERVER
+// region FIND|SEARCH WHATSAPP SERVER
 var ErrServerNotFound error = errors.New("the requested whatsapp server was not found")
 
 func GetServerFromID(source string) (server *QpWhatsappServer, err error) {

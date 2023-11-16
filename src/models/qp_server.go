@@ -22,6 +22,6 @@ type QpServer struct {
 	Timestamp time.Time `db:"timestamp" json:"timestamp,omitempty"`
 }
 
-func (source *QpServer) GetWId() string {
+func (source QpServer) GetWId() string {
 	return source.WId
 }
