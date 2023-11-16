@@ -271,7 +271,7 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 		}
 	}
 
-	// Formatting destination accordly
+	// Formatting destination accordingly
 	formattedDestination, _ := whatsapp.FormatEndpoint(msg.GetChatId())
 
 	// Avoid common issue with incorrect non ascii chat id

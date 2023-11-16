@@ -21,6 +21,9 @@ type QPWhatsappHandlers struct {
 	aeh []interface {
 		Handle(*whatsapp.WhatsappMessage)
 	}
+
+	// Just for debug
+	WId string `json:"wid,omitempty"`
 }
 
 func (handler *QPWhatsappHandlers) HandleGroups() bool {

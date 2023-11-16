@@ -10,6 +10,9 @@ import (
 
 type QPWebhookHandler struct {
 	server *QpWhatsappServer
+
+	// Just for debug
+	WId string `json:"wid,omitempty"`
 }
 
 func (w *QPWebhookHandler) Handle(payload *whatsapp.WhatsappMessage) {
