@@ -496,7 +496,7 @@ func (server *QpWhatsappServer) GetToken() string {
 </summary>
 */
 func (server *QpWhatsappServer) Save() (err error) {
-	server.Log.Infof("saving server info: %v", server)
+	server.Log.Infof("saving server info: %+v", server)
 	ok, err := server.db.Exists(server.Token)
 	if err != nil {
 		log.Errorf("error on checking existent server: %s", err.Error())
@@ -507,10 +507,10 @@ func (server *QpWhatsappServer) Save() (err error) {
 	server.Timestamp = time.Now().UTC()
 
 	if ok {
-		server.Log.Debugf("updating server info: %v", server)
+		server.Log.Debugf("updating server info: %+v", server)
 		return server.db.Update(server.QpServer)
 	} else {
-		server.Log.Debugf("adding server info: %v", server)
+		server.Log.Debugf("adding server info: %+v", server)
 		return server.db.Add(server.QpServer)
 	}
 }

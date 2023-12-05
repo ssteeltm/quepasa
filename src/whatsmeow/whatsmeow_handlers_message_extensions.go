@@ -104,13 +104,8 @@ func HandleButtonsResponseMessage(log *log.Entry, out *whatsapp.WhatsappMessage,
 
 	info := in.ContextInfo
 	if info != nil {
-		if info.ForwardingScore != nil {
-			out.ForwardingScore = *info.ForwardingScore
-		}
-
-		if info.StanzaId != nil {
-			out.InReply = *info.StanzaId
-		}
+		out.ForwardingScore = info.GetForwardingScore()
+		out.InReply = info.GetStanzaId()
 	}
 }
 
@@ -127,6 +122,12 @@ func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 		Mimetype:      *in.Mimetype,
 		FileLength:    *in.FileLength,
 		JpegThumbnail: jpeg,
+	}
+
+	info := in.ContextInfo
+	if info != nil {
+		out.ForwardingScore = info.GetForwardingScore()
+		out.InReply = info.GetStanzaId()
 	}
 }
 
@@ -166,6 +167,12 @@ func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 
 		JpegThumbnail: jpeg,
 	}
+
+	info := in.ContextInfo
+	if info != nil {
+		out.ForwardingScore = info.GetForwardingScore()
+		out.InReply = info.GetStanzaId()
+	}
 }
 
 func HandleDocumentMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.DocumentMessage) {
@@ -185,6 +192,12 @@ func HandleDocumentMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 		FileName:      *in.FileName,
 		JpegThumbnail: jpeg,
 	}
+
+	info := in.ContextInfo
+	if info != nil {
+		out.ForwardingScore = info.GetForwardingScore()
+		out.InReply = info.GetStanzaId()
+	}
 }
 
 func HandleAudioMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.AudioMessage) {
@@ -203,6 +216,12 @@ func HandleAudioMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 
 		Seconds: seconds,
 	}
+
+	info := in.ContextInfo
+	if info != nil {
+		out.ForwardingScore = info.GetForwardingScore()
+		out.InReply = info.GetStanzaId()
+	}
 }
 
 func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.LocationMessage) {
@@ -210,7 +229,7 @@ func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 	out.Content = in
 	out.Type = whatsapp.LocationMessageType
 
-	// in a near future, create a enviroment variavel for that
+	// in a near future, create a environment variable for that
 	defaultUrl := "https://www.google.com/maps?ll={lat},{lon}&q={lat}+{lon}"
 
 	defaultUrl = strings.Replace(defaultUrl, "{lat}", fmt.Sprintf("%f", *in.DegreesLatitude), -1)
