@@ -105,8 +105,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        460,
-        900
+        480,
+        1100
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -128,8 +128,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        700,
-        900
+        720,
+        1100
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -159,25 +159,6 @@
     },
     {
       "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "seconds"
-            }
-          ]
-        }
-      },
-      "id": "4dfd2f99-9053-42f1-8c6e-8e0426fb843a",
-      "name": "Schedule By 30 Seconds",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1,
-      "position": [
-        -60,
-        560
-      ]
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "=SELECT DISTINCT \"accounts\".\"id\" AS \"account\" FROM \"accounts\" WHERE NOT EXISTS (SELECT NULL FROM \"custom_attribute_definitions\" WHERE \"account_id\" = \"accounts\".\"id\" AND \"attribute_key\" = 'skipevaluation' AND \"attribute_model\" = 1);",
         "additionalFields": {}
@@ -187,8 +168,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        460,
-        1100
+        480,
+        1300
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -210,8 +191,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        700,
-        1100
+        720,
+        1300
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -233,8 +214,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        460,
-        1300
+        480,
+        1500
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -256,8 +237,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        700,
-        1300
+        720,
+        1500
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -270,7 +251,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.1) Recommendations \n* Environment Variables",
+        "content": "## (1.0.2) Recommendations \n* Added skip agent title attribute\n",
         "width": 395
       },
       "id": "d7872589-290c-4614-868f-fabe6b64ca52",
@@ -310,6 +291,72 @@
         160,
         560
       ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "4dfd2f99-9053-42f1-8c6e-8e0426fb843a",
+      "name": "Schedule By 1 Minute",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO \"custom_attribute_definitions\" (\"attribute_display_name\", \"attribute_key\", \"attribute_display_type\", \"attribute_model\", \"account_id\", \"attribute_description\", \"attribute_values\", \"updated_at\", \"created_at\") VALUES ('Skip Agent Title', 'skipagenttitle', 7, 1, {{ $json.account }}, 'Não incluir o titulo do agente antes da mensagem para este contato', '[]', NOW(), NOW());",
+        "additionalFields": {}
+      },
+      "id": "af945b1c-13bf-4b93-8acb-17262665d5ab",
+      "name": "Insert Skip Agent Title Attribute",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        720,
+        900
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      },
+      "notes": "Sucesso"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT DISTINCT \"accounts\".\"id\" AS \"account\" FROM \"accounts\" WHERE NOT EXISTS (SELECT NULL FROM \"custom_attribute_definitions\" WHERE \"account_id\" = \"accounts\".\"id\" AND \"attribute_key\" = 'skipagenttitle' AND \"attribute_model\" = 1);",
+        "additionalFields": {}
+      },
+      "id": "9cc54e5f-8656-4591-9515-9f4645c6d294",
+      "name": "Missing Agent Title For Contact",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        480,
+        900
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      },
+      "notes": "Sucesso"
     }
   ],
   "pinData": {},
@@ -364,15 +411,9 @@
             "node": "Missing Evaluation For Conversation",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Schedule By 30 Seconds": {
-      "main": [
-        [
+          },
           {
-            "node": "execdata",
+            "node": "Missing Agent Title For Contact",
             "type": "main",
             "index": 0
           }
@@ -416,23 +457,54 @@
           }
         ]
       ]
+    },
+    "Schedule By 1 Minute": {
+      "main": [
+        [
+          {
+            "node": "execdata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Missing Agent Title For Contact": {
+      "main": [
+        [
+          {
+            "node": "Insert Skip Agent Title Attribute",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {},
-  "versionId": "7d3f185a-5f53-469c-9530-e0bf87b5f896",
+  "versionId": "9e0e203f-ea5c-4c2b-a41e-0c1528fc5e85",
   "id": "1011",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
   "tags": [
     {
-      "name": "QUEPASA"
+      "createdAt": "2022-10-13T15:26:11.519Z",
+      "updatedAt": "2023-08-25T18:50:53.269Z",
+      "id": "5",
+      "name": "quepasa"
     },
     {
+      "createdAt": "2023-05-18T18:59:53.449Z",
+      "updatedAt": "2023-05-18T18:59:53.449Z",
+      "id": "7",
       "name": "EngajamentoFlow"
     },
     {
+      "createdAt": "2023-05-19T22:54:38.266Z",
+      "updatedAt": "2023-05-19T22:54:38.266Z",
+      "id": "13",
       "name": "github.com/nocodeleaks"
     }
   ]
