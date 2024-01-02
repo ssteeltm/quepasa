@@ -432,6 +432,35 @@ func (conn *WhatsmeowConnection) GetWhatsAppQRChannel(ctx context.Context, out c
 	return
 }
 
+func (conn *WhatsmeowConnection) HistorySync(timestamp time.Time) (err error) {
+
+	leading := conn.Handlers.WAHandlers.GetLeadingMessage()
+	if leading == nil {
+		err = fmt.Errorf("no valid msg in cache for retrieve parents")
+		conn.log.Error(err)
+		return
+	}
+
+	// Convert interface to struct using type assertion
+	info, ok := leading.Info.(types.MessageInfo)
+	if !ok {
+		conn.log.Error("error converting leading for history")
+	}
+
+	conn.log.Infof("getting history from: %s", timestamp)
+	extra := whatsmeow.SendRequestExtra{Peer: true}
+
+	//info := &types.MessageInfo{ }
+	msg := conn.Client.BuildHistorySyncRequest(&info, 100)
+	response, err := conn.Client.SendMessage(context.Background(), conn.Client.Store.ID.ToNonAD(), msg, extra)
+	if err != nil {
+		conn.log.Errorf("getting history error: %s", err.Error())
+	}
+
+	conn.log.Infof("history: %v", response)
+	return
+}
+
 func (conn *WhatsmeowConnection) UpdateLog(entry *log.Entry) {
 	conn.log = entry
 }
@@ -509,7 +538,7 @@ func (conn *WhatsmeowConnection) Delete() (err error) {
 			if conn.Client.Store != nil {
 				err = conn.Client.Store.Delete()
 				if err != nil {
-					// ignoring error about JID, just checked and the delete process was succeded
+					// ignoring error about JID, just checked and the delete process was succeed
 					if strings.Contains(err.Error(), "device JID must be known before accessing database") {
 						err = nil
 					} else {

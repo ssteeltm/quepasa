@@ -59,11 +59,11 @@ require (
 	github.com/swaggo/http-swagger v1.3.4 // indirect
 	github.com/swaggo/swag v1.16.2 // indirect
 	go.mau.fi/libsignal v0.1.0 // indirect
-	go.mau.fi/util v0.1.0 // indirect
-	go.mau.fi/whatsmeow v0.0.0-20230916142552-a743fdc23bf1 // indirect
-	golang.org/x/crypto v0.13.0 // indirect
+	go.mau.fi/util v0.2.0 // indirect
+	go.mau.fi/whatsmeow v0.0.0-20231216213200-9d803dd92735 // indirect
+	golang.org/x/crypto v0.15.0 // indirect
 	golang.org/x/net v0.15.0 // indirect
-	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/tools v0.13.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

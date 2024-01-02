@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	metrics "github.com/nocodeleaks/quepasa/metrics"
 	models "github.com/nocodeleaks/quepasa/models"
@@ -52,7 +53,9 @@ func ReceiveAPIHandler(w http.ResponseWriter, r *http.Request) {
 	response.Messages = messages
 
 	if timestamp > 0 {
-		response.ParseSuccess(fmt.Sprintf("getting with timestamp: %v", timestamp))
+		searchTime := time.Unix(timestamp, 0)
+		msg := fmt.Sprintf("getting with timestamp: %v => %s", timestamp, searchTime)
+		response.ParseSuccess(msg)
 	} else {
 		response.ParseSuccess("getting without filter")
 	}

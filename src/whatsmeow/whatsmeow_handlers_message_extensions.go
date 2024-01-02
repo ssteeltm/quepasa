@@ -119,8 +119,8 @@ func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 
 	jpeg := GetStringFromBytes(in.JpegThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
-		Mimetype:      *in.Mimetype,
-		FileLength:    *in.FileLength,
+		Mimetype:      in.GetMimetype(),
+		FileLength:    in.GetFileLength(),
 		JpegThumbnail: jpeg,
 	}
 
@@ -143,8 +143,8 @@ func HandleStickerMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pro
 
 	jpeg := GetStringFromBytes(in.PngThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
-		Mimetype:   *in.Mimetype,
-		FileLength: *in.FileLength,
+		Mimetype:   in.GetMimetype(),
+		FileLength: in.GetFileLength(),
 
 		JpegThumbnail: jpeg,
 	}
@@ -156,14 +156,12 @@ func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 	out.Type = whatsapp.VideoMessageType
 
 	// in case of caption passed
-	if in.Caption != nil {
-		out.Text = *in.Caption
-	}
+	out.Text = in.GetCaption()
 
 	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
-		Mimetype:   *in.Mimetype,
-		FileLength: *in.FileLength,
+		Mimetype:   in.GetMimetype(),
+		FileLength: in.GetFileLength(),
 
 		JpegThumbnail: jpeg,
 	}
@@ -179,17 +177,14 @@ func HandleDocumentMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 	log.Debug("Received a document message !")
 	out.Content = in
 	out.Type = whatsapp.DocumentMessageType
-
-	if in.Title != nil {
-		out.Text = *in.Title
-	}
+	out.Text = in.GetTitle()
 
 	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
-		Mimetype:   *in.Mimetype + "; wa-document",
-		FileLength: *in.FileLength,
+		Mimetype:   in.GetMimetype() + "; wa-document",
+		FileLength: in.GetFileLength(),
 
-		FileName:      *in.FileName,
+		FileName:      in.GetFileName(),
 		JpegThumbnail: jpeg,
 	}
 
@@ -205,16 +200,10 @@ func HandleAudioMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 	out.Content = in
 	out.Type = whatsapp.AudioMessageType
 
-	var seconds uint32
-	if in.Seconds != nil {
-		seconds = *in.Seconds
-	}
-
 	out.Attachment = &whatsapp.WhatsappAttachment{
-		Mimetype:   *in.Mimetype,
-		FileLength: *in.FileLength,
-
-		Seconds: seconds,
+		Mimetype:   in.GetMimetype(),
+		FileLength: in.GetFileLength(),
+		Seconds:    in.GetSeconds(),
 	}
 
 	info := in.ContextInfo
@@ -235,7 +224,7 @@ func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 	defaultUrl = strings.Replace(defaultUrl, "{lat}", fmt.Sprintf("%f", *in.DegreesLatitude), -1)
 	defaultUrl = strings.Replace(defaultUrl, "{lon}", fmt.Sprintf("%f", *in.DegreesLongitude), -1)
 
-	filename := fmt.Sprintf("%f_%f", *in.DegreesLatitude, *in.DegreesLongitude)
+	filename := fmt.Sprintf("%f_%f", in.GetDegreesLatitude(), in.GetDegreesLongitude())
 	filename = fmt.Sprintf("%s.url", slug.Make(filename))
 
 	content := []byte("[InternetShortcut]\nURL=" + defaultUrl)
@@ -244,8 +233,8 @@ func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 
 	out.Attachment = &whatsapp.WhatsappAttachment{
 		Mimetype:      "text/x-uri; location",
-		Latitude:      *in.DegreesLatitude,
-		Longitude:     *in.DegreesLongitude,
+		Latitude:      in.GetDegreesLatitude(),
+		Longitude:     in.GetDegreesLongitude(),
 		JpegThumbnail: jpeg,
 		Url:           defaultUrl,
 		FileName:      filename,
@@ -259,16 +248,13 @@ func HandleLiveLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in
 	log.Debug("Received a Live Location message !")
 	out.Content = in
 	out.Type = whatsapp.LocationMessageType
+	out.Text = in.GetCaption()
 
 	// in a near future, create a enviroment variavel for that
 	defaultUrl := "https://www.google.com/maps?ll={lat},{lon}&q={lat}+{lon}"
 
 	defaultUrl = strings.Replace(defaultUrl, "{lat}", fmt.Sprintf("%f", *in.DegreesLatitude), -1)
 	defaultUrl = strings.Replace(defaultUrl, "{lon}", fmt.Sprintf("%f", *in.DegreesLongitude), -1)
-
-	if in.Caption != nil {
-		out.Text = *in.Caption
-	}
 
 	filename := out.Text
 	if len(filename) == 0 {
@@ -282,9 +268,9 @@ func HandleLiveLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in
 
 	out.Attachment = &whatsapp.WhatsappAttachment{
 		Mimetype:      "text/x-uri; live location",
-		Latitude:      *in.DegreesLatitude,
-		Longitude:     *in.DegreesLongitude,
-		Sequence:      *in.SequenceNumber,
+		Latitude:      in.GetDegreesLatitude(),
+		Longitude:     in.GetDegreesLongitude(),
+		Sequence:      in.GetSequenceNumber(),
 		JpegThumbnail: jpeg,
 		Url:           defaultUrl,
 		FileName:      filename,
@@ -299,14 +285,14 @@ func HandleContactMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pro
 	out.Content = in
 	out.Type = whatsapp.ContactMessageType
 
-	out.Text = *in.DisplayName
-	filename := *in.DisplayName
+	out.Text = in.GetDisplayName()
+	filename := out.Text
 	if len(filename) == 0 {
 		filename = out.Id
 	}
 	filename = fmt.Sprintf("%s.vcf", slug.Make(filename))
 
-	content := []byte(*in.Vcard)
+	content := []byte(in.GetVcard())
 	length := uint64(len(content))
 
 	out.Attachment = &whatsapp.WhatsappAttachment{

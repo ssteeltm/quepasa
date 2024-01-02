@@ -18,6 +18,7 @@ const (
 	READRECEIPTS        = "READRECEIPTS"
 	SYNOPSISLENGTH      = "SYNOPSISLENGTH"
 	WHATSMEOWLOGLEVEL   = "WHATSMEOWLOGLEVEL"
+	HISTORYSYNCDAYS     = "HISTORYSYNCDAYS"
 )
 
 type Environment struct{}
@@ -149,4 +150,16 @@ func (_ *Environment) SynopsisLength() uint64 {
 	}
 
 	return 50
+}
+
+func (_ *Environment) HistorySyncDays() uint {
+	stringValue, err := GetEnvStr(HISTORYSYNCDAYS)
+	if err == nil {
+		value, err := strconv.ParseUint(stringValue, 10, 32)
+		if err == nil {
+			return uint(value)
+		}
+	}
+
+	return 0
 }

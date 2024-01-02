@@ -144,6 +144,9 @@ func (server *QpWhatsappServer) Revoke(id string) (err error) {
 //endregion
 
 func (server *QpWhatsappServer) GetMessages(timestamp time.Time) (messages []whatsapp.WhatsappMessage) {
+	if !timestamp.IsZero() && timestamp.Unix() > 0 {
+		_ = server.connection.HistorySync(timestamp)
+	}
 	messages = append(messages, server.Handler.GetMessages(timestamp)...)
 	return
 }

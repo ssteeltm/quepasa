@@ -33,14 +33,15 @@ func (handler *QPWhatsappHandlers) HandleBroadcast() bool {
 
 //#region EVENTS FROM WHATSAPP SERVICE
 
+// Process messages received from whatsapp service
 func (handler *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
 
-	// skipping groups if choosed
+	// should skip groups ?
 	if !handler.HandleGroups() && msg.FromGroup() {
 		return
 	}
 
-	// skipping broadcast if choosed
+	// should skip broadcast ?
 	if !handler.HandleBroadcast() && msg.FromBroadcast() {
 		return
 	}
@@ -141,6 +142,22 @@ func (handler *QPWhatsappHandlers) GetMessages(timestamp time.Time) (messages []
 	}
 
 	handler.sync.Unlock() // Sinal verde !
+	return
+}
+
+// Returns the first in time message stored in cache, used for resync history with message services like whatsapp
+func (handler *QPWhatsappHandlers) GetLeadingMessage() (message *whatsapp.WhatsappMessage) {
+	handler.sync.Lock()
+
+	now := time.Now()
+	for _, item := range handler.messages {
+		if !item.Timestamp.IsZero() && item.Timestamp.Before(now) {
+			now = item.Timestamp
+			message = &item
+		}
+	}
+
+	handler.sync.Unlock()
 	return
 }
 

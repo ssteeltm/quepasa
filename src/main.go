@@ -40,6 +40,7 @@ func main() {
 	whatsmeow.WhatsmeowService.Start()
 	whatsmeow.WhatsmeowService.LogLevel = models.ENV.WhatsmeowLogLevel()
 	whatsmeow.WhatsmeowService.ReadReceipt = models.ENV.ShouldReadReceipts()
+	whatsmeow.WhatsmeowService.HistorySyncDays = models.ENV.HistorySyncDays()
 
 	// must execute after whatsmeow started
 	for _, element := range models.Running {

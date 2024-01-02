@@ -11,6 +11,7 @@ type WhatsappMessage struct {
 
 	// original message from source service
 	Content interface{} `json:"-"`
+	Info    interface{} `json:"-"`
 
 	Id      string `json:"id"`
 	TrackId string `json:"trackid,omitempty"` // Optional id of the system that send that message

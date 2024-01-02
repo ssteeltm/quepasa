@@ -11,7 +11,7 @@ type IWhatsappMessage interface {
 	// Check if that msg has a valid attachment
 	HasAttachment() bool
 
-	// Get if exists bytes of attachements
+	// Get if exists bytes of attachments
 	GetAttachment() *WhatsappAttachment
 
 	// Original message from source service

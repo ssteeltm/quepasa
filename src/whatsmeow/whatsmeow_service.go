@@ -8,6 +8,8 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 	log "github.com/sirupsen/logrus"
+	waProto "go.mau.fi/whatsmeow/binary/proto"
+	"google.golang.org/protobuf/proto"
 
 	library "github.com/nocodeleaks/quepasa/library"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
@@ -18,9 +20,10 @@ import (
 )
 
 type WhatsmeowServiceModel struct {
-	Container   *sqlstore.Container
-	ReadReceipt bool
-	LogLevel    string
+	Container       *sqlstore.Container
+	ReadReceipt     bool
+	HistorySyncDays uint
+	LogLevel        string
 }
 
 var WhatsmeowService *WhatsmeowServiceModel
@@ -61,6 +64,11 @@ func (service *WhatsmeowServiceModel) Start() {
 		version[1] = 9
 		version[2] = 0
 		store.SetOSInfo(showing, version)
+
+		store.DeviceProps.RequireFullSync = proto.Bool(false)
+		store.DeviceProps.HistorySyncConfig = &waProto.DeviceProps_HistorySyncConfig{
+			FullSyncDaysLimit: proto.Uint32(2),
+		}
 	}
 }
 
@@ -90,9 +98,10 @@ func (service *WhatsmeowServiceModel) CreateConnection(wid string, loggerEntry *
 	}
 
 	handlers := &WhatsmeowHandlers{
-		Client:      client,
-		log:         loggerEntry,
-		ReadReceipt: service.ReadReceipt,
+		Client:          client,
+		log:             loggerEntry,
+		ReadReceipt:     service.ReadReceipt,
+		HistorySyncDays: service.HistorySyncDays,
 	}
 
 	err = handlers.Register()

@@ -18,7 +18,7 @@ type WhatsappProfilePicture struct {
 	// Dont know the difference yet
 	Type string `json:"type,omitempty"`
 
-	// Public Url to Donwload, dont know for how long its valid
+	// Public Url to download, dont know for how long its valid
 	Url string `json:"url,omitempty"`
 
 	// Id of whatsapp contact or group of this picture

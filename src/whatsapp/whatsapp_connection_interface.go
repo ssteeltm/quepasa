@@ -2,6 +2,7 @@ package whatsapp
 
 import (
 	"context"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -68,4 +69,6 @@ type IWhatsappConnection interface {
 
 	// Is a valid whatsapp phone numbers
 	IsOnWhatsApp(...string) ([]string, error)
+
+	HistorySync(time.Time) error
 }

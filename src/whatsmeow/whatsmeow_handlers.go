@@ -1,7 +1,9 @@
 package whatsmeow
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 	"reflect"
 	"strings"
 
@@ -16,6 +18,7 @@ import (
 type WhatsmeowHandlers struct {
 	Client                   *whatsmeow.Client
 	WAHandlers               whatsapp.IWhatsappHandlers
+	HistorySyncDays          uint
 	eventHandlerID           uint32
 	unregisterRequestedToken bool
 	log                      *log.Entry
@@ -102,13 +105,18 @@ func (handler *WhatsmeowHandlers) EventsHandler(evt interface{}) {
 		handler.UnRegister()
 		return
 
+	case *events.HistorySync:
+		if handler.HistorySyncDays > 0 {
+			go handler.HistorySync(*v)
+		}
+		return
+
 	case
 		*events.AppState,
 		*events.AppStateSyncComplete,
 		*events.Contact,
 		*events.DeleteChat,
 		*events.DeleteForMe,
-		*events.HistorySync,
 		*events.MarkChatAsRead,
 		*events.Mute,
 		*events.OfflineSyncCompleted,
@@ -117,12 +125,55 @@ func (handler *WhatsmeowHandlers) EventsHandler(evt interface{}) {
 		*events.Pin,
 		*events.PushName,
 		*events.PushNameSetting,
+		*events.GroupInfo,
 		*events.QR:
 		return // ignoring not implemented yet
 
 	default:
 		handler.log.Debugf("event not handled: %v", reflect.TypeOf(v))
 		return
+	}
+}
+
+func HistorySyncSaveJSON(evt events.HistorySync) {
+	fileName := "history-sync.json"
+	file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		log.Errorf("Failed to open file to write history sync: %v", err)
+		return
+	}
+	enc := json.NewEncoder(file)
+	enc.SetIndent("", "  ")
+	err = enc.Encode(evt.Data)
+	if err != nil {
+		log.Errorf("Failed to write history sync: %v", err)
+		return
+	}
+	log.Infof("Wrote history sync to %s", fileName)
+	_ = file.Close()
+}
+
+func (handler *WhatsmeowHandlers) HistorySync(evt events.HistorySync) {
+	handler.log.Infof("history sync: %s", evt.Data.SyncType)
+	//HistorySyncSaveJSON(evt)
+
+	conversations := evt.Data.Conversations
+	for _, conversation := range conversations {
+		for _, historyMsg := range conversation.GetMessages() {
+			wid, err := types.ParseJID(conversation.GetId())
+			if err != nil {
+				log.Errorf("failed to parse jid at history sync: %v", err)
+				return
+			}
+
+			evt, err := handler.Client.ParseWebMessage(wid, historyMsg.GetMessage())
+			if err != nil {
+				log.Errorf("failed to parse web message at history sync: %v", err)
+				return
+			}
+
+			handler.Message(*evt)
+		}
 	}
 }
 
@@ -136,7 +187,10 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 		return
 	}
 
-	message := &whatsapp.WhatsappMessage{Content: evt.Message}
+	message := &whatsapp.WhatsappMessage{
+		Content: evt.Message,
+		Info:    evt.Info,
+	}
 
 	// basic information
 	message.Id = evt.Info.ID
