@@ -12,6 +12,7 @@ import (
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	log "github.com/sirupsen/logrus"
 	whatsmeow "go.mau.fi/whatsmeow"
+	"go.mau.fi/whatsmeow/binary"
 	types "go.mau.fi/whatsmeow/types"
 	"go.mau.fi/whatsmeow/types/events"
 )
@@ -108,6 +109,7 @@ func (handler *WhatsmeowHandlers) EventsHandler(evt interface{}) {
 	case
 		*events.AppState,
 		*events.AppStateSyncComplete,
+		*events.CallTerminate,
 		*events.Contact,
 		*events.DeleteChat,
 		*events.DeleteForMe,
@@ -271,6 +273,32 @@ func (handler *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
 		// following to internal handlers
 		go handler.WAHandlers.Message(message)
 	}
+
+	_ = handler.RejectCall(evt)
+}
+
+func (handler *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) (err error) {
+	var node = binary.Node{
+		Tag: "call",
+		Attrs: binary.Attrs{
+			"to": v.From,
+			"id": handler.Client.GenerateMessageID(),
+		},
+		Content: []binary.Node{
+			{
+				Tag: "reject",
+				Attrs: binary.Attrs{
+					"call-id":      v.CallID,
+					"call-creator": v.CallCreator,
+					"count":        0,
+				},
+				Content: nil,
+			},
+		},
+	}
+
+	handler.log.Infof("rejecting incoming call from: %s", v.From)
+	return handler.Client.DangerousInternals().SendNode(node)
 }
 
 //#endregion
