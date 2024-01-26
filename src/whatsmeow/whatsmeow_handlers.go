@@ -127,6 +127,7 @@ func (handler *WhatsmeowHandlers) EventsHandler(evt interface{}) {
 		*events.PushNameSetting,
 		*events.GroupInfo,
 		*events.QR:
+		handler.log.Tracef("event ignored: %v", reflect.TypeOf(v))
 		return // ignoring not implemented yet
 
 	default:

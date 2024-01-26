@@ -13,6 +13,7 @@ const (
 	ContactMessageType
 	CallMessageType
 	SystemMessageType
+	RevokeMessageType
 
 	// Messages that isn't important for this whatsapp service
 	DiscardMessageType
@@ -38,6 +39,8 @@ func (Type WhatsappMessageType) String() string {
 		return "call"
 	case SystemMessageType:
 		return "system"
+	case RevokeMessageType:
+		return "revoke"
 	}
 
 	return "unknown"

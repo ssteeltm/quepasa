@@ -13,7 +13,7 @@ import (
 )
 
 func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMessage, in *proto.Message) {
-	log.Tracef("handling knowing message: %v", in)
+	handler.log.Tracef("handling knowing message: %v", in)
 	if in.ImageMessage != nil {
 		HandleImageMessage(handler.log, out, in.ImageMessage)
 	} else if in.StickerMessage != nil {
@@ -36,12 +36,16 @@ func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMes
 		HandleContactMessage(handler.log, out, in.ContactMessage)
 	} else if in.ReactionMessage != nil {
 		HandleReactionMessage(handler.log, out, in.ReactionMessage)
-	} else if in.ProtocolMessage != nil || in.SenderKeyDistributionMessage != nil {
+	} else if in.EditedMessage != nil {
+		HandleEditTextMessage(handler.log, out, in.EditedMessage)
+	} else if in.ProtocolMessage != nil {
+		HandleProtocolMessage(handler.log, out, in.ProtocolMessage)
+	} else if in.SenderKeyDistributionMessage != nil {
 		out.Type = whatsapp.DiscardMessageType
 	} else if len(in.GetConversation()) > 0 {
 		HandleTextMessage(handler.log, out, in)
 	} else {
-		log.Warnf("message not threated: %v", in)
+		handler.log.Warnf("message not handled: %v", in)
 	}
 }
 
@@ -61,6 +65,36 @@ func HandleTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.
 	log.Debug("Received a text message !")
 	out.Type = whatsapp.TextMessageType
 	out.Text = in.GetConversation()
+}
+
+func HandleEditTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.FutureProofMessage) {
+	// never throws , obs !!!!
+	// it came as a single text msg
+	log.Debug("Received a edited text message !")
+	out.Type = whatsapp.TextMessageType
+	out.Text = in.String()
+}
+
+func HandleProtocolMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ProtocolMessage) {
+	log.Debug("Received a protocol message !")
+
+	switch v := in.GetType(); {
+	case v == proto.ProtocolMessage_MESSAGE_EDIT:
+		out.Type = whatsapp.TextMessageType
+		out.Id = in.Key.GetId()
+		out.Text = in.EditedMessage.GetConversation()
+		out.Edited = true
+		return
+
+	case v == proto.ProtocolMessage_REVOKE:
+		out.Id = in.Key.GetId()
+		out.Type = whatsapp.RevokeMessageType
+		return
+
+	default:
+		out.Type = whatsapp.DiscardMessageType
+		return
+	}
 }
 
 // Msg em resposta a outra

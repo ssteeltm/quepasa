@@ -25,7 +25,7 @@ type WhatsappMessage struct {
 	// Se a msg foi postado em algum grupo ? quem postou !
 	Participant *WhatsappChat `json:"participant,omitempty"`
 
-	// Texto da msg
+	// Message text if exists
 	Text string `json:"text,omitempty"`
 
 	Attachment *WhatsappAttachment `json:"attachment,omitempty"`
@@ -36,6 +36,9 @@ type WhatsappMessage struct {
 
 	// Sended via api
 	FromInternal bool `json:"frominternal"`
+
+	// Edited message
+	Edited bool `json:"edited,omitempty"`
 
 	// Quantas vezes essa msg foi encaminhada
 	ForwardingScore uint32 `json:"forwardingscore,omitempty"`
