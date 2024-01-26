@@ -107,8 +107,6 @@ func (handler *QPWhatsappHandlers) LoggedOut(reason string) {
 
 		// marking unverified and wait for more analyses
 		handler.server.MarkVerified(false)
-
-		go handler.server.Trigger("loggedout", reason)
 	}
 }
 

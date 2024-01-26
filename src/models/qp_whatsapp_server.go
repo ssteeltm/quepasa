@@ -638,10 +638,3 @@ func (server *QpWhatsappServer) GetInvite(groupId string) (link string, err erro
 }
 
 //#endregion
-//#region SYSTEM EVENTS
-
-func (server *QpWhatsappServer) Trigger(event string, description string) {
-
-}
-
-//#endregion
