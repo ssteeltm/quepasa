@@ -42,6 +42,13 @@ func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMes
 		HandleProtocolMessage(handler.log, out, in.ProtocolMessage)
 	} else if in.SenderKeyDistributionMessage != nil {
 		out.Type = whatsapp.DiscardMessageType
+		b, err := json.Marshal(in)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+
+		out.Text = string(b)
 	} else if len(in.GetConversation()) > 0 {
 		HandleTextMessage(handler.log, out, in)
 	} else {
@@ -76,7 +83,7 @@ func HandleEditTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 }
 
 func HandleProtocolMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ProtocolMessage) {
-	log.Debug("Received a protocol message !")
+	log.Trace("Received a protocol message !")
 
 	switch v := in.GetType(); {
 	case v == proto.ProtocolMessage_MESSAGE_EDIT:
@@ -93,6 +100,13 @@ func HandleProtocolMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 
 	default:
 		out.Type = whatsapp.DiscardMessageType
+		b, err := json.Marshal(in)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+
+		out.Text = string(b)
 		return
 	}
 }

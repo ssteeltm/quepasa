@@ -41,6 +41,8 @@ func (Type WhatsappMessageType) String() string {
 		return "system"
 	case RevokeMessageType:
 		return "revoke"
+	case DiscardMessageType:
+		return "discard"
 	}
 
 	return "unknown"

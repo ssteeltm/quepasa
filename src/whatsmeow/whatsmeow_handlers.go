@@ -6,6 +6,7 @@ import (
 	"os"
 	"reflect"
 	"strings"
+	"time"
 
 	library "github.com/nocodeleaks/quepasa/library"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
@@ -95,14 +96,7 @@ func (handler *WhatsmeowHandlers) EventsHandler(evt interface{}) {
 		return
 
 	case *events.LoggedOut:
-		reason := v.Reason.String()
-		handler.log.Trace("logged out " + reason)
-
-		if handler.WAHandlers != nil {
-			handler.WAHandlers.LoggedOut(reason)
-		}
-
-		handler.UnRegister()
+		handler.HandleLoggedOut(*v)
 		return
 
 	case *events.HistorySync:
@@ -242,6 +236,8 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 
 </summary>
 */
+
+// Append to cache handlers if exists, and then webhook
 func (handler *WhatsmeowHandlers) Follow(message *whatsapp.WhatsappMessage) {
 	if handler.WAHandlers != nil {
 
@@ -305,6 +301,30 @@ func (handler *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 		// following to internal handlers
 		go handler.WAHandlers.Receipt(message)
 	}
+}
+
+//#endregion
+
+//#region HANDLE LOGGED OUT EVENT
+
+func (handler *WhatsmeowHandlers) HandleLoggedOut(evt events.LoggedOut) {
+	reason := evt.Reason.String()
+	handler.log.Tracef("logged out %s", reason)
+
+	if handler.WAHandlers != nil {
+		handler.WAHandlers.LoggedOut(reason)
+	}
+
+	message := &whatsapp.WhatsappMessage{
+		Timestamp: time.Now().Truncate(time.Second),
+		Type:      whatsapp.SystemMessageType,
+		Id:        handler.Client.GenerateMessageID(),
+		Chat:      whatsapp.WASYSTEMCHAT,
+		Text:      reason,
+	}
+
+	handler.Follow(message)
+	handler.UnRegister()
 }
 
 //#endregion

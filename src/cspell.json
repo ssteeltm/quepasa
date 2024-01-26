@@ -115,9 +115,11 @@
     ],
     "ignoreWords": [
         "Infof",
+        "WASYSTEMCHAT",
         "chatid",
         "imsg",
         "loggedin",
+        "loggedout",
         "messageid",
         "picdata",
         "picinfo",

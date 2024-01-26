@@ -107,6 +107,8 @@ func (handler *QPWhatsappHandlers) LoggedOut(reason string) {
 
 		// marking unverified and wait for more analyses
 		handler.server.MarkVerified(false)
+
+		go handler.server.Trigger("loggedout", reason)
 	}
 }
 
@@ -251,7 +253,7 @@ func (handler *QPWhatsappHandlers) IsAttached() bool {
 	return len(handler.aeh) > 0
 }
 
-// Indicates that if an specific hanlder is registered
+// Indicates that if an specific handler is registered
 func (handler *QPWhatsappHandlers) IsRegistered(evt interface{}) bool {
 	for _, v := range handler.aeh {
 		if v == evt {
