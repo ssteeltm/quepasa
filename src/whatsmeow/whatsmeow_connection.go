@@ -10,6 +10,7 @@ import (
 	"unicode"
 
 	log "github.com/sirupsen/logrus"
+	"google.golang.org/protobuf/proto"
 
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	whatsmeow "go.mau.fi/whatsmeow"
@@ -260,7 +261,30 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 		} else {
 			internal := &waProto.ExtendedTextMessage{Text: &messageText}
 			if len(msg.InReply) > 0 {
-				internal.ContextInfo = &waProto.ContextInfo{StanzaId: &msg.InReply}
+
+				var sender *string
+				if msg.FromGroup() {
+					// getting connection store id for use as group participant
+					storeid := conn.Client.Store.ID
+
+					// formating sender without device and session info
+					jid := fmt.Sprintf("%s@%s", storeid.User, storeid.Server)
+					sender = proto.String(jid)
+				}
+
+				// getting quoted message if available on cache
+				// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
+				var quoted *waProto.Message
+				cached, _ := conn.Handlers.WAHandlers.GetMessage(msg.InReply)
+				if cached.Content != nil {
+					quoted = cached.Content.(*waProto.Message)
+				}
+
+				internal.ContextInfo = &waProto.ContextInfo{
+					StanzaId:      &msg.InReply,
+					Participant:   sender,
+					QuotedMessage: quoted,
+				}
 			}
 			newMessage = &waProto.Message{ExtendedTextMessage: internal}
 		}
