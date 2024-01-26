@@ -135,7 +135,8 @@
         "messageId": "={{ $json.extra.account }}-{{ $json.extra.inbox }}-{{ $json.payload.messageid ?? Math.random() }}",
         "text": "={{$json.payload.content}}",
         "chatId": "={{$json.payload.chatid}}",
-        "trackId": "chatwoot"
+        "trackId": "chatwoot",
+        "inReply": "={{$json.payload.inreply}}"
       },
       "id": "f9c0128b-edd8-4701-b77d-5100cc716e3d",
       "name": "Quepasa Send Text",
@@ -158,7 +159,8 @@
         "text": "={{$json.payload.content}}",
         "chatId": "={{$json.payload.chatid}}",
         "url": "={{$json.payload.attachment}}",
-        "trackId": "chatwoot"
+        "trackId": "chatwoot",
+        "inReply": "={{$json.payload.inreply}}"
       },
       "id": "aac1db11-aa24-4a7a-83e2-1ddd6b506d3a",
       "name": "Quepasa Send Attach",
@@ -369,7 +371,7 @@
     {
       "parameters": {
         "requestMethod": "POST",
-        "url": "={{$json.extra.cwhost}} }}/api/v1/accounts/{{$json.extra.account}}/conversations/{{$json.body.id}}/toggle_status",
+        "url": "={{$json.extra.cwhost}}/api/v1/accounts/{{$json.extra.account}}/conversations/{{$json.body.id}}/toggle_status",
         "allowUnauthorizedCerts": true,
         "options": {},
         "bodyParametersUi": {
@@ -1072,7 +1074,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.16) Updates\n* added skip agent title contact variable\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
+        "content": "## (1.0.17) Updates\n* fix: remove duple }} node \"Open Conversation\" => by jtayrone \n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
         "height": 283.97227148249,
         "width": 612.1460280877996
       },
@@ -1081,8 +1083,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -7357.674438502675,
-        4077.4918730629684
+        -7357,
+        4077
       ]
     },
     {
@@ -1959,7 +1961,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "dc5e19ad-d58e-44a5-ab35-9ff0ccfa9af5",
+  "versionId": "177c5796-d586-4186-aac5-3c12701eb934",
   "id": "1008",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
