@@ -60,7 +60,7 @@ require (
 	github.com/swaggo/swag v1.16.2 // indirect
 	go.mau.fi/libsignal v0.1.0 // indirect
 	go.mau.fi/util v0.2.0 // indirect
-	go.mau.fi/whatsmeow v0.0.0-20231216213200-9d803dd92735 // indirect
+	go.mau.fi/whatsmeow v0.0.0-20240118101534-66c756f1ba45 // indirect
 	golang.org/x/crypto v0.15.0 // indirect
 	golang.org/x/net v0.15.0 // indirect
 	golang.org/x/sys v0.14.0 // indirect

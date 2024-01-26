@@ -330,6 +330,8 @@ go.mau.fi/whatsmeow v0.0.0-20230916142552-a743fdc23bf1 h1:tfVqib0PAAgMJrZu/Ko25J
 go.mau.fi/whatsmeow v0.0.0-20230916142552-a743fdc23bf1/go.mod h1:1xFS2b5zqsg53ApsYB4FDtko7xG7r+gVgBjh9k+9/GE=
 go.mau.fi/whatsmeow v0.0.0-20231216213200-9d803dd92735 h1:+teJYCOK6M4Kn2TYCj29levhHVwnJTmgCtEXLtgwQtM=
 go.mau.fi/whatsmeow v0.0.0-20231216213200-9d803dd92735/go.mod h1:5xTtHNaZpGni6z6aE1iEopjW7wNgsKcolZxZrOujK9M=
+go.mau.fi/whatsmeow v0.0.0-20240118101534-66c756f1ba45 h1:uvm7ErwoTtIupm0cSwAS0zWihgH2fGjTvArttBPUsOU=
+go.mau.fi/whatsmeow v0.0.0-20240118101534-66c756f1ba45/go.mod h1:5xTtHNaZpGni6z6aE1iEopjW7wNgsKcolZxZrOujK9M=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
 go.opencensus.io v0.22.0/go.mod h1:+kGneAE2xo2IficOXnaByMWTGM9T73dGwxeWcUqIpI8=
 go.opencensus.io v0.22.2/go.mod h1:yxeiOL68Rb0Xd1ddK5vPZ/oVn4vY4Ynel7k9FzqtOIw=
