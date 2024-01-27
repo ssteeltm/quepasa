@@ -12,13 +12,13 @@
           ]
         }
       },
-      "id": "1ba0fdf3-3405-4080-ae8a-64d84aa867b6",
+      "id": "d8b33b51-654b-45c7-b153-4dfdeb793ea9",
       "name": "If From Chat ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3020,
-        520
+        5080,
+        460
       ]
     },
     {
@@ -35,13 +35,13 @@
         },
         "fallbackOutput": 3
       },
-      "id": "f64f469f-c5a1-4898-91b0-4f263a11e392",
+      "id": "472aa0dd-5da0-48f3-8c6f-66216a7389f9",
       "name": "Switch From Chat",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 1,
       "position": [
-        3420,
-        500
+        5420,
+        440
       ]
     },
     {
@@ -56,33 +56,13 @@
         },
         "options": {}
       },
-      "id": "34acd79e-12f9-490a-8fa0-bee25405f187",
+      "id": "10bfba9f-593e-4a5c-aab9-a793d457e13c",
       "name": "Set Invite Response",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        4900,
-        400
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "boolean": [
-            {
-              "value1": "={{$json.success}}",
-              "value2": true
-            }
-          ]
-        }
-      },
-      "id": "b0ed5d6e-539f-4ff6-a94e-946e303cf537",
-      "name": "IF Success2",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        4600,
-        480
+        7080,
+        220
       ]
     },
     {
@@ -97,33 +77,13 @@
           ]
         }
       },
-      "id": "81e66b74-2a75-4fd9-ba2a-18a7cde107d5",
+      "id": "db7eac92-987c-48ec-ad2a-65c56ab47348",
       "name": "If Is From Group",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3940,
-        480
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{$json.response}}",
-              "operation": "isNotEmpty"
-            }
-          ]
-        }
-      },
-      "id": "378887f6-3d63-42cd-8eb6-73ea0b44f918",
-      "name": "If Reponse Not Empty ?1",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        5220,
-        480
+        6320,
+        300
       ]
     },
     {
@@ -133,13 +93,13 @@
         "text": "={{$json[\"response\"]}}",
         "chatId": "={{$json.chatid}}"
       },
-      "id": "d8c32d01-bf20-414d-b0b8-793c10149ae3",
+      "id": "5c4c943b-5768-453f-87ec-3ed7fcbb85a9",
       "name": "Quepasa",
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        5480,
-        460
+        7480,
+        280
       ]
     },
     {
@@ -157,19 +117,19 @@
             },
             {
               "name": "qptoken",
-              "value": "={{$json.extra?.qptoken??$json.query?.qptoken}}"
+              "value": "={{$json.extra?.qptoken??$json.query?.qptoken??$json.extra.identifier}}"
             }
           ]
         },
         "options": {}
       },
-      "id": "d1a78e5f-c595-470a-9110-c04db23ee641",
+      "id": "d8f48f1b-6c47-4c41-8cc6-1393f25c6f0a",
       "name": "Set Parameters From Control Chat",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        3760,
-        480
+        6140,
+        300
       ]
     },
     {
@@ -180,13 +140,13 @@
         "operation": "invite",
         "chatId": "={{$json[\"chatid\"]}}"
       },
-      "id": "a793ab5a-123c-48da-b50e-af099add2186",
+      "id": "02257e61-262a-4ac6-a34f-871ca633c2dd",
       "name": "Quepasa Get Invite Link",
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        4180,
-        560
+        6520,
+        380
       ],
       "executeOnce": true,
       "alwaysOutputData": true,
@@ -198,13 +158,13 @@
         "combinationMode": "multiplex",
         "options": {}
       },
-      "id": "945c9519-c9fe-4e42-9db1-210c59296d9d",
+      "id": "fee6c41b-f84c-40ea-9fbb-c5269f873417",
       "name": "Merge",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        4400,
-        480
+        6720,
+        300
       ]
     },
     {
@@ -219,39 +179,39 @@
         },
         "options": {}
       },
-      "id": "c33974df-0491-40f0-b016-a93fb511650b",
+      "id": "98de16bd-4bd5-4adb-943e-166f5ceb496d",
       "name": "Set Error Response From Quepasa",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        4900,
-        560
+        7080,
+        380
       ]
     },
     {
       "parameters": {
-        "content": "## (1.0.1) Disconnect Info\n* Send info when a number is disconnected from whatsapp\n\n\n## (1.0.0) Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.2) Visual adjusts\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
         "height": 205.7265251035022,
-        "width": 395
+        "width": 561.5346630524019
       },
-      "id": "07c6c321-042f-4201-9ece-87acece6b3fc",
+      "id": "55587ed4-532f-4e57-a40a-af024e5e18fb",
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2740,
-        240
+        4860,
+        200
       ]
     },
     {
       "parameters": {},
-      "id": "d1fc280a-9c26-4f4d-8470-543c910ae925",
+      "id": "6998ce15-51a5-4633-a4a8-665725f7055e",
       "name": "When Called By Another Workflow",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        2760,
-        520
+        4880,
+        460
       ]
     },
     {
@@ -263,13 +223,13 @@
         "operation": "contactSearch",
         "contactSearchQuery": "={{ $env['C8Q_QP_CONTACT'] ?? 'control@quepasa.io' }}"
       },
-      "id": "b32db6be-3ba7-4afe-ae54-3fde0f81211c",
+      "id": "f24ab3f4-46f0-49ce-ac0f-0679a16d2250",
       "name": "Busca Contato",
       "type": "n8n-nodes-chatwoot.chatwoot",
       "typeVersion": 1,
       "position": [
-        3460,
-        820
+        5960,
+        920
       ]
     },
     {
@@ -304,13 +264,13 @@
         },
         "options": {}
       },
-      "id": "15a96a4d-3505-4886-846c-1e518b2939a3",
+      "id": "402a2eb7-4d67-4677-a219-b27e2a4a1bb0",
       "name": "New Conversation",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        3660,
-        820
+        6160,
+        920
       ]
     },
     {
@@ -331,13 +291,13 @@
         "jsonBody": "={\n    \"status\": \"open\",\n    \"snoozed_until\": null\n}",
         "options": {}
       },
-      "id": "909a3579-eb6f-48fa-bc91-2b7a76fbccd5",
+      "id": "6dd6f3a9-cae1-4773-92e9-7570342c2436",
       "name": "Open Conversation",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        3840,
-        820
+        6360,
+        920
       ]
     },
     {
@@ -358,13 +318,13 @@
         "jsonBody": "={\n \"private\": false,\n  \"content\": \"❌ Este número está desconectado do whatsapp e não pode mais receber nem enviar mensagens!\\n Digite /qrcode para conectar\\n{{ $('When Called By Another Workflow').item.json.body.text }}\",\n \"message_type\": 2,\n \"content_type\": \"text\"\n}",
         "options": {}
       },
-      "id": "01fbbb60-d294-45fa-b595-53392fecd4d4",
+      "id": "8a21a225-e2fb-470a-be6e-4c11c42893ad",
       "name": "Send Disconnect Message",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        4040,
-        820
+        6560,
+        920
       ]
     },
     {
@@ -378,13 +338,93 @@
           ]
         }
       },
-      "id": "51d3a596-991d-4d2e-a694-a322cbfdeedb",
+      "id": "025fee7d-2590-4cb5-86fb-7562063a6d7b",
       "name": "Is Logout?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3220,
-        840
+        5740,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "waRNOrsXSutLuYvW"
+      },
+      "id": "2c666574-834d-40cf-a1da-f7ffb94cfec7",
+      "name": "Execute Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        5920,
+        580
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.response}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "910e8a21-0ab0-49c8-846d-33c083494c3d",
+      "name": "If Reponse Not Empty ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        7280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.success}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "57231b05-2cba-46b8-90f9-3181390001fd",
+      "name": "If Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        6880,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Put here your external API workflow",
+        "height": 268.8339206426964,
+        "width": 495.19677943804624
+      },
+      "id": "4fecd0db-8dc4-45ca-b0b2-091211848991",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5720,
+        500
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a16842b5-176a-497f-97de-81da511511fc",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        5920,
+        300
       ]
     }
   ],
@@ -451,7 +491,16 @@
       "main": [
         [
           {
-            "node": "Set Parameters From Control Chat",
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        [
+          {
+            "node": "Execute Workflow",
             "type": "main",
             "index": 0
           }
@@ -462,25 +511,7 @@
       "main": [
         [
           {
-            "node": "If Reponse Not Empty ?1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "IF Success2": {
-      "main": [
-        [
-          {
-            "node": "Set Invite Response",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Set Error Response From Quepasa",
+            "node": "If Reponse Not Empty ?",
             "type": "main",
             "index": 0
           }
@@ -497,17 +528,6 @@
           },
           {
             "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If Reponse Not Empty ?1": {
-      "main": [
-        [
-          {
-            "node": "Quepasa",
             "type": "main",
             "index": 0
           }
@@ -540,7 +560,7 @@
       "main": [
         [
           {
-            "node": "IF Success2",
+            "node": "If Success",
             "type": "main",
             "index": 0
           }
@@ -551,7 +571,7 @@
       "main": [
         [
           {
-            "node": "If Reponse Not Empty ?1",
+            "node": "If Reponse Not Empty ?",
             "type": "main",
             "index": 0
           }
@@ -612,6 +632,46 @@
           }
         ]
       ]
+    },
+    "If Reponse Not Empty ?": {
+      "main": [
+        [
+          {
+            "node": "Quepasa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Success": {
+      "main": [
+        [
+          {
+            "node": "Set Invite Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Error Response From Quepasa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Set Parameters From Control Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -620,29 +680,29 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 15
   },
-  "versionId": "1f5a3f3a-eea1-470e-8bf6-2f9a4b578f99",
+  "versionId": "79690655-cac0-4563-ab34-480fe40933d5",
   "id": "1003",
   "meta": {
-    "instanceId": "b0f69e3c6d1f5668f6e8b6f67bd5d337293bd6464be3f9adc6773d4609da5a0a"
+    "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
   "tags": [
     {
-      "createdAt": "2024-01-05T16:19:02.727Z",
-      "updatedAt": "2024-01-05T16:19:02.727Z",
-      "id": "D367fSUcIbnwZDaY",
+      "createdAt": "2023-05-19T22:54:38.266Z",
+      "updatedAt": "2023-05-19T22:54:38.266Z",
+      "id": "13",
+      "name": "github.com/nocodeleaks"
+    },
+    {
+      "createdAt": "2022-10-13T15:26:11.519Z",
+      "updatedAt": "2023-08-25T18:50:53.269Z",
+      "id": "5",
       "name": "quepasa"
     },
     {
-      "createdAt": "2023-11-16T17:18:46.720Z",
-      "updatedAt": "2023-11-16T17:18:46.720Z",
-      "id": "Hvs9dsaHRMOSIDZN",
+      "createdAt": "2022-10-13T15:26:19.857Z",
+      "updatedAt": "2023-08-24T21:01:00.296Z",
+      "id": "6",
       "name": "chatwoot"
-    },
-    {
-      "createdAt": "2023-11-16T17:18:46.718Z",
-      "updatedAt": "2023-11-16T17:18:46.718Z",
-      "id": "j7oSLoK8BbO8De4b",
-      "name": "github.com/nocodeleaks"
     }
   ]
 }
