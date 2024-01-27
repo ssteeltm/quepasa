@@ -17,7 +17,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        3140,
+        3020,
         520
       ]
     },
@@ -42,17 +42,6 @@
       "position": [
         3420,
         500
-      ]
-    },
-    {
-      "parameters": {},
-      "id": "e7cbac3e-7c61-4e89-8025-03ba76b5033e",
-      "name": "Discarding Invalid Content",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        3420,
-        740
       ]
     },
     {
@@ -224,7 +213,7 @@
           "string": [
             {
               "name": "response",
-              "value": "=! {{$json[\"status\"]}}"
+              "value": "=Não foi possível obter o link do grupo, verifique se este número é um Admin desse grupo!"
             }
           ]
         },
@@ -241,7 +230,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.0) Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.1) Disconnect Info\n* Send info when a number is disconnected from whatsapp\n\n\n## (1.0.0) Recommendations \n* Remember set timeout to 15 seconds ",
+        "height": 205.7265251035022,
         "width": 395
       },
       "id": "07c6c321-042f-4201-9ece-87acece6b3fc",
@@ -249,8 +239,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2900,
-        320
+        2740,
+        240
       ]
     },
     {
@@ -260,12 +250,184 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        2940,
+        2760,
         520
+      ]
+    },
+    {
+      "parameters": {
+        "baseUrl": "={{ $json.body.extra.cwhost }}",
+        "accessToken": "={{ $json.body.extra.utoken }}",
+        "resource": "contact",
+        "accountId": "={{ $json.body.extra.account }}",
+        "operation": "contactSearch",
+        "contactSearchQuery": "={{ $env['C8Q_QP_CONTACT'] ?? 'control@quepasa.io' }}"
+      },
+      "id": "b32db6be-3ba7-4afe-ae54-3fde0f81211c",
+      "name": "Busca Contato",
+      "type": "n8n-nodes-chatwoot.chatwoot",
+      "typeVersion": 1,
+      "position": [
+        3460,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"cwhost\"] }}/api/v1/accounts/{{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"account\"] }}/conversations",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $('When Called By Another Workflow').item.json.body.extra.utoken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=inbox_id",
+              "value": "={{ $('When Called By Another Workflow').item.json.body.extra.inbox }}"
+            },
+            {
+              "name": "contact_id",
+              "value": "={{ $json.payload[0].id }}"
+            },
+            {
+              "name": "status",
+              "value": "open"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "15a96a4d-3505-4886-846c-1e518b2939a3",
+      "name": "New Conversation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3660,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"cwhost\"] }}/api/v1/accounts/{{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"account\"] }}/conversations/{{ $json.id }}/toggle_status",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $('When Called By Another Workflow').item.json.body.extra.utoken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"status\": \"open\",\n    \"snoozed_until\": null\n}",
+        "options": {}
+      },
+      "id": "909a3579-eb6f-48fa-bc91-2b7a76fbccd5",
+      "name": "Open Conversation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3840,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"cwhost\"] }}/api/v1/accounts/{{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"account\"] }}/conversations/{{ $json.payload.conversation_id }}/messages ",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $('When Called By Another Workflow').item.json.body.extra.utoken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n \"private\": false,\n  \"content\": \"❌ Este número está desconectado do whatsapp e não pode mais receber nem enviar mensagens!\\n Digite /qrcode para conectar\\n{{ $('When Called By Another Workflow').item.json.body.text }}\",\n \"message_type\": 2,\n \"content_type\": \"text\"\n}",
+        "options": {}
+      },
+      "id": "01fbbb60-d294-45fa-b595-53392fecd4d4",
+      "name": "Send Disconnect Message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        4040,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.text }}",
+              "value2": "401: logged out from another device"
+            }
+          ]
+        }
+      },
+      "id": "51d3a596-991d-4d2e-a694-a322cbfdeedb",
+      "name": "Is Logout?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3220,
+        840
       ]
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "When Called By Another Workflow": [
+      {
+        "json": {
+          "headers": {
+            "host": "127.0.0.1:5678",
+            "user-agent": "Quepasa",
+            "content-length": "465",
+            "content-type": "application/json",
+            "x-quepasa-wid": "553597567586:41@s.whatsapp.net",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "id": "3EB004DCE5AD409C1B1DF0",
+            "timestamp": "2024-01-27T10:21:36-03:00",
+            "type": 9,
+            "chat": {
+              "id": "system",
+              "title": "Internal System Message"
+            },
+            "text": "401: logged out from another device",
+            "fromme": false,
+            "frominternal": false,
+            "extra": {
+              "account": 1,
+              "atoken": "e7d95901c1c32094a01d838",
+              "cwhost": "http://127.0.0.1:3000",
+              "identifier": "WRzeHuuuCVbTA99kLWzUqms4",
+              "inbox": 1,
+              "qphost": "http://127.0.0.1:31000",
+              "qptoken": "WRzeHuuuCVbTA99kLWzUqms4",
+              "utoken": "sAgLXqoCrq7aB34JdQTZbm4W"
+            }
+          }
+        }
+      }
+    ]
+  },
   "connections": {
     "If From Chat ?": {
       "main": [
@@ -278,7 +440,7 @@
         ],
         [
           {
-            "node": "Discarding Invalid Content",
+            "node": "Is Logout?",
             "type": "main",
             "index": 0
           }
@@ -406,6 +568,50 @@
           }
         ]
       ]
+    },
+    "Busca Contato": {
+      "main": [
+        [
+          {
+            "node": "New Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Conversation": {
+      "main": [
+        [
+          {
+            "node": "Open Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Open Conversation": {
+      "main": [
+        [
+          {
+            "node": "Send Disconnect Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Logout?": {
+      "main": [
+        [
+          {
+            "node": "Busca Contato",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -414,20 +620,29 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 15
   },
-  "versionId": "4ea15e3b-9ae3-429e-a4e9-b219e2e80d11",
+  "versionId": "1f5a3f3a-eea1-470e-8bf6-2f9a4b578f99",
   "id": "1003",
   "meta": {
-    "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
+    "instanceId": "b0f69e3c6d1f5668f6e8b6f67bd5d337293bd6464be3f9adc6773d4609da5a0a"
   },
-  "tags": [    
+  "tags": [
     {
-      "name": "QUEPASA"
+      "createdAt": "2024-01-05T16:19:02.727Z",
+      "updatedAt": "2024-01-05T16:19:02.727Z",
+      "id": "D367fSUcIbnwZDaY",
+      "name": "quepasa"
     },
     {
-      "name": "CHATWOOT"
+      "createdAt": "2023-11-16T17:18:46.720Z",
+      "updatedAt": "2023-11-16T17:18:46.720Z",
+      "id": "Hvs9dsaHRMOSIDZN",
+      "name": "chatwoot"
     },
     {
-      "name": "NOCODELEAKS"
+      "createdAt": "2023-11-16T17:18:46.718Z",
+      "updatedAt": "2023-11-16T17:18:46.718Z",
+      "id": "j7oSLoK8BbO8De4b",
+      "name": "github.com/nocodeleaks"
     }
   ]
 }
