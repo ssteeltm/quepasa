@@ -1012,8 +1012,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.16) Updates\n* added skip agent title contact variable\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
-        "height": 283.97227148249,
+        "content": "## (1.0.17) Updates\n* Adjustments to reply message\n* Added infos if message delivery was failed\n\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
+        "height": 277.22695238424575,
         "width": 612.1460280877996
       },
       "id": "1c71bcbf-fb0e-46ae-98b3-f6384668795d",
@@ -1022,7 +1022,7 @@
       "typeVersion": 1,
       "position": [
         -3957.674438502675,
-        1037.4918730629684
+        901.0670718525002
       ]
     },
     {
@@ -1212,61 +1212,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.server.verified }}",
-              "value2": "={{false}}"
-            }
-          ]
-        }
-      },
-      "id": "124693d6-c64c-424d-8e93-405cbe5e3f05",
-      "name": "Está Conectado?1",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        2320,
-        1340
-      ]
-    },
-    {
-      "parameters": {
-        "baseUrl": "={{ $('From ChatWoot').item.json.query.qphost }}",
-        "token": "={{ $('From ChatWoot').item.json.query.identifier }}",
-        "resource": "information"
-      },
-      "id": "330bf3d2-bf0b-4f84-b2c9-69aad43f603a",
-      "name": "Get Info1",
-      "type": "n8n-nodes-quepasa.quepasa",
-      "typeVersion": 1,
-      "position": [
-        2080,
-        1340
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.success }}",
-              "value2": "={{true}}"
-            }
-          ]
-        }
-      },
-      "id": "bacafe8b-ae4f-4859-8bfb-de0b486614d6",
-      "name": "enviado com sucesso?1",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        1880,
-        1160
-      ]
-    },
-    {
-      "parameters": {
         "respondWith": "noData",
         "options": {
           "responseCode": 200
@@ -1289,7 +1234,7 @@
         "text": "={{$json.payload.content}}",
         "chatId": "={{$json.payload.chatid}}",
         "trackId": "chatwoot",
-        "inReply": "={{$json.payload.inreply}}"
+        "inReply": "={{$json.payload.inreply }}"
       },
       "id": "7ee7ac42-8108-4e87-9a5b-e6897e3a8ad7",
       "name": "Quepasa Send Text",
@@ -1331,22 +1276,6 @@
     },
     {
       "parameters": {
-        "respondWith": "noData",
-        "options": {
-          "responseCode": 503
-        }
-      },
-      "name": "Normal Exit (RAS)1",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [
-        2860,
-        1320
-      ],
-      "id": "63e44c76-b903-4543-8184-adbcdadd37b6"
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "={{ $('From ChatWoot').item.json[\"query\"][\"cwhost\"] }}/api/v1/accounts/{{ $('From ChatWoot').item.json[\"body\"][\"account\"][\"id\"]}}/conversations/{{ $('From ChatWoot').item.json[\"body\"][\"conversation\"][\"id\"] }}/messages ",
         "sendHeaders": true,
@@ -1360,17 +1289,104 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\"private\": false, \"content\": \"❌ O WhatsApp está desconectado.\\n Por favor, reabra o aplicativo e faça a leitura do código QR novamente.\", \"message_type\": 2, \"content_type\": \"text\"}  ",
+        "jsonBody": "={\"private\": false, \"content\": \"❌ O WhatsApp está desconectado.\\n Por favor, reabra o aplicativo e faça a leitura do código QR novamente.\\n{{ $('Was Success?').item.json.message }}\", \"message_type\": 2, \"content_type\": \"text\"}",
         "options": {}
       },
       "id": "24d837a9-2610-48f6-a34f-aa63839ab3db",
-      "name": "Envia Desconexão1",
+      "name": "Success?",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
         2580,
         1320
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.success }}",
+              "value2": "={{true}}"
+            }
+          ]
+        }
+      },
+      "id": "bacafe8b-ae4f-4859-8bfb-de0b486614d6",
+      "name": "Was Success?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        1160
+      ]
+    },
+    {
+      "parameters": {
+        "baseUrl": "={{ $('From ChatWoot').item.json.query.qphost }}",
+        "token": "={{ $('From ChatWoot').item.json.query.identifier }}",
+        "resource": "information"
+      },
+      "id": "330bf3d2-bf0b-4f84-b2c9-69aad43f603a",
+      "name": "Get Info",
+      "type": "n8n-nodes-quepasa.quepasa",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        1340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.server.verified }}",
+              "value2": "={{false}}"
+            }
+          ]
+        }
+      },
+      "id": "124693d6-c64c-424d-8e93-405cbe5e3f05",
+      "name": "Is Connect?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        1340
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "options": {
+          "responseCode": "={{ $('Was Success?').item.json.message.slice('-3') }}"
+        }
+      },
+      "name": "Failled",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        2540,
+        1540
+      ],
+      "id": "db3ba38b-1c95-4bae-8cf4-a08cc1c9d16d"
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 503
+        }
+      },
+      "name": "Disconnected Failed",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        2860,
+        1320
+      ],
+      "id": "63e44c76-b903-4543-8184-adbcdadd37b6"
     }
   ],
   "pinData": {
@@ -1381,148 +1397,125 @@
             "accept": "application/json",
             "user-agent": "rest-client/2.1.0 (linux x86_64) ruby/3.2.2p53",
             "content-type": "application/json",
-            "content-length": "3015",
+            "content-length": "3389",
             "accept-encoding": "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
             "host": "127.0.0.1:5678"
           },
           "params": {},
           "query": {
             "qphost": "http://127.0.0.1:31000",
-            "identifier": "WRzeHuuuCVbTA99kLWzUqms4",
+            "identifier": "etLucfZxAApU1A4KCmA45h2i",
             "cwhost": "http://127.0.0.1:3000",
             "cwpublic": "chat.approachti.com.br",
-            "utoken": "sAgLXqoCrq7aB34JdQTZbm4W",
-            "atoken": "e7d95901c1c32094a01d838"
+            "utoken": "xiGM66J7UofuGJrhwdjk56x1",
+            "atoken": "7c030cb9cb387ab9d49026c"
           },
           "body": {
             "account": {
-              "id": 1,
-              "name": "ApproachTI"
+              "id": 4,
+              "name": "IPECONT - Consultoria e Educação Corporativa"
             },
             "additional_attributes": {},
-            "content_attributes": {
-              "in_reply_to": 130589,
-              "in_reply_to_external_id": null
-            },
+            "content_attributes": {},
             "content_type": "text",
-            "content": "dasdasdasd",
+            "content": "dsadasd",
             "conversation": {
               "additional_attributes": {},
               "can_reply": true,
               "channel": "Channel::Api",
               "contact_inbox": {
-                "id": 5582,
-                "contact_id": 299,
-                "inbox_id": 1,
-                "source_id": "70ffd0b4-e1ca-4382-8f1f-6d6694d1c36f",
-                "created_at": "2024-01-26T18:03:06.253Z",
-                "updated_at": "2024-01-26T18:03:06.253Z",
+                "id": 4021,
+                "contact_id": 766,
+                "inbox_id": 29,
+                "source_id": "c1e26ac5-0da8-4551-bdff-e4efe4f4f93c",
+                "created_at": "2024-01-04T17:35:37.386Z",
+                "updated_at": "2024-01-04T17:35:37.386Z",
                 "hmac_verified": false,
-                "pubsub_token": "jyR9C4Motc68qAALxReVg7s3"
+                "pubsub_token": "87Jq1BvRPrAnGx59D837qscX"
               },
-              "id": 853,
-              "inbox_id": 1,
+              "id": 1274,
+              "inbox_id": 29,
               "messages": [
                 {
-                  "id": 130590,
-                  "content": "dasdasdasd",
-                  "account_id": 1,
-                  "inbox_id": 1,
-                  "conversation_id": 853,
+                  "id": 130971,
+                  "content": "dsadasd",
+                  "account_id": 4,
+                  "inbox_id": 29,
+                  "conversation_id": 1274,
                   "message_type": 1,
-                  "created_at": 1706303170,
-                  "updated_at": "2024-01-26T21:06:10.882Z",
+                  "created_at": 1706369197,
+                  "updated_at": "2024-01-27T15:26:37.575Z",
                   "private": false,
                   "status": "sent",
                   "source_id": null,
                   "content_type": "text",
-                  "content_attributes": {
-                    "in_reply_to": 130589,
-                    "in_reply_to_external_id": null
-                  },
+                  "content_attributes": {},
                   "sender_type": "User",
-                  "sender_id": 40,
+                  "sender_id": 1,
                   "external_source_ids": {},
                   "additional_attributes": {},
-                  "processed_message_content": "dasdasdasd",
+                  "processed_message_content": "dsadasd",
                   "sentiment": {},
                   "conversation": {
                     "assignee_id": null,
                     "unread_count": 0,
-                    "last_activity_at": 1706303170,
+                    "last_activity_at": 1706369197,
                     "contact_inbox": {
-                      "source_id": "70ffd0b4-e1ca-4382-8f1f-6d6694d1c36f"
+                      "source_id": "c1e26ac5-0da8-4551-bdff-e4efe4f4f93c"
                     }
                   },
                   "sender": {
-                    "id": 40,
-                    "name": "Arthur Ferroni",
-                    "available_name": "Arthur Ferroni",
-                    "avatar_url": "",
+                    "id": 1,
+                    "name": "Automações CHAT",
+                    "available_name": "Sistema de Automação",
+                    "avatar_url": "https://chat.approachti.com.br/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBazBOIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--e9363c2565a5a11be94a6fa510d51237703bd1a2/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJY0c1bkJqb0dSVlE2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWZvdyIsImV4cCI6bnVsbCwicHVyIjoidmFyaWF0aW9uIn19--417a9fa7731a1be67674b5f2f13b5718fcb35025/logo_thumbnail%20(1)%20(1).png",
                     "type": "user",
-                    "availability_status": "offline",
-                    "thumbnail": ""
+                    "availability_status": null,
+                    "thumbnail": "https://chat.approachti.com.br/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBazBOIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--e9363c2565a5a11be94a6fa510d51237703bd1a2/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJY0c1bkJqb0dSVlE2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWZvdyIsImV4cCI6bnVsbCwicHVyIjoidmFyaWF0aW9uIn19--417a9fa7731a1be67674b5f2f13b5718fcb35025/logo_thumbnail%20(1)%20(1).png"
                   }
                 }
               ],
               "labels": [],
               "meta": {
                 "sender": {
-                  "additional_attributes": {
-                    "city": "",
-                    "country": "",
-                    "source_id": "email:CANwWz-+oXxtU0j4RzLjxQWHLTa4ZsfDT7MLOoN-CG5sYBSRX-w@mail.gmail.com",
-                    "description": "",
-                    "company_name": "",
-                    "country_code": "",
-                    "social_profiles": {
-                      "line": "",
-                      "github": "arthurrferroni",
-                      "twitter": "arthurferroni",
-                      "website": "approachti.com.br/arthur",
-                      "facebook": "arthurferroni",
-                      "linkedin": "in/arthurferroni",
-                      "telegram": "",
-                      "instagram": "arthurferroni"
-                    }
-                  },
+                  "additional_attributes": {},
                   "custom_attributes": {},
-                  "email": "arthurferroni@gmail.com",
-                  "id": 299,
+                  "email": null,
+                  "id": 766,
                   "identifier": "553592630001@s.whatsapp.net",
                   "name": "Arthur Ferroni",
-                  "phone_number": "+5535992630001",
-                  "thumbnail": "https://chat.approachti.com.br/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBOGhiQVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--d3725423cab5a0409974a771f3344fbca5ecac80/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWZvdyIsImV4cCI6bnVsbCwicHVyIjoidmFyaWF0aW9uIn19--bead05e9f7c86463a05ea21b0fc9cc38cc214fe2/367519969_3494766354107870_7304252424232929019_n.jpg",
+                  "phone_number": "+553592630001",
+                  "thumbnail": "https://chat.approachti.com.br/rails/active_storage/representations/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBNThKQVE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--8f791f7180b19593ecebd7b3f1f83f2a6e2db609/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdCem9MWm05eWJXRjBTU0lJYW5CbkJqb0dSVlE2RTNKbGMybDZaVjkwYjE5bWFXeHNXd2RwQWZvdyIsImV4cCI6bnVsbCwicHVyIjoidmFyaWF0aW9uIn19--bead05e9f7c86463a05ea21b0fc9cc38cc214fe2/367519969_3494766354107870_7304252424232929019_n.jpg",
                   "type": "contact"
                 },
                 "assignee": null,
                 "team": null,
                 "hmac_verified": false
               },
-              "status": "open",
+              "status": "resolved",
               "custom_attributes": {},
               "snoozed_until": null,
               "unread_count": 0,
-              "first_reply_created_at": "2024-01-26T19:53:06.461Z",
+              "first_reply_created_at": "2024-01-16T12:23:55.143Z",
               "priority": null,
-              "waiting_since": 1706303165,
-              "agent_last_seen_at": 1706303170,
-              "contact_last_seen_at": 1706303082,
-              "timestamp": 1706303170,
-              "created_at": 1706292186
+              "waiting_since": 0,
+              "agent_last_seen_at": 1706369197,
+              "contact_last_seen_at": 0,
+              "timestamp": 1706369197,
+              "created_at": 1704389737
             },
-            "created_at": "2024-01-26T21:06:10.882Z",
-            "id": 130590,
+            "created_at": "2024-01-27T15:26:37.575Z",
+            "id": 130971,
             "inbox": {
-              "id": 1,
-              "name": "WhatsAPP"
+              "id": 29,
+              "name": "WhatsAPP 6392"
             },
             "message_type": "outgoing",
             "private": false,
             "sender": {
-              "id": 40,
-              "name": "Arthur Ferroni",
-              "email": "arthur@approachti.com.br",
+              "id": 1,
+              "name": "Automações CHAT",
+              "email": "chat@approachti.com.br",
               "type": "user"
             },
             "source_id": null,
@@ -2190,51 +2183,11 @@
         ]
       ]
     },
-    "Está Conectado?1": {
-      "main": [
-        [
-          {
-            "node": "Envia Desconexão1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Info1": {
-      "main": [
-        [
-          {
-            "node": "Está Conectado?1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "enviado com sucesso?1": {
-      "main": [
-        [
-          {
-            "node": "Normal Exit (RAS)",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Get Info1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Quepasa Send Text": {
       "main": [
         [
           {
-            "node": "enviado com sucesso?1",
+            "node": "Was Success?",
             "type": "main",
             "index": 0
           }
@@ -2245,18 +2198,65 @@
       "main": [
         [
           {
-            "node": "enviado com sucesso?1",
+            "node": "Was Success?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Envia Desconexão1": {
+    "Success?": {
       "main": [
         [
           {
-            "node": "Normal Exit (RAS)1",
+            "node": "Disconnected Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Was Success?": {
+      "main": [
+        [
+          {
+            "node": "Normal Exit (RAS)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Info": {
+      "main": [
+        [
+          {
+            "node": "Is Connect?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Connect?": {
+      "main": [
+        [
+          {
+            "node": "Success?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failled",
             "type": "main",
             "index": 0
           }
@@ -2272,7 +2272,7 @@
     "executionOrder": "v0",
     "errorWorkflow": "o0tUlp8GdNI2vcwB"
   },
-  "versionId": "8741393e-325b-4b10-b646-467ea6496e33",
+  "versionId": "2070766b-3639-4cde-936f-e0898813f18c",
   "id": "1008",
   "meta": {
     "instanceId": "b0f69e3c6d1f5668f6e8b6f67bd5d337293bd6464be3f9adc6773d4609da5a0a"

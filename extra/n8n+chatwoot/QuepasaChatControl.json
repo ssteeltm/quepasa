@@ -50,7 +50,7 @@
           "string": [
             {
               "name": "response",
-              "value": "=Para convidar alguém, utilize o link a seguir: \n{{$json[\"url\"]}}\nCompartilhe com quem deseje que participe deste grupo."
+              "value": "=Para convidar alguém, utilize o atalho a seguir: \n{{$json[\"url\"]}}\nCompartilhe com quem deseje que participe deste grupo."
             }
           ]
         },
@@ -230,7 +230,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.0) Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.1) Disconnect Info\n* Send info when a number is disconnected from whatsapp\n\n\n## (1.0.0) Recommendations \n* Remember set timeout to 15 seconds ",
+        "height": 205.7265251035022,
         "width": 395
       },
       "id": "07c6c321-042f-4201-9ece-87acece6b3fc",
@@ -238,8 +239,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2900,
-        320
+        2740,
+        240
       ]
     },
     {
@@ -255,26 +256,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.body.text }}",
-              "value2": "401: logged out from another device"
-            }
-          ]
-        }
-      },
-      "id": "51d3a596-991d-4d2e-a694-a322cbfdeedb",
-      "name": "is logout?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        3220,
-        840
-      ]
-    },
-    {
-      "parameters": {
         "baseUrl": "={{ $json.body.extra.cwhost }}",
         "accessToken": "={{ $json.body.extra.utoken }}",
         "resource": "contact",
@@ -283,11 +264,11 @@
         "contactSearchQuery": "={{ $env['C8Q_QP_CONTACT'] ?? 'control@quepasa.io' }}"
       },
       "id": "b32db6be-3ba7-4afe-ae54-3fde0f81211c",
-      "name": "ChatWoot",
+      "name": "Busca Contato",
       "type": "n8n-nodes-chatwoot.chatwoot",
       "typeVersion": 1,
       "position": [
-        3440,
+        3460,
         820
       ]
     },
@@ -324,7 +305,7 @@
         "options": {}
       },
       "id": "15a96a4d-3505-4886-846c-1e518b2939a3",
-      "name": "new conversation",
+      "name": "New Conversation",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
@@ -351,7 +332,7 @@
         "options": {}
       },
       "id": "909a3579-eb6f-48fa-bc91-2b7a76fbccd5",
-      "name": "open conversation",
+      "name": "Open Conversation",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
@@ -374,16 +355,36 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n \"private\": false,\n  \"content\": \"❌ Este número está desconectado do whatsapp e não pode mais receber nem enviar mensagens!\\n Digite /qrcode para conectar\",\n \"message_type\": 2,\n \"content_type\": \"text\"\n}",
+        "jsonBody": "={\n \"private\": false,\n  \"content\": \"❌ Este número está desconectado do whatsapp e não pode mais receber nem enviar mensagens!\\n Digite /qrcode para conectar\\n{{ $('When Called By Another Workflow').item.json.body.text }}\",\n \"message_type\": 2,\n \"content_type\": \"text\"\n}",
         "options": {}
       },
       "id": "01fbbb60-d294-45fa-b595-53392fecd4d4",
-      "name": "send disconnect message",
+      "name": "Send Disconnect Message",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
         4040,
         820
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.text }}",
+              "value2": "401: logged out from another device"
+            }
+          ]
+        }
+      },
+      "id": "51d3a596-991d-4d2e-a694-a322cbfdeedb",
+      "name": "Is Logout?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3220,
+        840
       ]
     }
   ],
@@ -439,7 +440,7 @@
         ],
         [
           {
-            "node": "is logout?",
+            "node": "Is Logout?",
             "type": "main",
             "index": 0
           }
@@ -568,44 +569,44 @@
         ]
       ]
     },
-    "is logout?": {
+    "Busca Contato": {
       "main": [
         [
           {
-            "node": "ChatWoot",
+            "node": "New Conversation",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "ChatWoot": {
+    "New Conversation": {
       "main": [
         [
           {
-            "node": "new conversation",
+            "node": "Open Conversation",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "new conversation": {
+    "Open Conversation": {
       "main": [
         [
           {
-            "node": "open conversation",
+            "node": "Send Disconnect Message",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "open conversation": {
+    "Is Logout?": {
       "main": [
         [
           {
-            "node": "send disconnect message",
+            "node": "Busca Contato",
             "type": "main",
             "index": 0
           }
@@ -619,10 +620,29 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 15
   },
-  "versionId": "4fc3d754-344a-42d9-89ef-10bafdf80a11",
+  "versionId": "1f5a3f3a-eea1-470e-8bf6-2f9a4b578f99",
   "id": "1003",
   "meta": {
     "instanceId": "b0f69e3c6d1f5668f6e8b6f67bd5d337293bd6464be3f9adc6773d4609da5a0a"
   },
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2024-01-05T16:19:02.727Z",
+      "updatedAt": "2024-01-05T16:19:02.727Z",
+      "id": "D367fSUcIbnwZDaY",
+      "name": "quepasa"
+    },
+    {
+      "createdAt": "2023-11-16T17:18:46.720Z",
+      "updatedAt": "2023-11-16T17:18:46.720Z",
+      "id": "Hvs9dsaHRMOSIDZN",
+      "name": "chatwoot"
+    },
+    {
+      "createdAt": "2023-11-16T17:18:46.718Z",
+      "updatedAt": "2023-11-16T17:18:46.718Z",
+      "id": "j7oSLoK8BbO8De4b",
+      "name": "github.com/nocodeleaks"
+    }
+  ]
 }

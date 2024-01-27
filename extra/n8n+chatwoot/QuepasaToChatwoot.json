@@ -837,8 +837,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.2) Updates\n* chat command, instead invite command\n\n## Recommendations \n* Remember set timeout to 30 seconds",
-        "height": 175.9061641534987,
+        "content": "## (1.0.3) Updates\n* Adjustments to revoke and edit messages\n\n## (1.0.2) Updates\n* chat command, instead invite command\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "height": 332.69543226804643,
         "width": 398.97654103837476
       },
       "id": "c3701431-3364-4941-8ae7-37bf72d68773",
@@ -847,7 +847,7 @@
       "typeVersion": 1,
       "position": [
         560,
-        -1320
+        -1476.7892681145477
       ]
     },
     {
@@ -1731,13 +1731,13 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "saveManualExecutions": false,
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "e516b544-cc02-488e-a37f-323456643c00",
+  "versionId": "34e82799-bdd2-4181-8265-d9ec1d3d3cac",
   "id": "1009",
   "meta": {
     "instanceId": "b0f69e3c6d1f5668f6e8b6f67bd5d337293bd6464be3f9adc6773d4609da5a0a"
