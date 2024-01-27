@@ -56,7 +56,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        2180,
+        3060,
         1040
       ],
       "id": "a23350ee-7404-4dbb-841d-bbb26c51a5da",
@@ -82,38 +82,13 @@
       "continueOnFail": true
     },
     {
-      "parameters": {
-        "requestMethod": "POST",
-        "url": "={{$json.cwhost}}/api/v1/accounts/{{$json.account}}/conversations/{{$json.conversation.id}}/messages",
-        "allowUnauthorizedCerts": true,
-        "jsonParameters": true,
-        "options": {
-          "bodyContentType": "multipart-form-data"
-        },
-        "sendBinaryData": true,
-        "binaryPropertyName": "attachments[]:data",
-        "headerParametersJson": "={ \"api_access_token\": \"{{$json.atoken}}\" }",
-        "queryParametersJson": "={{$json.payload}}"
-      },
-      "name": "Post Incoming Message Attachment",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        2180,
-        740
-      ],
-      "id": "3aa049eb-d8bc-4852-99e7-aee8b0299213",
-      "retryOnFail": true,
-      "waitBetweenTries": 2000
-    },
-    {
       "parameters": {},
       "id": "d44bc7d3-795f-4270-9692-fcab92323494",
       "name": "When Called By Another Workflow",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        -1020,
+        -1360,
         800
       ]
     },
@@ -230,7 +205,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1920,
+        2800,
         880
       ],
       "retryOnFail": true,
@@ -315,7 +290,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        740,
+        700,
         900
       ]
     },
@@ -336,7 +311,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        940,
+        2120,
         960
       ]
     },
@@ -347,7 +322,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1120,
+        2340,
         880
       ]
     },
@@ -367,7 +342,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        1700,
+        2580,
         880
       ]
     },
@@ -407,7 +382,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        -840,
+        -900,
         800
       ]
     },
@@ -422,8 +397,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1080,
-        540
+        -1740,
+        300
       ]
     },
     {
@@ -442,7 +417,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -660,
+        -740,
         800
       ]
     },
@@ -451,8 +426,8 @@
         "values": {
           "string": [
             {
-              "name": "payload.content",
-              "value": "=🔁: \"{{$json.synopsis}}\"\n\n{{$json.payload.content}}"
+              "name": "payload.content_attributes.in_reply_to",
+              "value": "={{ $json.payload.content_attributes.in_reply_to.split('-')[2] }}"
             }
           ]
         },
@@ -463,12 +438,585 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        -480,
-        720
+        -500,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{$(\"Post Incomming With Attachment ?\").item.json.cwhost}}/api/v1/accounts/{{$(\"Post Incomming With Attachment ?\").item.json.account}}/conversations/{{$(\"Post Incomming With Attachment ?\").item.json.conversation.id}}/messages",
+        "allowUnauthorizedCerts": true,
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "message_type",
+              "value": "={{ 2 }}"
+            },
+            {
+              "name": "content",
+              "value": "✅ Este contato foi importado para os contatos do Chat"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $('When Called By Another Workflow').item.json.extra.utoken }}"
+            }
+          ]
+        }
+      },
+      "name": "Post Incoming Message3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        4860,
+        300
+      ],
+      "id": "769d210a-320f-4ed3-a02b-185bec305e4e",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$(\"Post Incomming With Attachment ?\").item.json.cwhost}}/api/v1/accounts/{{$(\"Post Incomming With Attachment ?\").item.json.account}}/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $('When Called By Another Workflow').item.json.extra.utoken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $(\"Code\").item.json.temp.split('FN:')[1].split('TEL')[0].split('item')[0] }}"
+            },
+            {
+              "name": "phone_number",
+              "value": "=+{{ $(\"Code\").item.json.temp.split('TEL')[1].split(':')[0].split('waid=')[1] }}"
+            },
+            {
+              "name": "identifier",
+              "value": "={{ $(\"Code\").item.json.temp.split('TEL')[1].split(':')[0].split('waid=')[1] }}@s.whatsapp.net"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "18939821-d57b-4f8e-bf06-918f1b1a995d",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        4520,
+        320
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{$(\"Post Incomming With Attachment ?\").item.json.cwhost}}/api/v1/accounts/{{$(\"Post Incomming With Attachment ?\").item.json.account}}/conversations/{{$(\"Post Incomming With Attachment ?\").item.json.conversation.id}}/messages",
+        "allowUnauthorizedCerts": true,
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "message_type",
+              "value": "={{ 2 }}"
+            },
+            {
+              "name": "content",
+              "value": "❌ Este contato não foi importado para os contatos do Chat, realize a adição manualmente"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $('When Called By Another Workflow').item.json.extra.utoken }}"
+            }
+          ]
+        }
+      },
+      "name": "Post Incoming Message4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        4860,
+        460
+      ],
+      "id": "d94c24da-2713-4aec-a263-3eb94ec61855",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.payload.event }}",
+              "value2": "={{ 10 }}"
+            }
+          ]
+        }
+      },
+      "id": "ef29e235-66fa-4c1c-b228-f4dd32796962",
+      "name": "is revoke?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        900,
+        1140
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM messages\nWHERE content_attributes::text LIKE '%{{ $json.payload.content_attributes.items.quepasa.msgid }}%';\n",
+        "options": {}
+      },
+      "id": "fac8d51e-7c6d-4a3d-904a-167d483a593b",
+      "name": "Postgres",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        1120,
+        980
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "vSgNoxPsTNRz4Pxu",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.payload.edited }}"
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $json.payload.edited }}",
+              "operation": "isEmpty"
+            }
+          ]
+        },
+        "combineConditions": "OR"
+      },
+      "id": "399c3e31-0e53-41c5-9508-49c9e2f36c11",
+      "name": "Filter",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 1,
+      "position": [
+        -1140,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.payload.edited }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "8bdaf485-e965-4695-8a1d-cc7aa4c110c3",
+      "name": "Filter1",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 1,
+      "position": [
+        -1140,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id\nFROM messages\nWHERE content_attributes::text LIKE '%{{ $json.payload.content_attributes.items.quepasa.msgid }}%';\n",
+        "options": {}
+      },
+      "id": "78dbbd97-1227-4f03-b360-8aa22b878744",
+      "name": "Postgres1",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -900,
+        1020
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "vSgNoxPsTNRz4Pxu",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "content_attributes.in_reply_to",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "editedmessage",
+              "value": "={{ $('When Called By Another Workflow').item.json.payload.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c94207d6-c1e2-4aa3-8038-83ee3be15228",
+      "name": "payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        1020
+      ]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{ $('is revoke?').item.json.cwhost }}/api/v1/accounts/{{ $('is revoke?').item.json.account }}/conversations/{{ $('is revoke?').item.json.conversation.id }}/messages",
+        "allowUnauthorizedCerts": true,
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n   \"private\": false,\n   \"content\": \"❌ Essa mensagem foi apagada!\",\n   \"message_type\": \"incoming\",\n   \"source_id\": \"{{ $('When Called By Another Workflow').item.json[\"payload\"][\"source_id\"] }}\",\n   \"content_attributes\": {\n      \"items\": {\n         \"quepasa\": {\n            \"msgid\": \"{{ $('When Called By Another Workflow').item.json[\"payload\"][\"content_attributes\"][\"items\"][\"quepasa\"][\"msgid\"] }}\"\n         }\n      },\n      \"in_reply_to\": \"{{ $json[\"id\"] }}\"\n   },\n   \"attachment\": \"\",\n   \"content_type\": \"text\"\n}",
+        "headerParametersJson": "={ \"api_access_token\": \"{{ $('When Called By Another Workflow').item.json.extra.atoken }}\" }"
+      },
+      "name": "mark as revoked",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1380,
+        980
+      ],
+      "id": "c7cf6aec-d7e9-4e51-8de0-5bffb5424c16",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{ $('When Called By Another Workflow').item.json[\"extra\"][\"cwhost\"] }}/api/v1/accounts/{{ $('When Called By Another Workflow').item.json[\"extra\"][\"account\"]}}/conversations/{{ $('When Called By Another Workflow').item.json[\"conversation\"][\"id\"] }}/messages",
+        "allowUnauthorizedCerts": true,
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n   \"private\": false,\n   \"content\": \"⚠️ ***Essa mensagem foi editada!***\\n Nova mensagem: *{{ $('payload').item.json[\"editedmessage\"] }}*\",\n   \"message_type\": \"incoming\",\n   \"source_id\": \"{{ $('When Called By Another Workflow').item.json[\"payload\"][\"source_id\"] }}\",\n   \"content_attributes\": {\n      \"items\": {\n         \"quepasa\": {\n            \"msgid\": \"{{ $('When Called By Another Workflow').item.json[\"payload\"][\"content_attributes\"][\"items\"][\"quepasa\"][\"msgid\"] }}\"\n         }\n      },\n      \"in_reply_to\": \"{{ $('payload').item.json[\"content_attributes\"][\"in_reply_to\"] }}\"\n   },\n   \"attachment\": \"\",\n   \"content_type\": \"text\"\n}",
+        "headerParametersJson": "={ \"api_access_token\": \"{{ $('When Called By Another Workflow').item.json.extra.atoken }}\" }"
+      },
+      "name": "mark as edited",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        1020
+      ],
+      "id": "3e156be3-06ac-485c-8715-840660542f21",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{$json.cwhost}}/api/v1/accounts/{{$json.account}}/conversations/{{$json.conversation.id}}/messages",
+        "allowUnauthorizedCerts": true,
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "multipart-form-data"
+        },
+        "sendBinaryData": true,
+        "binaryPropertyName": "attachments[]:data",
+        "headerParametersJson": "={ \"api_access_token\": \"{{$json.atoken}}\" }",
+        "queryParametersJson": "={{$json.payload}}"
+      },
+      "name": "Post Incoming Message Attachment2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        3420,
+        800
+      ],
+      "id": "340fb2b2-341e-4e17-9361-9a21a20b4690",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{$(\"Post Incomming With Attachment ?\").item.json.cwhost}}/api/v1/accounts/{{$(\"Post Incomming With Attachment ?\").item.json.account}}/conversations/{{$(\"Post Incomming With Attachment ?\").item.json.conversation.id}}/messages",
+        "allowUnauthorizedCerts": true,
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={{$json.payload}}",
+        "headerParametersJson": "={ \"api_access_token\": \"{{$(\"Post Incomming With Attachment ?\").item.json.atoken}}\" }"
+      },
+      "name": "Post Incoming Message2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        4140,
+        320
+      ],
+      "id": "ac81acdc-ac94-4384-bb43-cb4068926abc",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "payload",
+              "value": "={{ $(\"Post Incomming With Attachment ?\").item.json.payload }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "24f32f8b-5e82-45e4-afae-8130110b43fa",
+      "name": "Set4",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        3720,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "payload.content",
+              "value": "=**Nome:** {{ $(\"Code\").item.json.temp.split('FN:')[1].split('TEL')[0].split('item1.')[0] }}\n**Telefone:** {{ $(\"Code\").item.json.temp.split('TEL')[1].split(':')[0].split('waid=')[1] }}\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "69c03591-a20e-4e45-b2eb-98f3eccab46b",
+      "name": "Set5",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        3920,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $(\"Quepasa Download Incoming\").first().binary[\"data\"].fileExtension }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "vcf"
+            },
+            {
+              "value2": "url",
+              "output": 1
+            }
+          ]
+        },
+        "fallbackOutput": 3
+      },
+      "id": "fee5dd8d-b057-43ce-aa6f-df343ee58468",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        3280,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "payload.content",
+              "value": "=**Localização:** \n{{ $(\"When Called By Another Workflow\").item.json.payload.attachment.url }}\n\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ad870074-7cba-4e69-8f60-7845a4958bd1",
+      "name": "Set6",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        3560,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{$json.cwhost}}/api/v1/accounts/{{$json.account}}/conversations/{{$json.conversation.id}}/messages",
+        "allowUnauthorizedCerts": true,
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "multipart-form-data"
+        },
+        "sendBinaryData": true,
+        "binaryPropertyName": "attachments[]:mapa",
+        "headerParametersJson": "={ \"api_access_token\": \"{{$json.atoken}}\" }",
+        "queryParametersJson": "={{$json.payload}}"
+      },
+      "name": "Post Incoming Message Attachment3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        4140,
+        560
+      ],
+      "id": "d9385060-8e62-4e6a-80c6-144f96b3b08b",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "mode": "jsonToBinary",
+        "convertAllData": false,
+        "sourceKey": "=mapa",
+        "destinationKey": "mapa",
+        "options": {
+          "dataIsBase64": true,
+          "fileName": "imagem.jpg",
+          "mimeType": "image/jpeg"
+        }
+      },
+      "id": "7c552e65-1719-489d-bac0-daa0ee169046",
+      "name": "Move Binary Data1",
+      "type": "n8n-nodes-base.moveBinaryData",
+      "typeVersion": 1,
+      "position": [
+        3840,
+        480
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "1777b278-3221-4d1b-91d3-0a1cf06aa3fc",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        4000,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "mapa",
+              "value": "={{ $(\"When Called By Another Workflow\").item.json.payload.attachment.thumbnail }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2ff79f8a-213d-468a-abd9-fdf04420c339",
+      "name": "Set7",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        3700,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let items = $input.all()\n\nlet temp = Buffer.from($(\"Quepasa Download Incoming\").first().binary[\"data\"].data, 'base64').toString()\n\n\n\n\nreturn {temp}\n\n"
+      },
+      "id": "c13210ab-9847-413c-9048-d88d090d4fea",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        3520,
+        320
       ]
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "When Called By Another Workflow": [
+      {
+        "json": {
+          "payload": {
+            "private": false,
+            "content": "Adalton",
+            "message_type": "incoming",
+            "source_id": "319F8FDEEE1750110B021411A6F2D0B1",
+            "content_attributes": {
+              "items": {
+                "quepasa": {
+                  "msgid": "319F8FDEEE1750110B021411A6F2D0B1"
+                }
+              }
+            },
+            "attachment": {
+              "mime": "text/x-vcard",
+              "filelength": 127,
+              "filename": "adalton.vcf"
+            },
+            "external_created_at": 1706361261,
+            "content_type": "text",
+            "event": 7,
+            "edited": false
+          },
+          "chatid": "553592630001@s.whatsapp.net",
+          "conversation": {
+            "id": 856,
+            "status": "open"
+          },
+          "extra": {
+            "account": 1,
+            "atoken": "e7d95901c1c32094a01d838",
+            "cwhost": "http://127.0.0.1:3000",
+            "identifier": "WRzeHuuuCVbTA99kLWzUqms4",
+            "inbox": 1,
+            "qphost": "http://127.0.0.1:31000",
+            "qptoken": "WRzeHuuuCVbTA99kLWzUqms4",
+            "utoken": "sAgLXqoCrq7aB34JdQTZbm4W"
+          },
+          "hex": "35353335393236333030303140732e77686174736170702e6e6574",
+          "participant": {}
+        }
+      }
+    ]
+  },
   "connections": {
     "Direct Message ?": {
       "main": [
@@ -514,7 +1062,12 @@
       "main": [
         [
           {
-            "node": "Defaults",
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter1",
             "type": "main",
             "index": 0
           }
@@ -565,7 +1118,7 @@
       "main": [
         [
           {
-            "node": "Post Incoming Message Attachment",
+            "node": "Switch1",
             "type": "main",
             "index": 0
           }
@@ -646,7 +1199,7 @@
         ],
         [
           {
-            "node": "Set Custom Content",
+            "node": "is revoke?",
             "type": "main",
             "index": 0
           }
@@ -725,6 +1278,216 @@
           }
         ]
       ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Post Incoming Message3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Post Incoming Message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "is revoke?": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Custom Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "main": [
+        [
+          {
+            "node": "mark as revoked",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Defaults",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "Postgres1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres1": {
+      "main": [
+        [
+          {
+            "node": "payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "payload": {
+      "main": [
+        [
+          {
+            "node": "mark as edited",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set4": {
+      "main": [
+        [
+          {
+            "node": "Set5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set5": {
+      "main": [
+        [
+          {
+            "node": "Post Incoming Message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Post Incoming Message Attachment2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set6": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Set7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move Binary Data1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Post Incoming Message Attachment3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set7": {
+      "main": [
+        [
+          {
+            "node": "Move Binary Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Incoming Message2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Set4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -733,23 +1496,10 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "8e22c5db-e4fd-4ab2-95cd-98b63be71837",
+  "versionId": "0847bf93-c54a-4301-bb66-222b19ed571a",
   "id": "1006",
   "meta": {
-    "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
+    "instanceId": "b0f69e3c6d1f5668f6e8b6f67bd5d337293bd6464be3f9adc6773d4609da5a0a"
   },
-  "tags": [
-    {
-      "createdAt": "2023-05-19T22:54:38.266Z",
-      "updatedAt": "2023-05-19T22:54:38.266Z",
-      "id": "13",
-      "name": "github.com/nocodeleaks"
-    },
-    {
-      "createdAt": "2022-10-13T15:26:19.857Z",
-      "updatedAt": "2023-08-24T21:01:00.296Z",
-      "id": "6",
-      "name": "chatwoot"
-    }
-  ]
+  "tags": []
 }

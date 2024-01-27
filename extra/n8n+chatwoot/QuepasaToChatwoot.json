@@ -17,10 +17,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        10000,
-        -600
+        5500,
+        -880
       ],
-      "id": "84c5674a-28db-471a-8f0d-07d664e5e200"
+      "id": "87f3c402-bf45-4fc5-9297-a7be7b83b945"
     },
     {
       "parameters": {
@@ -57,10 +57,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        9300,
-        -820
+        4800,
+        -1100
       ],
-      "id": "163b25a0-5d13-48f2-9986-9f50f4152829",
+      "id": "e4adb3ce-7b17-4a9c-b29c-19e1e83d12b0",
       "notes": "Important to use \"source_id\" to respond messages"
     },
     {
@@ -84,10 +84,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        9540,
-        -820
+        5040,
+        -1100
       ],
-      "id": "bedc45c3-b32e-45bc-8d1d-85c36665b4e3"
+      "id": "3f06feba-5a2b-4f5b-b859-2b762a7c3b89"
     },
     {
       "parameters": {
@@ -116,10 +116,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        10260,
-        -820
+        5760,
+        -1100
       ],
-      "id": "36b60f7b-3a77-44fb-9aad-ff78ed15857f"
+      "id": "19365cc5-f109-4385-8b98-18bf0f2bf9ba"
     },
     {
       "parameters": {
@@ -137,10 +137,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        5540,
-        -620
+        560,
+        -900
       ],
-      "id": "5bfd7316-3f8c-4900-8f80-d105af4cc7c2"
+      "id": "56337da1-6d13-4993-ae9d-8e659606da30"
     },
     {
       "parameters": {
@@ -150,10 +150,10 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 1,
       "position": [
-        7200,
-        -280
+        2700,
+        -560
       ],
-      "id": "86f81164-6675-450f-9824-f5cd8a3699c7"
+      "id": "bf1bbab9-fa50-4b8d-bd9f-0c2eefb466ec"
     },
     {
       "parameters": {
@@ -161,13 +161,13 @@
         "path": "to-chatwoot",
         "options": {}
       },
-      "id": "f465b6f7-ba30-4de7-8b35-f2560e7a8882",
+      "id": "1d0221b6-8913-491b-b043-b6c74c2f5e71",
       "name": "Webhook Chatwoot",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        5320,
-        -620
+        300,
+        -900
       ],
       "webhookId": "f0d0e1da-e8cf-4956-8715-dccf5fe3c892"
     },
@@ -176,13 +176,13 @@
         "respondWith": "noData",
         "options": {}
       },
-      "id": "b2d5b252-8081-4f30-bf55-dac3db0db7f9",
+      "id": "e4be5a75-5809-4dc1-935d-19d0c6d0f023",
       "name": "Broadcast Message",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        5760,
-        -420
+        1020,
+        -700
       ]
     },
     {
@@ -200,11 +200,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        8760,
-        -620
+        4260,
+        -900
       ],
       "alwaysOutputData": false,
-      "id": "6b0a8fa1-cdb7-488a-804b-393e641ee44a"
+      "id": "de6b48c0-0783-4daf-a9e4-bb96eb08f991"
     },
     {
       "parameters": {
@@ -212,34 +212,13 @@
         "height": 262.50469912086913,
         "width": 251.48817318430855
       },
-      "id": "9d5cef13-25be-4d66-9fe7-83e256e3705f",
+      "id": "c15a55c6-7f19-477e-8a2a-1fb6dc53b5d9",
       "name": "Note",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        11600,
-        -640
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.payload.content ?? '' }}",
-              "operation": "startsWith",
-              "value2": "/invite"
-            }
-          ]
-        }
-      },
-      "id": "0ec76f1b-acfe-4251-aa19-7ce8b4a3d31d",
-      "name": "If Invite Command",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        12180,
-        -560
+        8640,
+        -1060
       ]
     },
     {
@@ -252,26 +231,26 @@
           ]
         }
       },
-      "id": "b94a36b5-6867-4cb7-acad-0e02b2ea4980",
+      "id": "34959cd1-a040-4f15-b816-ea8c508d9ac0",
       "name": "Should Send Greetings ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        9320,
-        -1160
+        4820,
+        -1440
       ]
     },
     {
       "parameters": {
         "workflowId": "={{ $env['C8Q_CHATWOOTTOQUEPASAGREETINGS'] }}"
       },
-      "id": "bcb8d37d-a8f0-4637-8afb-6adf326d6e45",
+      "id": "1b2ff12e-e664-49cf-a82f-3d008abb98e9",
       "name": "Throw To Greetings Workflow",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        9780,
-        -1160
+        5280,
+        -1440
       ],
       "continueOnFail": true
     },
@@ -279,26 +258,26 @@
       "parameters": {
         "mode": "chooseBranch"
       },
-      "id": "641f5fae-1719-4172-9eca-f4307b14e80b",
+      "id": "c6a820b5-6b1e-4b9e-aa2e-11ef48ffd4f3",
       "name": "Wait For Create a Conversation",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        9560,
-        -1160
+        5060,
+        -1440
       ]
     },
     {
       "parameters": {
         "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] }}"
       },
-      "id": "a683cab2-6685-403d-b664-349e7715ac18",
+      "id": "a63e0a0a-0fb9-4e18-995c-84749d3d14b1",
       "name": "Throw To Quepasa Chat Control Workflow",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        12500,
-        -880
+        9540,
+        -1300
       ],
       "continueOnFail": true
     },
@@ -308,13 +287,13 @@
         "height": 616.1278921539156,
         "width": 2110.852343765206
       },
-      "id": "988cf377-29a3-41a8-b104-54dcf8096960",
+      "id": "6501a7c7-acf2-4472-a8a4-b04c243bcb79",
       "name": "Note1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        6320,
-        -420
+        1820,
+        -700
       ]
     },
     {
@@ -350,91 +329,91 @@
         },
         "options": {}
       },
-      "id": "484db865-3a2b-4bc9-8538-0876b0ed5c96",
+      "id": "ec1bd913-3174-41f0-be6a-ceb16d6116ad",
       "name": "Set Filter Conversation Parameters",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        6420,
-        -300
-      ]
-    },
-    {
-      "parameters": {},
-      "id": "4b647c4a-1335-46b3-a9f3-25d30ae90646",
-      "name": "new payload",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        5960,
-        -640
-      ]
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combinationMode": "multiplex",
-        "options": {}
-      },
-      "id": "bfa647a3-eb1d-4e54-b7a5-10b2374063ee",
-      "name": "Merge",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 2,
-      "position": [
-        8560,
-        -620
-      ]
-    },
-    {
-      "parameters": {},
-      "id": "4a8d94ed-52a3-4b3c-af83-9a9189d96917",
-      "name": "NoOp - Opening Conversation1",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        9060,
-        -820
-      ]
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combinationMode": "multiplex",
-        "options": {}
-      },
-      "id": "f2252da4-bd97-4696-a2eb-eb709ca85032",
-      "name": "Wait For Create a Conversation1",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 2,
-      "position": [
-        9800,
-        -660
-      ]
-    },
-    {
-      "parameters": {},
-      "id": "58facedd-f17f-4f11-b621-859a4ae90d6d",
-      "name": "NoOp - Opening Conversation",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        10840,
+        1920,
         -580
       ]
     },
     {
+      "parameters": {},
+      "id": "06de4c49-99db-4754-a94c-f99a03959823",
+      "name": "new payload",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        -920
+      ]
+    },
+    {
       "parameters": {
         "mode": "combine",
         "combinationMode": "multiplex",
         "options": {}
       },
-      "id": "9d9f9f76-ca0a-4367-ac8f-27f32e870001",
+      "id": "a8e44c9a-46e8-42da-bd28-2eacb68a601d",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        4060,
+        -900
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "7cc7696b-96f4-4828-b3b8-d8c97e2a892a",
+      "name": "NoOp - Opening Conversation1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        4560,
+        -1100
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "d5d0387c-154d-4142-81c8-f9930b76ecec",
+      "name": "Wait For Create a Conversation1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        5300,
+        -940
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "24d93303-5f65-4729-9868-889ac0e7f48a",
+      "name": "NoOp - Opening Conversation",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        6340,
+        -860
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "0515f104-fdf0-4eed-a562-6ca16f271ec8",
       "name": "Merge1",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        10600,
-        -640
+        6100,
+        -920
       ]
     },
     {
@@ -454,10 +433,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        10440,
-        -820
+        5940,
+        -1100
       ],
-      "id": "d0077235-64f2-486c-8e61-0489a8a3d264"
+      "id": "7983b767-7962-474e-9c7e-f4d2dd2f73ef"
     },
     {
       "parameters": {
@@ -466,6 +445,14 @@
             {
               "name": "payload.content_type",
               "value": "text"
+            },
+            {
+              "name": "payload.event",
+              "value": "={{ $('Webhook Chatwoot').item.json.body.type }}"
+            },
+            {
+              "name": "payload.edited",
+              "value": "={{ $('Webhook Chatwoot').item.json.body.edited || false}}"
             }
           ]
         },
@@ -475,22 +462,22 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        11940,
-        -560
+        8980,
+        -980
       ],
-      "id": "d912e05b-ad17-447b-9af5-082dcbbc940f"
+      "id": "10cf70a1-5794-44ca-b3f2-69f539b8474e"
     },
     {
       "parameters": {
         "workflowId": "={{ $env['C8Q_POSTTOCHATWOOT'] }}"
       },
-      "id": "04cc39a6-0b8c-4e28-ba74-276e8318e5d7",
+      "id": "d67bbb2a-fc12-48c7-a61d-4bdd78d6f9db",
       "name": "Execute Workflow Post To Chatwoot",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        12500,
-        -540
+        9540,
+        -960
       ],
       "alwaysOutputData": true,
       "continueOnFail": true
@@ -501,13 +488,13 @@
         "height": 354.0653279804751,
         "width": 237.27247076935066
       },
-      "id": "86d07876-6973-4075-9e49-46df11946eb3",
+      "id": "b3e3c425-1565-45ed-804d-c28bfd88cb71",
       "name": "Note2",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        11060,
-        -700
+        6560,
+        -980
       ]
     },
     {
@@ -522,13 +509,13 @@
           ]
         }
       },
-      "id": "fbc0daa5-20e4-4b25-8ebc-0c83dddd0948",
+      "id": "88adc2c0-3ff0-4b8c-bb33-2298decdccb3",
       "name": "If Call Request ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        11120,
-        -580
+        6620,
+        -860
       ]
     },
     {
@@ -549,26 +536,26 @@
         },
         "options": {}
       },
-      "id": "05590aed-882b-4b99-b65b-eea0f54d73ce",
+      "id": "38ced44d-cf41-4559-b027-b23c937bbbef",
       "name": "Set Text Content For Call Request",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        11400,
-        -720
+        6900,
+        -1000
       ]
     },
     {
       "parameters": {
         "workflowId": "={{ $env['C8Q_POSTTOWEBCALLBACK'] }}"
       },
-      "id": "8718b5a6-84c1-4b5b-ae0a-a395615fae89",
+      "id": "bf7a29db-9097-4bb0-afb5-76b849036c21",
       "name": "Throw To WebCallBack Telephony Workflow",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        11680,
-        -920
+        7180,
+        -1200
       ],
       "executeOnce": true,
       "continueOnFail": true
@@ -585,13 +572,13 @@
         },
         "options": {}
       },
-      "id": "0899086d-506f-47ed-92fc-291114bb0ddc",
+      "id": "b426c411-6044-4aa9-8b21-71926549a3a5",
       "name": "Set Increment For Conversations Attempts",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        7720,
-        -120
+        3220,
+        -400
       ]
     },
     {
@@ -599,13 +586,13 @@
         "amount": "={{ (Math.random() * 5) + 1 }}",
         "unit": "seconds"
       },
-      "id": "82215911-5458-4553-a585-76b3b5b941c7",
+      "id": "77601961-eda9-4494-89f6-9302a2a7385a",
       "name": "Wait a while (5s) For Conversation",
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        8080,
-        -40
+        3580,
+        -320
       ],
       "webhookId": "13d982e4-e253-4616-9e0a-3da472be5e56"
     },
@@ -626,13 +613,13 @@
         },
         "options": {}
       },
-      "id": "9127a3ed-6f34-4a20-8e82-126dd75b5410",
+      "id": "a8526070-af61-43df-a1ac-3f32c5c60670",
       "name": "Set Conversation Payload",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        8240,
-        -300
+        3740,
+        -580
       ]
     },
     {
@@ -649,7 +636,7 @@
               "value": "={{$json.fromme?\"outgoing\":\"incoming\"}}"
             },
             {
-              "name": "payload.echo_id",
+              "name": "payload.source_id",
               "value": "={{$json.id}}"
             },
             {
@@ -658,7 +645,7 @@
             },
             {
               "name": "payload.content_attributes.in_reply_to",
-              "value": "={{ $json.inreply }}"
+              "value": "={{ $json.inreply ? +$json.inreply : undefined }}"
             },
             {
               "name": "payload.attachment",
@@ -706,10 +693,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        11680,
-        -560
+        8720,
+        -980
       ],
-      "id": "c33bc370-0355-4d49-b25d-e55a58492fa8"
+      "id": "f60e14eb-e009-4412-99ec-194f81fb8744"
     },
     {
       "parameters": {
@@ -717,20 +704,20 @@
         "query": "=SELECT \n display_id, \n status\nFROM conversations \nWHERE \n\taccount_id = '{{ $json.account }}' \n\tAND inbox_id = '{{ $json.inbox }}'\n\tAND contact_id = '{{ $json.contactid }}'\nORDER BY id DESC\nLIMIT 1",
         "additionalFields": {}
       },
-      "id": "35dc78d4-e662-465b-8497-39748628085b",
+      "id": "e60ae04a-a549-40be-9ecc-8f0102e5ea80",
       "name": "Get Last Conversation",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        6840,
-        -200
+        2340,
+        -480
       ],
       "retryOnFail": false,
       "waitBetweenTries": 2000,
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "1",
+          "id": "vSgNoxPsTNRz4Pxu",
           "name": "Postgres account"
         }
       },
@@ -740,13 +727,13 @@
       "parameters": {
         "jsCode": "const validStatus = [\"open\", \"resolved\", \"pending\", \"snoozed\"];\n\nreturn [{\n  payload: {\n    id: $input.first().json.display_id,\n    status: validStatus[$input.first().json.status]\n  }\n}];"
       },
-      "id": "1c56bd34-60ed-4ff6-8021-659e3dd91bfc",
+      "id": "7cccdbff-ed49-45c5-acc7-a604662ec0ce",
       "name": "Rename Status Enum",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        7020,
-        -200
+        2520,
+        -480
       ]
     },
     {
@@ -760,13 +747,13 @@
           ]
         }
       },
-      "id": "87e5fbef-d80b-42c1-a4af-240e4059e3bb",
+      "id": "ba6c32c5-48ac-4de6-b387-1afb0b274251",
       "name": "If Single Thread ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        7360,
-        -280
+        2860,
+        -560
       ]
     },
     {
@@ -781,13 +768,13 @@
           ]
         }
       },
-      "id": "c14a90c0-5186-4db9-8143-256575527202",
+      "id": "7832f7b8-f1d1-4a10-9838-a9f166eba823",
       "name": "Max Attempts Reached ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        7900,
-        -120
+        3400,
+        -400
       ]
     },
     {
@@ -803,35 +790,35 @@
         },
         "combineOperation": "any"
       },
-      "id": "c72cdaed-7c0b-4c45-a545-cb910ff552f3",
+      "id": "b1851e3f-ccbc-4b39-91ed-2561fd404874",
       "name": "If Not Resolved Conversation Found ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        7540,
-        -200
+        3040,
+        -480
       ]
     },
     {
       "parameters": {},
-      "id": "901990ac-b390-413e-8e27-1231ecabe44d",
+      "id": "8a4c2598-cec9-4ee8-98f0-e4b6a9156628",
       "name": "#region retries for conversation",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        6660,
-        -300
+        2160,
+        -580
       ]
     },
     {
       "parameters": {},
-      "id": "c2f43b05-b163-4750-8e2a-f6405827767b",
+      "id": "a73bf3fe-d7e4-44cb-83ab-7cf6e27d7f44",
       "name": "first found",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        7720,
-        -300
+        3220,
+        -580
       ]
     },
     {
@@ -839,46 +826,301 @@
         "keepOnlySet": true,
         "options": {}
       },
-      "id": "719bf078-5f30-468f-ab3b-f0a62ae4e4f2",
+      "id": "66b6d42f-aef0-473b-9f78-cd28ba06ccf0",
       "name": "CleanUp Invalid Status",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        8080,
-        -200
+        3580,
+        -480
       ]
     },
     {
       "parameters": {
-        "content": "## (1.0.1) Updates\n* synopsis\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.2) Updates\n* chat command, instead invite command\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 175.9061641534987,
         "width": 398.97654103837476
       },
-      "id": "c6033725-82de-4f13-80d6-a0bac932ff9c",
+      "id": "c3701431-3364-4941-8ae7-37bf72d68773",
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        5360,
-        -880
+        560,
+        -1320
       ]
     },
     {
       "parameters": {
         "workflowId": "={{ $env['C8Q_GETCHATWOOTCONTACTS'] }}"
       },
-      "id": "9ed894d2-7af8-4152-98ff-9e49b97184bd",
+      "id": "670234ea-2085-41e9-8c4f-e8d81b11d7c6",
       "name": "Throw Get Chatwoot Contacts Workflow",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        5760,
-        -640
+        1260,
+        -920
       ],
       "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.payload.content ?? '' }}",
+              "operation": "startsWith",
+              "value2": "/invite"
+            },
+            {
+              "value1": "={{ $json.payload.content ?? '' }}",
+              "operation": "startsWith",
+              "value2": "//"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "09cb9cdf-d28c-405b-b570-ca2dc31be04b",
+      "name": "If Chat Command",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        9220,
+        -980
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.inreply }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "c46ce917-546e-461a-a568-efb1606cc2f2",
+      "name": "If Not In Reply",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        6880,
+        -700
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "3fa2b9ac-856f-475c-b38a-bc24bfbde4e8",
+      "name": "Follow to Chatwoot",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        8180,
+        -980
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=\nSELECT id AS inreply_internal_id\nFROM messages \nWHERE source_id = '{{ $json.inreply }}'\nLIMIT 1",
+        "options": {}
+      },
+      "id": "e8023cf3-86a8-4c82-9ee1-927c1f58af42",
+      "name": "Get In Reply Reference Id",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        7280,
+        -460
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "vSgNoxPsTNRz4Pxu",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "39b1e829-42ff-4a3f-bc51-37b922d9b4c7",
+      "name": "Merging Found Id",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        7520,
+        -660
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "inreply",
+              "value": "={{ $json.inreply_internal_id }}"
+            },
+            {
+              "name": "synopsis",
+              "value": "={{ undefined }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9ade9836-79a7-4fd2-8a23-35ff7f738935",
+      "name": "Set1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        7900,
+        -640
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.inreply }}",
+              "operation": "contains",
+              "value2": "-"
+            }
+          ]
+        }
+      },
+      "id": "f67dcefd-8081-4941-9644-28f25ec4ca98",
+      "name": "If Has Hiffen",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        7080,
+        -580
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "inreply_internal_id",
+              "value": "={{ $json.inreply.split(/-/).pop() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bb940495-da0f-4149-9140-107e7fb8e486",
+      "name": "Set Internal Id",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        7280,
+        -600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.inreply_internal_id }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "dbe7ea84-dc6a-4487-8d7d-3bfd3e87d7ee",
+      "name": "If Not Found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        7700,
+        -660
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] }}"
+      },
+      "id": "746f3267-aba1-4040-8292-d97fe9498fd2",
+      "name": "Throw To Quepasa Chat Control Workflow1",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        -1100
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.chat.id }}",
+              "value2": "system"
+            }
+          ]
+        }
+      },
+      "id": "cd25dc10-0044-4dcf-b33c-1bfe4ce1c791",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -920
+      ]
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Webhook Chatwoot": [
+      {
+        "json": {
+          "headers": {
+            "host": "127.0.0.1:5678",
+            "user-agent": "Quepasa",
+            "content-length": "465",
+            "content-type": "application/json",
+            "x-quepasa-wid": "553597567586:41@s.whatsapp.net",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "id": "3EB004DCE5AD409C1B1DF0",
+            "timestamp": "2024-01-27T10:21:36-03:00",
+            "type": 9,
+            "chat": {
+              "id": "system",
+              "title": "Internal System Message"
+            },
+            "text": "401: logged out from another device",
+            "fromme": false,
+            "frominternal": false,
+            "extra": {
+              "account": 1,
+              "atoken": "e7d95901c1c32094a01d838",
+              "cwhost": "http://127.0.0.1:3000",
+              "identifier": "WRzeHuuuCVbTA99kLWzUqms4",
+              "inbox": 1,
+              "qphost": "http://127.0.0.1:31000",
+              "qptoken": "WRzeHuuuCVbTA99kLWzUqms4",
+              "utoken": "sAgLXqoCrq7aB34JdQTZbm4W"
+            }
+          }
+        }
+      }
+    ]
+  },
   "connections": {
     "Open ?": {
       "main": [
@@ -945,7 +1187,7 @@
       "main": [
         [
           {
-            "node": "Throw Get Chatwoot Contacts Workflow",
+            "node": "IF",
             "type": "main",
             "index": 0
           }
@@ -964,24 +1206,6 @@
         [
           {
             "node": "Not Broadcast ?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If Invite Command": {
-      "main": [
-        [
-          {
-            "node": "Throw To Quepasa Chat Control Workflow",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Execute Workflow Post To Chatwoot",
             "type": "main",
             "index": 0
           }
@@ -1112,7 +1336,7 @@
       "main": [
         [
           {
-            "node": "If Invite Command",
+            "node": "If Chat Command",
             "type": "main",
             "index": 0
           }
@@ -1130,7 +1354,7 @@
         ],
         [
           {
-            "node": "Chatwoot Message Payload",
+            "node": "If Not In Reply",
             "type": "main",
             "index": 0
           }
@@ -1146,7 +1370,7 @@
             "index": 0
           },
           {
-            "node": "Chatwoot Message Payload",
+            "node": "Follow to Chatwoot",
             "type": "main",
             "index": 0
           }
@@ -1355,30 +1579,180 @@
           }
         ]
       ]
+    },
+    "If Chat Command": {
+      "main": [
+        [
+          {
+            "node": "Throw To Quepasa Chat Control Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Workflow Post To Chatwoot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Not In Reply": {
+      "main": [
+        [
+          {
+            "node": "Follow to Chatwoot",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If Has Hiffen",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merging Found Id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Follow to Chatwoot": {
+      "main": [
+        [
+          {
+            "node": "Chatwoot Message Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get In Reply Reference Id": {
+      "main": [
+        [
+          {
+            "node": "Merging Found Id",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merging Found Id": {
+      "main": [
+        [
+          {
+            "node": "If Not Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Has Hiffen": {
+      "main": [
+        [
+          {
+            "node": "Set Internal Id",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get In Reply Reference Id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Internal Id": {
+      "main": [
+        [
+          {
+            "node": "Merging Found Id",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If Not Found": {
+      "main": [
+        [
+          {
+            "node": "Follow to Chatwoot",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set1": {
+      "main": [
+        [
+          {
+            "node": "Follow to Chatwoot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Throw To Quepasa Chat Control Workflow1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Throw Get Chatwoot Contacts Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "saveManualExecutions": false,
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "46222dee-6ca2-48ad-9d21-f2305b406bb3",
+  "versionId": "e516b544-cc02-488e-a37f-323456643c00",
   "id": "1009",
   "meta": {
-    "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
+    "instanceId": "b0f69e3c6d1f5668f6e8b6f67bd5d337293bd6464be3f9adc6773d4609da5a0a"
   },
   "tags": [
     {
-      "createdAt": "2023-05-19T22:54:38.266Z",
-      "updatedAt": "2023-05-19T22:54:38.266Z",
-      "id": "13",
+      "createdAt": "2023-11-16T17:18:46.718Z",
+      "updatedAt": "2023-11-16T17:18:46.718Z",
+      "id": "j7oSLoK8BbO8De4b",
       "name": "github.com/nocodeleaks"
     },
     {
-      "createdAt": "2022-10-13T15:26:19.857Z",
-      "updatedAt": "2023-08-24T21:01:00.296Z",
-      "id": "6",
+      "createdAt": "2023-11-16T17:18:46.720Z",
+      "updatedAt": "2023-11-16T17:18:46.720Z",
+      "id": "Hvs9dsaHRMOSIDZN",
       "name": "chatwoot"
     }
   ]
