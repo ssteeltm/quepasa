@@ -61,6 +61,7 @@
         -483.21073188545233
       ],
       "id": "f298b95a-045a-437e-a369-38a671315924",
+      "retryOnFail": true,
       "notes": "Important to use \"source_id\" to respond messages"
     },
     {
@@ -137,8 +138,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6960,
-        -280
+        6740,
+        -340
       ],
       "id": "72697f1d-f457-4d47-9248-3b8923722028"
     },
@@ -166,8 +167,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        6740,
-        -280
+        6540,
+        -340
       ],
       "webhookId": "f0d0e1da-e8cf-4956-8715-dccf5fe3c892"
     },
@@ -181,8 +182,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        7160,
-        -180
+        6940,
+        -220
       ]
     },
     {
@@ -637,7 +638,7 @@
               "value": "={{ $json.inreply ? +$json.inreply : undefined }}"
             },
             {
-              "name": "payload.attachment",
+              "name": "attachment",
               "value": "={{$json.attachment}}"
             },
             {
@@ -826,8 +827,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.3) Updates\n* Adjustments to revoke and edit messages\n\n## (1.0.2) Updates\n* chat command, instead invite command\n\n## Recommendations \n* Remember set timeout to 30 seconds",
-        "height": 332.69543226804643,
+        "content": "## (1.0.4) Updates\n* Adjustments to revoke\n\n## (1.0.3) Updates\n* Adjustments to revoke and edit messages\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "height": 288.02784606114983,
         "width": 398.97654103837476
       },
       "id": "97661b0f-d79b-4d77-bb42-c99a3e1c4f1a",
@@ -835,8 +836,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        6740,
-        -860
+        6620,
+        -720
       ]
     },
     {
@@ -1079,6 +1080,195 @@
         7540,
         -300
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.body.type }}",
+              "operation": "notEqual",
+              "value2": 10
+            }
+          ]
+        }
+      },
+      "id": "2e35e702-a80a-4875-85b3-9f0fdf0657e3",
+      "name": "If Not Revoked ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        6940,
+        -360
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "3887d0f9-5d36-4e00-9293-3bf63b2edf08",
+      "name": "(In) Revoked Message",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        8180,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "revoked",
+              "value": "={{ $json }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "322efd2c-539b-49c1-a012-93d5c1a4bad3",
+      "name": "Set Retrieved Chatwoot Revoked Info",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        8940,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "fa11d404-bd6c-4f87-b1ba-5b6b347d2a4d",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        9260,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{ $json.body.extra.cwhost }}/api/v1/accounts/{{ $json.revoked.account_id }}/conversations/{{ $json.revoked.conversation_id }}/messages",
+        "allowUnauthorizedCerts": true,
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n   \"private\": false,\n   \"content\": \"❌ Essa mensagem foi apagada !\",\n   \"message_type\": 2,\n   \"content_attributes\": {      \n      \"in_reply_to\": {{ +$json.revoked.id }},\n      \"in_reply_to_external_id\": \"{{ $json.body.id }}\"\n   },\n   \"content_type\": \"text\"\n}",
+        "headerParametersJson": "={ \"api_access_token\": \"{{ $json.body.extra.atoken }}\" }"
+      },
+      "name": "Send Revoked Message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        9480,
+        980
+      ],
+      "id": "f99d96cc-c113-4c9b-882b-b4b5d976d688",
+      "retryOnFail": true,
+      "waitBetweenTries": 2000
+    },
+    {
+      "parameters": {
+        "content": "## Message Revoked From Source\n\n",
+        "height": 511.52099560219085,
+        "width": 1735.9412743995279
+      },
+      "id": "18ca4991-c103-457c-a7a6-4f34659fab9a",
+      "name": "Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        8000,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT messages.account_id, conversations.display_id as conversation_id, messages.id\nFROM messages INNER JOIN conversations \nON messages.conversation_id = conversations.id\nWHERE messages.account_id = '{{ $json.body.extra.account }}' AND messages.source_id = '{{ $json.body.id }}';",
+        "options": {}
+      },
+      "id": "ac24beed-702b-4e3b-bdea-6985eb9e854d",
+      "name": "Get Revoked Message Info",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        8700,
+        860
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{  $json.body.id }}",
+              "operation": "contains",
+              "value2": "-"
+            }
+          ]
+        }
+      },
+      "id": "01133e25-ab8d-4949-9b7d-a10609640dd1",
+      "name": "If Sended By Chatwoot",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        8380,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "body.internalid",
+              "value": "={{ $json.body.id.split(/-/).pop() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ce9e977b-dfd4-4e17-a385-f99c9ed607a5",
+      "name": "Internal Id",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        8540,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT messages.account_id, conversations.display_id as conversation_id, messages.id\nFROM messages INNER JOIN conversations \nON messages.conversation_id = conversations.id\nWHERE messages.account_id = '{{ $json.body.extra.account }}' AND messages.id = '{{ $json.body.internalid }}';",
+        "options": {}
+      },
+      "id": "206e5a0d-80bc-4843-baf1-2bdbd9495dcd",
+      "name": "Get Revoked Internal Message Info",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        8700,
+        680
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      }
     }
   ],
   "pinData": {
@@ -1187,7 +1377,7 @@
       "main": [
         [
           {
-            "node": "IF",
+            "node": "If Not Revoked ?",
             "type": "main",
             "index": 0
           }
@@ -1729,6 +1919,113 @@
           }
         ]
       ]
+    },
+    "If Not Revoked ?": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "(In) Revoked Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "(In) Revoked Message": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "If Sended By Chatwoot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Retrieved Chatwoot Revoked Info": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Send Revoked Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Revoked Message Info": {
+      "main": [
+        [
+          {
+            "node": "Set Retrieved Chatwoot Revoked Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Sended By Chatwoot": {
+      "main": [
+        [
+          {
+            "node": "Internal Id",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Revoked Message Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Internal Id": {
+      "main": [
+        [
+          {
+            "node": "Get Revoked Internal Message Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Revoked Internal Message Info": {
+      "main": [
+        [
+          {
+            "node": "Set Retrieved Chatwoot Revoked Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -1737,7 +2034,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "57419479-51d5-407a-8a84-81b017862118",
+  "versionId": "b7218abc-ed4b-46aa-a602-b32a081fbff4",
   "id": "1009",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
