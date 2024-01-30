@@ -241,8 +241,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.4) Updates\n* maps thumb\n\n## Recommendations \n* Remember set timeout to 10 seconds",
-        "height": 192.00742066164864,
+        "content": "## (1.0.6) Updates\n* localization remove empty spaces\n\n## (1.0.5) Updates\n* maps thumb\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "height": 259.23831721337274,
         "width": 489.8474320052134
       },
       "id": "5c00d5f6-1dbb-4218-8a8e-8853fd826635",
@@ -371,7 +371,7 @@
       "parameters": {
         "mode": "jsonToBinary",
         "convertAllData": false,
-        "sourceKey": "=json.attachment.thumbnail",
+        "sourceKey": "attachment.thumbnail",
         "options": {
           "dataIsBase64": true,
           "fileName": "={{ $json.attachment.filename }}",
@@ -787,7 +787,7 @@
           "string": [
             {
               "name": "payload.content",
-              "value": "=**Localização:** \n{{ $json.attachment.url }}\n\n"
+              "value": "=**Localização:** \n{{ $json.attachment.url }}"
             }
           ]
         },
@@ -1478,7 +1478,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "b8ffac2d-5f88-4a05-b968-782c906dda29",
+  "versionId": "16a7ae81-0b72-4630-9725-981daab1a106",
   "id": "1006",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
