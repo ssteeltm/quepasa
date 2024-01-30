@@ -507,8 +507,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        -7000,
-        5600
+        -7080,
+        5620
       ]
     },
     {
@@ -520,8 +520,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        -7180,
-        5600
+        -7300,
+        5620
       ],
       "continueOnFail": true
     },
@@ -658,8 +658,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -7360,
-        5600
+        -7520,
+        5620
       ]
     },
     {
@@ -668,16 +668,16 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -7840,
-        5400
+        -8000,
+        5420
       ],
       "id": "c30fb630-3758-457e-bdee-a6ce9e4338af"
     },
     {
       "parameters": {
         "content": "## POST RESOLVED MESSAGE\n* to disable, remove that link",
-        "height": 565.5824733063735,
-        "width": 3071.1267498581306
+        "height": 461.0344273293615,
+        "width": 3095.2003130765215
       },
       "id": "225c8c85-a64f-4d4b-808c-75d3da5089f9",
       "name": "Sticky Note1",
@@ -685,7 +685,7 @@
       "typeVersion": 1,
       "position": [
         -7580,
-        4980
+        5000
       ]
     },
     {
@@ -753,19 +753,6 @@
       "position": [
         -4660,
         5140
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "function hex2a(hexx) {\n    var hex = hexx.toString(); //force conversion\n    var str = '';\n    for (var i = 0; i < hex.length; i += 2)\n        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));\n    return str;\n}\n\nfor(let index in items) \n{ \n    if(items[index].json?.chatid){\n        continue;\n    }\n\n    let body = items[index].json[\"body\"];\n    if(body) \n    {\n        // trying to get from external identifier\n        let chatid = body.meta?.sender?.identifier;\n        if(!chatid)\n        {\n            // trying to get from quepasa custom property\n            chatid = body.meta?.sender?.custom_attributes?.quepasa;            \n            if(!chatid)\n            {\n                // trying to get from e-mail\n                chatid = body.meta?.sender?.email;            \n                if(!chatid)\n                {\n                    // trying to unhex from source_id\n                    if(body.contact_inbox?.source_id && body.contact_inbox.source_id.includes(\"@\")){\n                        chatid = hex2a(body.contact_inbox.source_id)\n                    }\n                    \n                    if(!chatid)\n                    {                    \n                        // trying to get from phone number \n                        chatid = body.meta?.sender?.phone_number;\n                        if (chatid) { \n                          chatid += '@s.whatsapp.net';\n                          if (chatid.startsWith('+')) chatid = chatid.substring(1);\n                        }\n                    }\n                }\n            }\n        }\n        items[index].json.chatid = chatid;\n    }\n}\n\nreturn items;"
-      },
-      "id": "65787d24-844c-4905-b6ff-13a7a41b8720",
-      "name": "Getting ChatId From Custom|Email|Source|Phone",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [
-        -7560,
-        5600
       ]
     },
     {
@@ -1012,17 +999,17 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.17) Updates\n* Adjustments to reply message\n* Added infos if message delivery was failed\n\n\n## Recommendations \n* Remember set timeout to 30 seconds\n\n",
-        "height": 222.40358777992094,
-        "width": 563.1965954053662
+        "content": "## (1.0.18) Updates\n* Ensuring chatid for conversation avaliation\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "height": 188.50589779739215,
+        "width": 457.17616077915915
       },
       "id": "224d6d50-a48c-4de4-a996-154f372cf182",
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -9120,
-        4540
+        -9140,
+        4580
       ]
     },
     {
@@ -1387,6 +1374,34 @@
         6440
       ],
       "id": "95eef3f9-14bd-4d8d-b7b6-10080ac4a096"
+    },
+    {
+      "parameters": {
+        "content": "## PROFILE UPDATE\n* throws at conversation status changed ",
+        "height": 290.45603652476376,
+        "width": 3095.2003130765215
+      },
+      "id": "0ca89f66-b334-45f2-a49d-b26f19dfff49",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -7580,
+        5500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "function hex2a(hexx) {\n    var hex = hexx.toString(); //force conversion\n    var str = '';\n    for (var i = 0; i < hex.length; i += 2)\n        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));\n    return str;\n}\n\nfor(let index in items) \n{ \n    if(items[index].json?.chatid){\n        continue;\n    }\n\n    let body = items[index].json[\"body\"];\n    if(body) \n    {\n        // trying to get from external identifier\n        let chatid = body.meta?.sender?.identifier;\n        if(!chatid)\n        {\n            // trying to get from quepasa custom property\n            chatid = body.meta?.sender?.custom_attributes?.quepasa;            \n            if(!chatid)\n            {\n                // trying to get from e-mail\n                chatid = body.meta?.sender?.email;            \n                if(!chatid)\n                {\n                    // trying to unhex from source_id\n                    if(body.contact_inbox?.source_id && body.contact_inbox.source_id.includes(\"@\")){\n                        chatid = hex2a(body.contact_inbox.source_id)\n                    }\n                    \n                    if(!chatid)\n                    {                    \n                        // trying to get from phone number \n                        chatid = body.meta?.sender?.phone_number;\n                        if (chatid) { \n                          chatid += '@s.whatsapp.net';\n                          if (chatid.startsWith('+')) chatid = chatid.substring(1);\n                        }\n                    }\n                }\n            }\n        }\n        items[index].json.chatid = chatid;\n    }\n}\n\nreturn items;"
+      },
+      "id": "65787d24-844c-4905-b6ff-13a7a41b8720",
+      "name": "Ensure ChatId From Custom|Email|Source|Phone",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        -7800,
+        5420
+      ]
     }
   ],
   "pinData": {
@@ -1875,12 +1890,7 @@
       "main": [
         [
           {
-            "node": "Getting ChatId From Custom|Email|Source|Phone",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Post Resolved Message",
+            "node": "Ensure ChatId From Custom|Email|Source|Phone",
             "type": "main",
             "index": 0
           }
@@ -1931,17 +1941,6 @@
         [
           {
             "node": "No Operation, do nothing",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Getting ChatId From Custom|Email|Source|Phone": {
-      "main": [
-        [
-          {
-            "node": "Set Update Contact Payload",
             "type": "main",
             "index": 0
           }
@@ -2262,6 +2261,22 @@
           }
         ]
       ]
+    },
+    "Ensure ChatId From Custom|Email|Source|Phone": {
+      "main": [
+        [
+          {
+            "node": "Post Resolved Message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set Update Contact Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -2270,7 +2285,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "ecfe4cef-1dea-46e5-9f2a-cb3503de47ae",
+  "versionId": "8290d80b-7a01-4182-8426-2be62ac57cc3",
   "id": "1008",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
