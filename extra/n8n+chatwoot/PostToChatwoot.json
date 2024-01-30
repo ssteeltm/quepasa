@@ -16,7 +16,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -2440,
+        -2220,
         900
       ],
       "id": "6af41726-dedf-4662-a464-1c19bb71be40"
@@ -37,7 +37,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -2240,
+        -2020,
         960
       ],
       "id": "4cc64138-d2f9-4419-95a6-a8a2bee9a464"
@@ -55,7 +55,7 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        -1640,
+        -1420,
         700
       ],
       "continueOnFail": true
@@ -67,7 +67,7 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        -3420,
+        -3180,
         760
       ]
     },
@@ -86,7 +86,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -2040,
+        -1820,
         880
       ],
       "id": "0af31fae-f50e-469b-83d0-77d80f4e72fc"
@@ -102,7 +102,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -1060,
+        -840,
         740
       ]
     },
@@ -113,7 +113,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -1840,
+        -1620,
         760
       ]
     },
@@ -134,7 +134,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -1260,
+        -1040,
         620
       ]
     },
@@ -154,7 +154,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -1460,
+        -1240,
         700
       ]
     },
@@ -174,7 +174,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -380,
+        -160,
         980
       ]
     },
@@ -195,7 +195,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -180,
+        40,
         1040
       ]
     },
@@ -235,13 +235,13 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        -3000,
+        -2780,
         880
       ]
     },
     {
       "parameters": {
-        "content": "## (1.0.6) Updates\n* localization remove empty spaces\n\n## (1.0.5) Updates\n* maps thumb\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "content": "## (1.0.7) Updates\n* edited messages\n\n## (1.0.6) Updates\n* localization remove empty spaces\n\n## Recommendations \n* Remember set timeout to 10 seconds",
         "height": 259.23831721337274,
         "width": 489.8474320052134
       },
@@ -250,8 +250,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -3620,
-        474.0126535169335
+        -3380,
+        480
       ]
     },
     {
@@ -270,7 +270,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -2820,
+        -2600,
         880
       ]
     },
@@ -291,52 +291,26 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        -2640,
+        -2420,
         800
       ]
     },
     {
       "parameters": {
-        "keepOnlySet": true,
-        "values": {
-          "string": [
-            {
-              "name": "content_attributes.in_reply_to",
-              "value": "={{ $json.id }}"
-            },
-            {
-              "name": "editedmessage",
-              "value": "={{ $('When Called By Another Workflow').item.json.payload.content }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "3146b6a0-748c-4bcb-9443-6b9c6f1730dc",
-      "name": "Infos",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 2,
-      "position": [
-        -2820,
-        640
-      ]
-    },
-    {
-      "parameters": {
         "requestMethod": "POST",
-        "url": "={{ $('When Called By Another Workflow').item.json[\"extra\"][\"cwhost\"] }}/api/v1/accounts/{{ $('When Called By Another Workflow').item.json[\"extra\"][\"account\"]}}/conversations/{{ $('When Called By Another Workflow').item.json[\"conversation\"][\"id\"] }}/messages",
+        "url": "={{ $json.extra.cwhost }}/api/v1/accounts/{{ $json.extra.account }}/conversations/{{ $json.conversation.id }}/messages",
         "allowUnauthorizedCerts": true,
         "jsonParameters": true,
         "options": {},
-        "bodyParametersJson": "={\n   \"private\": false,\n   \"content\": \"⚠️ ***Essa mensagem foi editada!***\\n Nova mensagem: *{{ $('Infos').item.json[\"editedmessage\"] }}*\",\n   \"message_type\": \"incoming\",\n   \"source_id\": \"{{ $('When Called By Another Workflow').item.json[\"payload\"][\"source_id\"] }}\",\n   \"content_attributes\": {\n      \"items\": {\n         \"quepasa\": {\n            \"msgid\": \"{{ $('When Called By Another Workflow').item.json[\"payload\"][\"content_attributes\"][\"items\"][\"quepasa\"][\"msgid\"] }}\"\n         }\n      },\n      \"in_reply_to\": \"{{ $('Infos').item.json[\"content_attributes\"][\"in_reply_to\"] }}\"\n   },\n   \"attachment\": \"\",\n   \"content_type\": \"text\"\n}",
-        "headerParametersJson": "={ \"api_access_token\": \"{{ $('When Called By Another Workflow').item.json.extra.atoken }}\" }"
+        "bodyParametersJson": "={\n   \"private\": false,\n   \"content\": \"⚠️ ***Essa mensagem foi editada !***\\n Nova mensagem: *{{ $json.payload.content }}*\",\n   \"message_type\": 0,\n   \"content_attributes\": {      \n      \"in_reply_to\": {{ +$json.internal_id }},\n      \"in_reply_to_external_id\": \"{{ $json.payload.source_id }}\"\n   },\n   \"content_type\": \"text\"\n}",
+        "headerParametersJson": "={ \"api_access_token\": \"{{ $json.extra.atoken }}\" }"
       },
       "name": "Send Edited Message",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        -2640,
-        640
+        -2180,
+        620
       ],
       "id": "943ba096-84d6-4793-9b53-d856db56a478",
       "retryOnFail": true,
@@ -360,7 +334,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        2200,
+        2420,
         1560
       ],
       "id": "4ebd53bb-6850-419e-a7b1-2e5f336b0a88",
@@ -383,7 +357,7 @@
       "type": "n8n-nodes-base.moveBinaryData",
       "typeVersion": 1,
       "position": [
-        1160,
+        1380,
         1440
       ],
       "alwaysOutputData": true
@@ -398,7 +372,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        780,
+        1000,
         1060
       ]
     },
@@ -439,7 +413,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        1680,
+        1900,
         940
       ],
       "onError": "continueErrorOutput",
@@ -477,7 +451,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        3020,
+        3240,
         1040
       ],
       "id": "741bdae9-353f-4da0-8444-7f5ce9e3865c",
@@ -487,7 +461,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT id\nFROM messages\nWHERE content_attributes::text LIKE '%{{ $json.payload.content_attributes.items.quepasa.msgid }}%';\n",
+        "query": "SELECT messages.id as internal_id\nFROM messages INNER JOIN conversations \nON messages.conversation_id = conversations.id\nWHERE messages.account_id = '{{ $json.extra.account }}' AND messages.source_id = '{{ $json.payload.source_id }}';\n",
         "options": {}
       },
       "id": "01daa873-695a-4769-bece-35a4c31304eb",
@@ -495,8 +469,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.3,
       "position": [
-        -3000,
-        640
+        -2580,
+        540
       ],
       "credentials": {
         "postgres": {
@@ -521,7 +495,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -3200,
+        -2980,
         760
       ]
     },
@@ -532,7 +506,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -360,
+        -140,
         740
       ]
     },
@@ -550,7 +524,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        1420,
+        1640,
         860
       ],
       "id": "2f0a55d2-bc66-432d-b63b-55e10b63e78e",
@@ -579,7 +553,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 1,
       "position": [
-        220,
+        440,
         1080
       ]
     },
@@ -590,7 +564,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        540,
+        760,
         1500
       ]
     },
@@ -601,7 +575,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        540,
+        760,
         1060
       ]
     },
@@ -612,7 +586,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        540,
+        760,
         1800
       ]
     },
@@ -623,7 +597,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1420,
+        1640,
         1060
       ]
     },
@@ -638,7 +612,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        2800,
+        3020,
         1040
       ]
     },
@@ -658,7 +632,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1900,
+        2120,
         940
       ]
     },
@@ -679,7 +653,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2080,
+        2300,
         800
       ]
     },
@@ -701,7 +675,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        2320,
+        2540,
         660
       ]
     },
@@ -723,7 +697,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        2320,
+        2540,
         960
       ]
     },
@@ -745,7 +719,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        2320,
+        2540,
         820
       ]
     },
@@ -756,7 +730,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        2600,
+        2820,
         820
       ]
     },
@@ -777,7 +751,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        1000,
+        1220,
         1060
       ]
     },
@@ -798,7 +772,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        760,
+        980,
         1500
       ]
     },
@@ -818,7 +792,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        980,
+        1200,
         1500
       ]
     },
@@ -829,7 +803,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1320,
+        1540,
         1520
       ]
     },
@@ -849,7 +823,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        20,
+        240,
         960
       ],
       "retryOnFail": true,
@@ -862,7 +836,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        220,
+        440,
         860
       ]
     },
@@ -873,8 +847,34 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        780,
+        1000,
         1220
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a936e5e6-510e-477d-b90b-63d055450468",
+      "name": "No Operation, do nothing3",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -2780,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "613fc6e0-b244-4aa3-811e-2975f8973dad",
+      "name": "Merge Edited Message Info",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        -2380,
+        620
       ]
     }
   ],
@@ -1120,17 +1120,6 @@
         ]
       ]
     },
-    "Infos": {
-      "main": [
-        [
-          {
-            "node": "Send Edited Message",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Move Binary Data": {
       "main": [
         [
@@ -1168,7 +1157,7 @@
       "main": [
         [
           {
-            "node": "Infos",
+            "node": "Merge Edited Message Info",
             "type": "main",
             "index": 0
           }
@@ -1179,7 +1168,7 @@
       "main": [
         [
           {
-            "node": "Get Edited Message Id",
+            "node": "No Operation, do nothing3",
             "type": "main",
             "index": 0
           }
@@ -1470,6 +1459,33 @@
           }
         ]
       ]
+    },
+    "No Operation, do nothing3": {
+      "main": [
+        [
+          {
+            "node": "Get Edited Message Id",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Edited Message Info",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Edited Message Info": {
+      "main": [
+        [
+          {
+            "node": "Send Edited Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1478,7 +1494,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "16a7ae81-0b72-4630-9725-981daab1a106",
+  "versionId": "27b2b26f-3378-40ca-ac45-6ea01f3bb512",
   "id": "1006",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

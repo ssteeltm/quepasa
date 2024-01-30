@@ -243,7 +243,7 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_CHATWOOTTOQUEPASAGREETINGS'] }}"
+        "workflowId": "={{ $env['C8Q_CHATWOOTTOQUEPASAGREETINGS'] ?? 1007 }}"
       },
       "id": "1f5c22d9-579c-4085-adf2-fe12dd8ced4e",
       "name": "Throw To Greetings Workflow",
@@ -270,7 +270,7 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] }}"
+        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}"
       },
       "id": "410d80fe-c240-4a37-8c63-03fb63533a9a",
       "name": "Throw To Quepasa Chat Control Workflow",
@@ -459,7 +459,7 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_POSTTOCHATWOOT'] }}"
+        "workflowId": "={{ $env['C8Q_POSTTOCHATWOOT'] ?? 1006 }}"
       },
       "id": "fbd49a9d-e7c0-4b16-afab-ad1b9545aae6",
       "name": "Execute Workflow Post To Chatwoot",
@@ -537,7 +537,7 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_POSTTOWEBCALLBACK'] }}"
+        "workflowId": "={{ $env['C8Q_POSTTOWEBCALLBACK'] ?? 1005 }}"
       },
       "id": "318c82fb-4675-4720-a9e8-c427115aa840",
       "name": "Throw To WebCallBack Telephony Workflow",
@@ -827,7 +827,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.4) Updates\n* Adjustments to revoke\n\n## (1.0.3) Updates\n* Adjustments to revoke and edit messages\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.5) Updates\n* defaults workflows ids\n\n## (1.0.4) Updates\n* Adjustments to revoke\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 288.02784606114983,
         "width": 398.97654103837476
       },
@@ -842,7 +842,7 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_GETCHATWOOTCONTACTS'] }}"
+        "workflowId": "={{ $env['C8Q_GETCHATWOOTCONTACTS'] ?? 1002 }}"
       },
       "id": "4b96bb79-6987-4e69-96ef-b897f1a9f761",
       "name": "Throw Get Chatwoot Contacts Workflow",
@@ -1038,7 +1038,7 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] }}"
+        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}"
       },
       "id": "59427297-7da6-4b06-89a4-08647a762959",
       "name": "Throw To Quepasa Chat Control Workflow1",
@@ -2034,7 +2034,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "b7218abc-ed4b-46aa-a602-b32a081fbff4",
+  "versionId": "c49730ee-2ec0-43cc-b02f-488b5d8304d0",
   "id": "1009",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

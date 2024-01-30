@@ -3,8 +3,8 @@
   "nodes": [
     {
       "parameters": {
-        "baseUrl": "={{$json.qphost}}",
-        "token": "={{$json.qptoken}}",
+        "baseUrl": "={{$json.extra.qphost}}",
+        "token": "={{$json.extra.qptoken}}",
         "text": "={{$json.content}}",
         "chatId": "={{$json.chatid}}",
         "trackId": "chatwoot"
@@ -63,28 +63,8 @@
               "value": "={{$json.chat.id}}"
             },
             {
-              "name": "qphost",
-              "value": "={{ $json.extra.qphost ?? 'http://localhost:31000' }}"
-            },
-            {
-              "name": "qptoken",
-              "value": "={{ $json.extra.qptoken ?? $json.extra.identifier }}"
-            },
-            {
-              "name": "cwhost",
-              "value": "={{ $json.extra.cwhost ?? 'http://localhost:3000' }}"
-            },
-            {
-              "name": "account",
-              "value": "={{$json.extra.account}}"
-            },
-            {
-              "name": "inbox",
-              "value": "={{$json.extra.inbox}}"
-            },
-            {
-              "name": "utoken",
-              "value": "={{$json.extra.utoken}}"
+              "name": "extra",
+              "value": "={{$json.extra}}"
             }
           ],
           "boolean": [
@@ -129,14 +109,14 @@
     },
     {
       "parameters": {
-        "url": "={{$json.cwhost}}/api/v1/accounts/{{$json.account}}/inboxes/{{$json.inbox}}",
+        "url": "={{$json.extra.cwhost}}/api/v1/accounts/{{$json.extra.account}}/inboxes/{{$json.extra.inbox}}",
         "allowUnauthorizedCerts": true,
         "options": {},
         "headerParametersUi": {
           "parameter": [
             {
               "name": "api_access_token",
-              "value": "={{$json.utoken}}"
+              "value": "={{$json.extra.utoken}}"
             }
           ]
         }
@@ -328,7 +308,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.0) Recommendations \n* Remember set timeout to 20 seconds ",
+        "content": "## (1.0.1) Updates\n* Follow extra parameters\n\n## Recommendations \n* Remember set timeout to 20 seconds ",
         "height": 194.5475077160475,
         "width": 505.65878958512553
       },
@@ -561,20 +541,10 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 20
   },
-  "versionId": "23a8fbf1-5696-4666-9637-e38849a7f152",
+  "versionId": "3736f3d3-d834-46f0-a918-314420ec5248",
   "id": "1007",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
-  "tags": [    
-    {
-      "name": "QUEPASA"
-    },
-    {
-      "name": "CHATWOOT"
-    },
-    {
-      "name": "NOCODELEAKS"
-    }
-  ]
+  "tags": []
 }
