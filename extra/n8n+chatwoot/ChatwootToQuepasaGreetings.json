@@ -4,7 +4,7 @@
     {
       "parameters": {
         "baseUrl": "={{$json.extra.qphost}}",
-        "token": "={{$json.extra.qptoken}}",
+        "token": "={{$json.extra.qptoken ?? $json.extra.identifier}}",
         "text": "={{$json.content}}",
         "chatId": "={{$json.chatid}}",
         "trackId": "chatwoot"
@@ -308,7 +308,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.1) Updates\n* Follow extra parameters\n\n## Recommendations \n* Remember set timeout to 20 seconds ",
+        "content": "## (1.0.2) Updates\n* using identifier as qptoken, if empty\n\n## Recommendations \n* Remember set timeout to 20 seconds ",
         "height": 194.5475077160475,
         "width": 505.65878958512553
       },
@@ -541,7 +541,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 20
   },
-  "versionId": "3736f3d3-d834-46f0-a918-314420ec5248",
+  "versionId": "02b8a9d3-013a-47d8-ba18-b9cc331228b2",
   "id": "1007",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
