@@ -241,7 +241,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.7) Updates\n* edited messages\n\n## (1.0.6) Updates\n* localization remove empty spaces\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "content": "## (1.0.8) Updates\n* edited messages prepend content\n\n## (1.0.7) Updates\n* edited messages\n\n## Recommendations \n* Remember set timeout to 10 seconds",
         "height": 259.23831721337274,
         "width": 489.8474320052134
       },
@@ -302,14 +302,14 @@
         "allowUnauthorizedCerts": true,
         "jsonParameters": true,
         "options": {},
-        "bodyParametersJson": "={\n   \"private\": false,\n   \"content\": \"⚠️ ***Essa mensagem foi editada !***\\n Nova mensagem: *{{ $json.payload.content }}*\",\n   \"message_type\": 0,\n   \"content_attributes\": {      \n      \"in_reply_to\": {{ +$json.internal_id }},\n      \"in_reply_to_external_id\": \"{{ $json.payload.source_id }}\"\n   },\n   \"content_type\": \"text\"\n}",
+        "bodyParametersJson": "={\n   \"private\": false,\n   \"content\": \"{{ $json.payload.content }}\",\n   \"message_type\": 0,\n   \"content_attributes\": {      \n      \"in_reply_to\": {{ +$json.internal_id }},\n      \"in_reply_to_external_id\": \"{{ $json.payload.source_id }}\"\n   },\n   \"content_type\": \"text\"\n}",
         "headerParametersJson": "={ \"api_access_token\": \"{{ $json.extra.atoken }}\" }"
       },
       "name": "Send Edited Message",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        -2180,
+        -1960,
         620
       ],
       "id": "943ba096-84d6-4793-9b53-d856db56a478",
@@ -874,6 +874,27 @@
       "typeVersion": 2.1,
       "position": [
         -2380,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "payload.content",
+              "value": "=⚠️ ***Essa mensagem foi editada !***\n -------------------------------------\n{{ $json.payload.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6468f521-2e2a-42bc-8b42-4697f8eedb7e",
+      "name": "Prepend Edited Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -2160,
         620
       ]
     }
@@ -1480,6 +1501,17 @@
       "main": [
         [
           {
+            "node": "Prepend Edited Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepend Edited Content": {
+      "main": [
+        [
+          {
             "node": "Send Edited Message",
             "type": "main",
             "index": 0
@@ -1494,7 +1526,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "27b2b26f-3378-40ca-ac45-6ea01f3bb512",
+  "versionId": "7a793bed-935d-40be-b838-7511bc1c0bf5",
   "id": "1006",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
