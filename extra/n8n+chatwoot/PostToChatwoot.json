@@ -241,8 +241,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.8) Updates\n* edited messages prepend content\n\n## (1.0.7) Updates\n* edited messages\n\n## Recommendations \n* Remember set timeout to 10 seconds",
-        "height": 259.23831721337274,
+        "content": "## (1.0.9) Updates\n* edited messages content adjust\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "height": 189.357048321488,
         "width": 489.8474320052134
       },
       "id": "5c00d5f6-1dbb-4218-8a8e-8853fd826635",
@@ -251,7 +251,7 @@
       "typeVersion": 1,
       "position": [
         -3380,
-        480
+        549.8812688918849
       ]
     },
     {
@@ -302,7 +302,7 @@
         "allowUnauthorizedCerts": true,
         "jsonParameters": true,
         "options": {},
-        "bodyParametersJson": "={\n   \"private\": false,\n   \"content\": \"{{ $json.payload.content }}\",\n   \"message_type\": 0,\n   \"content_attributes\": {      \n      \"in_reply_to\": {{ +$json.internal_id }},\n      \"in_reply_to_external_id\": \"{{ $json.payload.source_id }}\"\n   },\n   \"content_type\": \"text\"\n}",
+        "bodyParametersJson": "={{ $json.payload }}",
         "headerParametersJson": "={ \"api_access_token\": \"{{ $json.extra.atoken }}\" }"
       },
       "name": "Send Edited Message",
@@ -461,7 +461,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT messages.id as internal_id\nFROM messages INNER JOIN conversations \nON messages.conversation_id = conversations.id\nWHERE messages.account_id = '{{ $json.extra.account }}' AND messages.source_id = '{{ $json.payload.source_id }}';\n",
+        "query": "SELECT messages.id as internal_id\nFROM messages INNER JOIN conversations \nON messages.conversation_id = conversations.id\nWHERE messages.account_id = '{{ $json.extra.account }}' AND messages.source_id = '{{ $json.payload.source_id }}' ORDER BY messages.id DESC LIMIT 1;\n",
         "options": {}
       },
       "id": "01daa873-695a-4769-bece-35a4c31304eb",
@@ -884,6 +884,16 @@
             {
               "name": "payload.content",
               "value": "=⚠️ ***Essa mensagem foi editada !***\n -------------------------------------\n{{ $json.payload.content }}"
+            },
+            {
+              "name": "payload.content_attributes.in_reply_to_external_id",
+              "value": "={{ $json.payload.source_id }}"
+            }
+          ],
+          "number": [
+            {
+              "name": "payload.content_attributes.in_reply_to",
+              "value": "={{ +$json.internal_id }}"
             }
           ]
         },
@@ -1526,7 +1536,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "7a793bed-935d-40be-b838-7511bc1c0bf5",
+  "versionId": "a2869abd-aa75-4435-85df-020cc1c28dc9",
   "id": "1006",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
