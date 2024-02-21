@@ -909,53 +909,7 @@
       ]
     }
   ],
-  "pinData": {
-    "When Called By Another Workflow": [
-      {
-        "json": {
-          "payload": {
-            "private": false,
-            "content": "Adalton",
-            "message_type": "incoming",
-            "source_id": "319F8FDEEE1750110B021411A6F2D0B1",
-            "content_attributes": {
-              "items": {
-                "quepasa": {
-                  "msgid": "319F8FDEEE1750110B021411A6F2D0B1"
-                }
-              }
-            },
-            "attachment": {
-              "mime": "text/x-vcard",
-              "filelength": 127,
-              "filename": "adalton.vcf"
-            },
-            "external_created_at": 1706361261,
-            "content_type": "text",
-            "event": 7,
-            "edited": false
-          },
-          "chatid": "553592630001@s.whatsapp.net",
-          "conversation": {
-            "id": 856,
-            "status": "open"
-          },
-          "extra": {
-            "account": 1,
-            "atoken": "e7d95901c1c32094a01d838",
-            "cwhost": "http://127.0.0.1:3000",
-            "identifier": "WRzeHuuuCVbTA99kLWzUqms4",
-            "inbox": 1,
-            "qphost": "http://127.0.0.1:31000",
-            "qptoken": "WRzeHuuuCVbTA99kLWzUqms4",
-            "utoken": "sAgLXqoCrq7aB34JdQTZbm4W"
-          },
-          "hex": "35353335393236333030303140732e77686174736170702e6e6574",
-          "participant": {}
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "Direct Message ?": {
       "main": [

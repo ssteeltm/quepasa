@@ -428,46 +428,7 @@
       ]
     }
   ],
-  "pinData": {
-    "When Called By Another Workflow": [
-      {
-        "json": {
-          "headers": {
-            "host": "127.0.0.1:5678",
-            "user-agent": "Quepasa",
-            "content-length": "465",
-            "content-type": "application/json",
-            "x-quepasa-wid": "553597567586:41@s.whatsapp.net",
-            "accept-encoding": "gzip"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "id": "3EB004DCE5AD409C1B1DF0",
-            "timestamp": "2024-01-27T10:21:36-03:00",
-            "type": 9,
-            "chat": {
-              "id": "system",
-              "title": "Internal System Message"
-            },
-            "text": "401: logged out from another device",
-            "fromme": false,
-            "frominternal": false,
-            "extra": {
-              "account": 1,
-              "atoken": "e7d95901c1c32094a01d838",
-              "cwhost": "http://127.0.0.1:3000",
-              "identifier": "WRzeHuuuCVbTA99kLWzUqms4",
-              "inbox": 1,
-              "qphost": "http://127.0.0.1:31000",
-              "qptoken": "WRzeHuuuCVbTA99kLWzUqms4",
-              "utoken": "sAgLXqoCrq7aB34JdQTZbm4W"
-            }
-          }
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "If From Chat ?": {
       "main": [
