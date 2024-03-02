@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"sync"
@@ -14,12 +15,25 @@ import (
 
 // Serviço que controla os servidores / bots individuais do whatsapp
 type QPWhatsappService struct {
-	Servers     map[string]*QpWhatsappServer
-	DB          *QpDatabase
-	Initialized bool
+	Servers     map[string]*QpWhatsappServer `json:"-"`
+	DB          *QpDatabase                  `json:"-"`
+	Initialized bool                         `json:"-"`
 
-	initlock   *sync.Mutex
-	appendlock *sync.Mutex
+	Logger     *log.Entry  `json:"-"`
+	initlock   *sync.Mutex `json:"-"`
+	appendlock *sync.Mutex `json:"-"`
+}
+
+// get default log entry, never nil
+func (source *QPWhatsappService) GetLogger() *log.Entry {
+	if source.Logger == nil {
+		logger := log.New()
+		logger.SetLevel(log.ErrorLevel)
+
+		source.Logger = logger.WithContext(context.Background())
+	}
+
+	return source.Logger
 }
 
 var WhatsappService *QPWhatsappService
@@ -52,55 +66,58 @@ func QPWhatsappStart() error {
 // Inclui um novo servidor em um serviço já em andamento
 // *Usado quando se passa pela verificação do QRCode
 // *Usado quando se inicializa o sistema
-func (service *QPWhatsappService) AppendNewServer(info *QpServer) (server *QpWhatsappServer, err error) {
-	server, ok := service.Servers[info.Token]
+func (source *QPWhatsappService) AppendNewServer(info *QpServer) (server *QpWhatsappServer, err error) {
+	logger := source.GetLogger()
+
+	// checking if it is cached already
+	server, ok := source.Servers[info.Token]
 	if !ok {
-		// Adiciona na lista de servidores
-		log.Infof("adding new server on cache: %s, wid: %s", info.Token, info.WId)
+		// adding to cache
+		logger.Infof("adding new server on cache: %s, wid: %s", info.Token, info.Wid)
 
 		// Creating a new instance
-		server, err = service.NewQpWhatsappServer(info)
+		server, err = source.NewQpWhatsappServer(info)
 		if err != nil {
-			log.Errorf("error on append new server: %s, :: %s", info.WId, err.Error())
+			logger.Errorf("error on append new server: %s, :: %s", info.Wid, err.Error())
 			return
 		}
 
-		service.Servers[info.Token] = server
+		source.Servers[info.Token] = server
 	} else {
-		// Adiciona na lista de servidores
-		log.Infof("updating new server on cache: %s, wid: %s", info.Token, info.WId)
+		// updating cached item
+		logger.Infof("updating new server on cache: %s, wid: %s", info.Token, info.Wid)
 
 		server.QpServer = info
 	}
 	return
 }
 
-func (service *QPWhatsappService) AppendPaired(paired *QpWhatsappPairing) (server *QpWhatsappServer, err error) {
-	server, ok := service.Servers[paired.Token]
-	if !ok {
-		// Adiciona na lista de servidores
-		log.Infof("adding paired server on cache: %s, wid: %s", paired.Token, paired.WId)
+func (source *QPWhatsappService) AppendPaired(paired *QpWhatsappPairing) (server *QpWhatsappServer, err error) {
+	logger := source.GetLogger()
 
-		info := &QpServer{Token: paired.Token, WId: paired.WId}
+	// checking if it is cached already
+	server, ok := source.Servers[paired.Token]
+	if !ok {
+		// adding to cache
+		logger.Infof("adding paired server on cache: %s, wid: %s", paired.Token, paired.Wid)
+
+		info := &QpServer{Token: paired.Token, Wid: paired.Wid}
 
 		// Creating a new instance
-		server, err = service.NewQpWhatsappServer(info)
+		server, err = source.NewQpWhatsappServer(info)
 		if err != nil {
-			log.Errorf("error on append new server: %s, :: %s", info.WId, err.Error())
+			logger.Errorf("error on append new server: %s, :: %s", info.Wid, err.Error())
 			return
 		}
 
-		service.Servers[info.Token] = server
+		source.Servers[info.Token] = server
 	} else {
-		// Adiciona na lista de servidores
-		log.Infof("updating paired server on cache: %s, old wid: %s, new wid: %s", server.Token, server.WId, paired.WId)
-
-		server.connection = paired.conn
-
-		//server.Disconnect("old session")
-		server.WId = paired.WId
+		// updating cached item
+		logger.Infof("updating paired server on cache: %s, old wid: %s, new wid: %s", server.Token, server.Wid, paired.Wid)
 	}
 
+	server.connection = paired.conn
+	server.Wid = paired.Wid
 	server.Verified = true
 
 	// checking user
@@ -114,8 +131,13 @@ func (service *QPWhatsappService) AppendPaired(paired *QpWhatsappPairing) (serve
 
 //region CONSTRUCTORS
 
-// Instanciando um novo servidor para controle de whatsapp
+// Instance a new quepasa whatsapp server control
 func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *QpWhatsappServer, err error) {
+
+	if info == nil {
+		err = fmt.Errorf("missing server information")
+		return
+	}
 
 	var serverLogLevel log.Level
 	if info.Devel {
@@ -124,20 +146,34 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 		serverLogLevel = log.InfoLevel
 	}
 
-	serverLogger := log.New()
-	serverLogger.SetLevel(serverLogLevel)
-	serverLogEntry := serverLogger.WithField("token", info.Token)
+	logger := log.New()
+	logger.SetLevel(serverLogLevel)
+	entry := logger.WithField("token", info.Token)
+
+	if len(info.Wid) > 0 {
+		entry = entry.WithField("wid", info.Wid)
+	}
+
+	options := &whatsapp.WhatsappConnectionOptions{
+		Wid:                 info.Wid,
+		ReadReceipts:        info.ReadReceipts,
+		RejectCalls:         info.RejectCalls,
+		EnableAutoReconnect: true,
+		Logger:              entry,
+	}
 
 	server = &QpWhatsappServer{
 		QpServer:       info,
+		Options:        options,
 		syncConnection: &sync.Mutex{},
 		syncMessages:   &sync.Mutex{},
 		StartTime:      time.Now().UTC(),
 
-		stopRequested: false,
-		Log:           serverLogEntry,
+		StopRequested: false, // setting initial state
 		db:            service.DB.Servers,
 	}
+
+	entry.Info("server created")
 
 	server.HandlerEnsure()
 	server.WebHookEnsure()
@@ -145,31 +181,35 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 	return
 }
 
-func (service *QPWhatsappService) GetOrCreateServerFromToken(token string) (server *QpWhatsappServer, err error) {
-	log.Debugf("locating server: %s", token)
-	server, ok := service.Servers[token]
+func (source *QPWhatsappService) GetOrCreateServerFromToken(token string) (server *QpWhatsappServer, err error) {
+	logger := source.GetLogger()
+	logger.Debugf("locating server: %s", token)
+
+	server, ok := source.Servers[token]
 	if !ok {
-		log.Debugf("server: %s, not in cache, looking up database", token)
-		exists, err := service.DB.Servers.Exists(token)
+		logger.Debugf("server: %s, not in cache, looking up database", token)
+		exists, err := source.DB.Servers.Exists(token)
 		if err != nil {
 			return nil, err
 		}
 
 		var info *QpServer
 		if exists {
-			info, err = service.DB.Servers.FindByToken(token)
+			info, err = source.DB.Servers.FindByToken(token)
 			if err != nil {
 				return nil, err
 			}
-			log.Debugf("server: %s, found", token)
+			logger.Debugf("server: %s, found", token)
 		} else {
 			info = &QpServer{
 				Token: token,
 			}
 		}
 
-		server, err = service.AppendNewServer(info)
+		server, err = source.AppendNewServer(info)
+		return server, err
 	}
+
 	return
 }
 
@@ -192,7 +232,7 @@ func (service *QPWhatsappService) GetOrCreateServer(user string, wid string) (re
 	for _, item := range servers {
 		if item.GetNumber() == phone {
 			server = item
-			server.WId = wid
+			server.Wid = wid
 			break
 		}
 	}
@@ -201,10 +241,9 @@ func (service *QPWhatsappService) GetOrCreateServer(user string, wid string) (re
 		token := uuid.New().String()
 		log.Infof("creating new server with token: %s", token)
 		info := &QpServer{
-			Token:        token,
-			User:         user,
-			WId:          wid,
-			HandleGroups: true,
+			Token: token,
+			User:  user,
+			Wid:   wid,
 		}
 
 		server, err = service.AppendNewServer(info)
@@ -227,32 +266,34 @@ func (service *QPWhatsappService) Delete(server *QpWhatsappServer) (err error) {
 	return
 }
 
-// Função que irá iniciar todos os servidores apartir do banco de dados
-func (service *QPWhatsappService) Initialize() (err error) {
+// method that will initiate all servers from database
+func (source *QPWhatsappService) Initialize() (err error) {
 
-	if !service.Initialized {
+	if !source.Initialized {
 
-		servers := service.DB.Servers.FindAll()
+		servers := source.DB.Servers.FindAll()
 		for _, info := range servers {
 
 			// appending server to cache
-			server, err := service.AppendNewServer(info)
+			server, err := source.AppendNewServer(info)
 			if err != nil {
 				return err
 			}
+
+			logger := source.GetLogger()
 
 			state := server.GetStatus()
 			if state == whatsapp.UnPrepared || IsValidToStart(state) {
 
 				// initialize individual server
-				server.Log.Debugf("starting whatsapp server ... on %s state", state)
+				logger.Debugf("starting whatsapp server ... on %s state", state)
 				go server.Initialize()
 			} else {
-				server.Log.Debugf("not auto starting cause state: %s", state)
+				logger.Debugf("not auto starting cause state: %s", state)
 			}
 		}
 
-		service.Initialized = true
+		source.Initialized = true
 	}
 
 	return
@@ -269,7 +310,7 @@ func (service *QPWhatsappService) GetServersForUser(username string) (servers ma
 	return
 }
 
-// Case insensivity
+// Case insensitive
 func (service *QPWhatsappService) FindByToken(token string) (*QpWhatsappServer, error) {
 	for _, server := range service.Servers {
 		if strings.ToLower(server.Token) == strings.ToLower(token) {
@@ -281,7 +322,8 @@ func (service *QPWhatsappService) FindByToken(token string) (*QpWhatsappServer, 
 	return nil, err
 }
 
-func (service *QPWhatsappService) GetUser(username string, password string) (user *QpUser, err error) {
-	log.Debugf("finding user: %s", username)
-	return service.DB.Users.Check(username, password)
+func (source *QPWhatsappService) GetUser(username string, password string) (user *QpUser, err error) {
+	logger := source.GetLogger()
+	logger.Debugf("finding user: %s", username)
+	return source.DB.Users.Check(username, password)
 }

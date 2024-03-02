@@ -4617,6 +4617,15 @@ p.control {
   color: currentColor;
 }
 
+.notification.is-small {
+  font-size: 0.75rem;
+}
+
+.notification.is-small .subtitle {
+  font-size: 0.85rem;  
+  margin-bottom: 0.4rem;
+}
+
 .notification.is-white {
   background-color: white;
   color: #0a0a0a;

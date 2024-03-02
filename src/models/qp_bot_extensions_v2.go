@@ -31,13 +31,13 @@ func GetMessagesFromBotV2(source QPBot, timestamp string) (messages []QpMessageV
 
 func ToQpServerV2(source *QpServer) (destination *QpServerV2) {
 	destination = &QpServerV2{
-		ID:              source.WId,
+		ID:              source.Wid,
 		Verified:        source.Verified,
 		Token:           source.Token,
 		UserID:          source.User,
 		Devel:           source.Devel,
-		HandleGroups:    source.HandleGroups,
-		HandleBroadcast: source.HandleBroadcast,
+		HandleGroups:    *source.Groups,
+		HandleBroadcast: *source.Broadcasts,
 		UpdatedAt:       source.Timestamp.String(),
 		Version:         "multi",
 	}

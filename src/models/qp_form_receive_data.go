@@ -14,3 +14,7 @@ type QPFormReceiveData struct {
 	FormAccountEndpoint string
 	Messages            []WhatsappMessage
 }
+
+func (source QPFormReceiveData) Count() int {
+	return len(source.Messages)
+}

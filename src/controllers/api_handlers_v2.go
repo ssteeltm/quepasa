@@ -90,7 +90,7 @@ func SendAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 
 	// setting source msg participant
 	if waMsg.FromGroup() && len(waMsg.Participant.Id) == 0 {
-		waMsg.Participant.Id = server.WId
+		waMsg.Participant.Id = server.Wid
 	}
 
 	// setting wa msg chat title
@@ -109,7 +109,7 @@ func SendAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	response.Chat.ID = waMsg.Chat.Id
 	response.Chat.UserName = waMsg.Chat.Id
 	response.Chat.Title = waMsg.Chat.Title
-	response.From.ID = server.WId
+	response.From.ID = server.Wid
 	response.From.UserName = server.GetNumber()
 	response.ID = sendResponse.GetId()
 
@@ -143,7 +143,7 @@ func ReceiveAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	status := server.GetStatus()
 	if status != whatsapp.Ready {
 		metrics.MessageReceiveErrors.Inc()
-		err = &ApiServerNotReadyException{Wid: server.WId, Status: status}
+		err = &ApiServerNotReadyException{Wid: server.Wid, Status: status}
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
@@ -231,7 +231,7 @@ func SendDocumentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	response.Chat.ID = waMsg.Chat.Id
 	response.Chat.UserName = waMsg.Chat.Id
 	response.Chat.Title = server.GetChatTitle(waMsg.Chat.Id)
-	response.From.ID = server.WId
+	response.From.ID = server.Wid
 	response.From.UserName = server.GetNumber()
 	response.ID = sendResponse.GetId()
 
@@ -307,6 +307,8 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logger := server.GetLogger()
+
 	// reading body to avoid converting to json if empty
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -338,7 +340,7 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 
 	switch os := r.Method; os {
 	case http.MethodPost:
-		affected, err := server.WebhookAdd(webhook)
+		affected, err := server.WebhookAddOrUpdate(webhook)
 		if err != nil {
 			response.ParseError(err)
 			RespondInterface(w, response)
@@ -347,7 +349,7 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 			response.ParseSuccess("updated with success")
 			RespondSuccess(w, response)
 			if affected > 0 {
-				server.Log.Infof("updating webhook url: %s, items affected: %v", webhook.Url, affected)
+				logger.Infof("updating webhook url: %s, items affected: %v", webhook.Url, affected)
 			}
 		}
 		return
@@ -361,13 +363,13 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 			response.ParseSuccess("deleted with success")
 			RespondSuccess(w, response)
 			if affected > 0 {
-				server.Log.Infof("removing webhook url: %s, items affected: %v", webhook.Url, affected)
+				logger.Infof("removing webhook url: %s, items affected: %v", webhook.Url, affected)
 			}
 		}
 		return
 	default:
 		url := r.Header.Get("X-QUEPASA-WHURL")
-		response.Webhooks = filterByUrlV2(server.Webhooks, url)
+		response.Webhooks = server.GetWebHooksByUrl(url)
 		if len(url) > 0 {
 			response.ParseSuccess(fmt.Sprintf("getting with filter: %s", url))
 		} else {
@@ -377,13 +379,4 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 		RespondSuccess(w, response)
 		return
 	}
-}
-
-func filterByUrlV2(source []*models.QpWebhook, filter string) (out []models.QpWebhook) {
-	for _, element := range source {
-		if strings.Contains(element.Url, filter) {
-			out = append(out, *element)
-		}
-	}
-	return
 }

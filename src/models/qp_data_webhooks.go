@@ -33,7 +33,7 @@ func (source *QpDataWebhooks) WebhookFill(context string, db QpDataWebhooksInter
 	return
 }
 
-func (source *QpDataWebhooks) WebhookAdd(webhook *QpWebhook) (affected uint, err error) {
+func (source *QpDataWebhooks) WebhookAddOrUpdate(webhook *QpWebhook) (affected uint, err error) {
 
 	if webhook == nil || len(webhook.Url) == 0 {
 		err = fmt.Errorf("empty or nil webhook")
@@ -48,7 +48,11 @@ func (source *QpDataWebhooks) WebhookAdd(webhook *QpWebhook) (affected uint, err
 	if botWHook != nil {
 		botWHook.ForwardInternal = webhook.ForwardInternal
 		botWHook.TrackId = webhook.TrackId
+		botWHook.Groups = webhook.Groups
+		botWHook.ReadReceipts = webhook.ReadReceipts
+		botWHook.Broadcasts = webhook.Broadcasts
 		botWHook.Extra = webhook.Extra
+
 		err = source.db.Update(botWHook)
 		if err != nil {
 			return

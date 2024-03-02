@@ -13,33 +13,35 @@ import (
 )
 
 func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMessage, in *proto.Message) {
-	handler.log.Tracef("handling knowing message: %v", in)
+	logger := handler.GetLogger()
+
+	logger.Tracef("handling knowing message: %v", in)
 	if in.ImageMessage != nil {
-		HandleImageMessage(handler.log, out, in.ImageMessage)
+		HandleImageMessage(logger, out, in.ImageMessage)
 	} else if in.StickerMessage != nil {
-		HandleStickerMessage(handler.log, out, in.StickerMessage)
+		HandleStickerMessage(logger, out, in.StickerMessage)
 	} else if in.DocumentMessage != nil {
-		HandleDocumentMessage(handler.log, out, in.DocumentMessage)
+		HandleDocumentMessage(logger, out, in.DocumentMessage)
 	} else if in.AudioMessage != nil {
-		HandleAudioMessage(handler.log, out, in.AudioMessage)
+		HandleAudioMessage(logger, out, in.AudioMessage)
 	} else if in.VideoMessage != nil {
-		HandleVideoMessage(handler.log, out, in.VideoMessage)
+		HandleVideoMessage(logger, out, in.VideoMessage)
 	} else if in.ExtendedTextMessage != nil {
-		HandleExtendedTextMessage(handler.log, out, in.ExtendedTextMessage)
+		HandleExtendedTextMessage(logger, out, in.ExtendedTextMessage)
 	} else if in.ButtonsResponseMessage != nil {
-		HandleButtonsResponseMessage(handler.log, out, in.ButtonsResponseMessage)
+		HandleButtonsResponseMessage(logger, out, in.ButtonsResponseMessage)
 	} else if in.LocationMessage != nil {
-		HandleLocationMessage(handler.log, out, in.LocationMessage)
+		HandleLocationMessage(logger, out, in.LocationMessage)
 	} else if in.LiveLocationMessage != nil {
-		HandleLiveLocationMessage(handler.log, out, in.LiveLocationMessage)
+		HandleLiveLocationMessage(logger, out, in.LiveLocationMessage)
 	} else if in.ContactMessage != nil {
-		HandleContactMessage(handler.log, out, in.ContactMessage)
+		HandleContactMessage(logger, out, in.ContactMessage)
 	} else if in.ReactionMessage != nil {
-		HandleReactionMessage(handler.log, out, in.ReactionMessage)
+		HandleReactionMessage(logger, out, in.ReactionMessage)
 	} else if in.EditedMessage != nil {
-		HandleEditTextMessage(handler.log, out, in.EditedMessage)
+		HandleEditTextMessage(logger, out, in.EditedMessage)
 	} else if in.ProtocolMessage != nil {
-		HandleProtocolMessage(handler.log, out, in.ProtocolMessage)
+		HandleProtocolMessage(logger, out, in.ProtocolMessage)
 	} else if in.SenderKeyDistributionMessage != nil {
 		out.Type = whatsapp.DiscardMessageType
 		b, err := json.Marshal(in)
@@ -50,9 +52,9 @@ func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMes
 
 		out.Text = string(b)
 	} else if len(in.GetConversation()) > 0 {
-		HandleTextMessage(handler.log, out, in)
+		HandleTextMessage(logger, out, in)
 	} else {
-		handler.log.Warnf("message not handled: %v", in)
+		logger.Warnf("message not handled: %v", in)
 	}
 }
 

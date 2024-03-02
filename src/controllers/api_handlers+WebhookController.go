@@ -3,9 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
-	"strings"
 
 	models "github.com/nocodeleaks/quepasa/models"
 )
@@ -14,7 +13,7 @@ import (
 
 func WebhookController(w http.ResponseWriter, r *http.Request) {
 
-	// setting default reponse type as json
+	// setting default response type as json
 	w.Header().Set("Content-Type", "application/json")
 
 	response := &models.QpWebhookResponse{}
@@ -26,8 +25,10 @@ func WebhookController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logger := server.GetLogger()
+
 	// reading body to avoid converting to json if empty
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		response.ParseError(err)
 		RespondInterface(w, response)
@@ -57,7 +58,7 @@ func WebhookController(w http.ResponseWriter, r *http.Request) {
 
 	switch os := r.Method; os {
 	case http.MethodPost:
-		affected, err := server.WebhookAdd(webhook)
+		affected, err := server.WebhookAddOrUpdate(webhook)
 		if err != nil {
 			response.ParseError(err)
 			RespondInterface(w, response)
@@ -66,7 +67,7 @@ func WebhookController(w http.ResponseWriter, r *http.Request) {
 			response.ParseSuccess("updated with success")
 			RespondSuccess(w, response)
 			if affected > 0 {
-				server.Log.Infof("updating webhook url: %s, items affected: %v", webhook.Url, affected)
+				logger.Infof("updating webhook url: %s, items affected: %v", webhook.Url, affected)
 			}
 		}
 		return
@@ -80,13 +81,13 @@ func WebhookController(w http.ResponseWriter, r *http.Request) {
 			response.ParseSuccess("deleted with success")
 			RespondSuccess(w, response)
 			if affected > 0 {
-				server.Log.Infof("removing webhook url: %s, items affected: %v", webhook.Url, affected)
+				logger.Infof("removing webhook url: %s, items affected: %v", webhook.Url, affected)
 			}
 		}
 		return
 	default:
 		url := r.Header.Get("X-QUEPASA-WHURL")
-		response.Webhooks = filterByUrl(server.Webhooks, url)
+		response.Webhooks = server.GetWebHooksByUrl(url)
 		if len(url) > 0 {
 			response.ParseSuccess(fmt.Sprintf("getting with filter: %s", url))
 		} else {
@@ -96,15 +97,6 @@ func WebhookController(w http.ResponseWriter, r *http.Request) {
 		RespondSuccess(w, response)
 		return
 	}
-}
-
-func filterByUrl(source []*models.QpWebhook, filter string) (out []models.QpWebhook) {
-	for _, element := range source {
-		if strings.Contains(element.Url, filter) {
-			out = append(out, *element)
-		}
-	}
-	return
 }
 
 //endregion

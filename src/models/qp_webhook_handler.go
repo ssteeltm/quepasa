@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"reflect"
 	"strings"
 
@@ -12,32 +13,44 @@ type QPWebhookHandler struct {
 	server *QpWhatsappServer
 }
 
-func (w *QPWebhookHandler) Handle(payload *whatsapp.WhatsappMessage) {
-	if !w.HasWebhook() {
+func (source QPWebhookHandler) GetLogger() *log.Entry {
+	if source.server != nil {
+		return source.server.GetLogger()
+	}
+
+	return log.WithContext(context.Background())
+}
+
+func (source *QPWebhookHandler) HandleWebHook(payload *whatsapp.WhatsappMessage) {
+	if !source.HasWebhook() {
 		return
 	}
 
+	logger := source.GetLogger()
 	if payload.Type == whatsapp.DiscardMessageType|whatsapp.UnknownMessageType {
-		log.Debugf("ignoring unknown message type on webhook request: %v", reflect.TypeOf(&payload))
+		logger.Debugf("ignoring unknown message type on webhook request: %v", reflect.TypeOf(&payload))
 		return
 	}
 
 	if payload.Type == whatsapp.TextMessageType && len(strings.TrimSpace(payload.Text)) <= 0 {
-		log.Debugf("ignoring empty text message on webhook request: %s", payload.Id)
+		logger.Debugf("ignoring empty text message on webhook request: %s", payload.Id)
 		return
 	}
 
-	if payload.Chat.Id == "status@broadcast" && !w.server.HandleBroadcast {
-		log.Debugf("ignoring broadcast message on webhook request: %s", payload.Id)
+	if payload.FromBroadcast() && !*source.server.Broadcasts {
+		logger.Debugf("ignoring broadcast message on webhook request: %s", payload.Id)
 		return
 	}
 
-	PostToWebHookFromServer(w.server, payload)
+	err := PostToWebHookFromServer(source.server, payload)
+	if err != nil {
+		logger.Errorf("error on handle webhook distributions: %s", err.Error())
+	}
 }
 
-func (w *QPWebhookHandler) HasWebhook() bool {
-	if w.server != nil {
-		return len(w.server.Webhooks) > 0
+func (source *QPWebhookHandler) HasWebhook() bool {
+	if source.server != nil {
+		return len(source.server.Webhooks) > 0
 	}
 	return false
 }

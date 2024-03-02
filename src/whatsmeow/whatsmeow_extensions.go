@@ -14,15 +14,6 @@ import (
 	types "go.mau.fi/whatsmeow/types"
 )
 
-type WhatsmeowLogLevel string
-
-const (
-	DebugLevel WhatsmeowLogLevel = "DEBUG"
-	InfoLevel  WhatsmeowLogLevel = "INFO"
-	WarnLevel  WhatsmeowLogLevel = "WARN"
-	ErrorLevel WhatsmeowLogLevel = "ERROR"
-)
-
 func GetMediaTypeFromAttachment(source *whatsapp.WhatsappAttachment) whatsmeow.MediaType {
 	return GetMediaTypeFromString(source.Mimetype)
 }

@@ -1,12 +1,14 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"sync"
 	"time"
 
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
+	log "github.com/sirupsen/logrus"
 )
 
 // Serviço que controla os servidores / bots individuais do whatsapp
@@ -18,41 +20,69 @@ type QPWhatsappHandlers struct {
 	syncRegister *sync.Mutex
 
 	// Appended events handler
-	aeh []interface {
-		Handle(*whatsapp.WhatsappMessage)
+	aeh []QpWebhookHandlerInterface
+}
+
+// get default log entry, never nil
+func (source *QPWhatsappHandlers) GetLogger() *log.Entry {
+	if source.server != nil {
+		return source.server.GetLogger()
 	}
+
+	logger := log.StandardLogger()
+	logger.SetLevel(log.ErrorLevel)
+
+	return logger.WithContext(context.Background())
 }
 
-func (handler *QPWhatsappHandlers) HandleGroups() bool {
-	return handler.server.HandleGroups
+func (source QPWhatsappHandlers) HandleGroups() bool {
+	options := whatsapp.Options
+
+	var opt *bool
+	if source.server != nil {
+		if source.server.Groups != nil {
+			opt = source.server.Groups
+		}
+	}
+
+	return options.HandleGroups(opt)
 }
 
-func (handler *QPWhatsappHandlers) HandleBroadcast() bool {
-	return handler.server.HandleBroadcast
+func (source QPWhatsappHandlers) HandleBroadcasts() bool {
+	options := whatsapp.Options
+
+	var opt *bool
+	if source.server != nil {
+		if source.server.Broadcasts != nil {
+			opt = source.server.Broadcasts
+		}
+	}
+
+	return options.HandleBroadcasts(opt)
 }
 
 //#region EVENTS FROM WHATSAPP SERVICE
 
 // Process messages received from whatsapp service
-func (handler *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
+func (source *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
 
 	// should skip groups ?
-	if !handler.HandleGroups() && msg.FromGroup() {
+	if !source.HandleGroups() && msg.FromGroup() {
 		return
 	}
 
 	// should skip broadcast ?
-	if !handler.HandleBroadcast() && msg.FromBroadcast() {
+	if !source.HandleBroadcasts() && msg.FromBroadcast() {
 		return
 	}
 
 	// messages sended with chat title
 	if len(msg.Chat.Title) == 0 {
-		msg.Chat.Title = handler.server.GetChatTitle(msg.Chat.Id)
+		msg.Chat.Title = source.server.GetChatTitle(msg.Chat.Id)
 	}
 
 	if len(msg.InReply) > 0 {
-		cached, err := handler.GetMessage(msg.InReply)
+		cached, err := source.GetMessage(msg.InReply)
 		if err == nil {
 			maxlength := ENV.SynopsisLength() - 4
 			if uint64(len(cached.Text)) > maxlength {
@@ -63,23 +93,26 @@ func (handler *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
 		}
 	}
 
-	handler.server.Log.Tracef("msg recebida/(enviada por outro meio) em models: %s", msg.Id)
-	handler.appendMsgToCache(msg)
+	logger := source.GetLogger()
+	logger.Tracef("msg recebida/(enviada por outro meio) em models: %s", msg.Id)
+	source.appendMsgToCache(msg)
 }
 
 // does not cache msg, only update status and webhook dispatch
-func (handler *QPWhatsappHandlers) Receipt(msg *whatsapp.WhatsappMessage) {
+func (source *QPWhatsappHandlers) Receipt(msg *whatsapp.WhatsappMessage) {
 	ids := strings.Split(msg.Text, ",")
 	for _, element := range ids {
-		cached, err := handler.GetMessage(element)
+		cached, err := source.GetMessage(element)
 		if err == nil {
+			logger := source.GetLogger()
+
 			// update status
-			handler.server.Log.Tracef("msg recebida/(enviada por outro meio) em models: %s", cached.Id)
+			logger.Tracef("msg recebida/(enviada por outro meio) em models: %s", cached.Id)
 		}
 	}
 
 	// Executando WebHook de forma assincrona
-	handler.Trigger(msg)
+	source.Trigger(msg)
 }
 
 /*
@@ -93,21 +126,56 @@ func (handler *QPWhatsappHandlers) Receipt(msg *whatsapp.WhatsappMessage) {
 
 </summary>
 */
-func (handler *QPWhatsappHandlers) LoggedOut(reason string) {
+func (source *QPWhatsappHandlers) LoggedOut(reason string) {
 
 	// one step at a time
-	if handler.server != nil {
+	if source.server != nil {
 
 		msg := "logged out !"
 		if len(reason) > 0 {
 			msg += " reason: " + reason
 		}
 
-		handler.server.Log.Warn(msg)
+		logger := source.GetLogger()
+		logger.Warn(msg)
 
 		// marking unverified and wait for more analyses
-		handler.server.MarkVerified(false)
+		source.server.MarkVerified(false)
 	}
+}
+
+/*
+<summary>
+
+	Event on:
+		* When connected to whatsapp servers and authenticated
+
+</summary>
+*/
+func (source *QPWhatsappHandlers) OnConnected() {
+
+	// one step at a time
+	if source.server != nil {
+
+		// marking unverified and wait for more analyses
+		err := source.server.MarkVerified(true)
+		if err != nil {
+			logger := source.server.GetLogger()
+			logger.Errorf("error on mark verified after connected: %s", err.Error())
+		}
+	}
+}
+
+/*
+<summary>
+
+	Event on:
+		* When connected to whatsapp servers and authenticated
+
+</summary>
+*/
+func (source *QPWhatsappHandlers) OnDisconnected() {
+
 }
 
 //#endregion
@@ -193,19 +261,19 @@ func (handler *QPWhatsappHandlers) GetMessage(id string) (msg whatsapp.WhatsappM
 	return msg, err
 }
 
-//endregion
-//region EVENT HANDLER TO INTERNAL USE, GENERALY TO WEBHOOK
+// endregion
+// region EVENT HANDLER TO INTERNAL USE, GENERALLY TO WEBHOOK
 
-func (handler *QPWhatsappHandlers) Trigger(payload *whatsapp.WhatsappMessage) {
-	for _, handler := range handler.aeh {
-		go handler.Handle(payload)
+func (source *QPWhatsappHandlers) Trigger(payload *whatsapp.WhatsappMessage) {
+	if source != nil {
+		for _, handler := range source.aeh {
+			go handler.HandleWebHook(payload)
+		}
 	}
 }
 
 // Register an event handler that triggers on a new message received on cache
-func (handler *QPWhatsappHandlers) Register(evt interface {
-	Handle(*whatsapp.WhatsappMessage)
-}) {
+func (handler *QPWhatsappHandlers) Register(evt QpWebhookHandlerInterface) {
 	handler.sync.Lock() // Sinal vermelho para atividades simultâneas
 
 	if !handler.IsRegistered(evt) {
@@ -216,14 +284,10 @@ func (handler *QPWhatsappHandlers) Register(evt interface {
 }
 
 // Removes an specific event handler
-func (handler *QPWhatsappHandlers) UnRegister(evt interface {
-	Handle(*whatsapp.WhatsappMessage)
-}) {
+func (handler *QPWhatsappHandlers) UnRegister(evt QpWebhookHandlerInterface) {
 	handler.sync.Lock() // Sinal vermelho para atividades simultâneas
 
-	newHandlers := []interface {
-		Handle(*whatsapp.WhatsappMessage)
-	}{}
+	newHandlers := []QpWebhookHandlerInterface{}
 	for _, v := range handler.aeh {
 		if v != evt {
 			newHandlers = append(handler.aeh, evt)
@@ -266,4 +330,8 @@ func (handler *QPWhatsappHandlers) IsRegistered(evt interface{}) bool {
 
 func (handler *QPWhatsappHandlers) GetTotal() int {
 	return len(handler.messages)
+}
+
+func (source *QPWhatsappHandlers) IsInterfaceNil() bool {
+	return nil == source
 }

@@ -15,4 +15,10 @@ type IWhatsappHandlers interface {
 	GetLeadingMessage() *WhatsappMessage
 
 	GetMessage(id string) (WhatsappMessage, error)
+
+	OnConnected()
+
+	OnDisconnected()
+
+	IsInterfaceNil() bool
 }

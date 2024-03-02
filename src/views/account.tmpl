@@ -1,14 +1,16 @@
 {{ define "content" }}
-<script src="/assets/copytoclipboard.js"></script>
-<div class="container site-header">
-  <h1 class="title is-1">QuePasa (v{{ .Version }}) Bots</h1>
-    <p class="subtitle">Welcome {{ .User.Username }}</p>
+  <script src="/assets/copytoclipboard.js"></script>
+  <div class="container site-header">
+    <h1 class="title is-1">QuePasa (v{{ .Version }}) Bots</h1>
+    <p class="subtitle">Welcome <b>{{ .User.Username }}</b></p>
+  </div>
+  <div class="container">
     <h2 class="title is-2">({{ len .Servers }}) Your bots</h2>
     <a class="button is-primary" href="/form/verify?mode=md">Add or Update Bot</a>
     {{ if .ErrorMessage }}
-    <div class="notification is-warning">
-      {{ .ErrorMessage }}
-    </div>
+      <div class="notification is-warning">
+        {{ .ErrorMessage }}
+      </div>
     {{ end }}
     <table class="table is-fullwidth">
       <thead>
@@ -49,7 +51,7 @@
                       <span class="icon is-small is-inline"><i class="fa fa-sync"></i></span>
                     </button>
                   </form>
-                </p>
+                </p> 
                 {{ if .IsDevelopmentGlobal }}
                   <p class="control"> 
                     <form class="" method="post" action="/form/debug">
@@ -62,37 +64,52 @@
                 {{ end }}
                 {{ if .Verified }}                  
                   <p class="control"> 
-                    <form class="" method="post" action="/form/toggle">
+                    <form class="" method="post" action="/form/toggle?key=server">
                       <input name="token" type="hidden" value="{{ .Token }}">
                       <button class="button is-danger {{ if not .GetWorking }}is-hovered{{ else }}is-outlined{{ end }}" title="Toggle Running state for this bot">
                         <span class="icon is-small is-inline"><i class="fa fa-{{ if not .GetWorking }}play{{ else }}stop{{ end }}-circle"></i></span>
                       </button>
                     </form>
                   </p>
-                  <p>&nbsp;&nbsp;</p>
+                  <p>&nbsp;</p>
                   <p class="control"> 
-                    <form class="" method="post" action="/form/togglebroadcast">
+                    <form class="" method="post" action="/form/toggle?key=server-broadcasts" data-value="{{ .Broadcasts }}">
                       <input name="token" type="hidden" value="{{ .Token }}">
-                      <button class="button is-info {{ if .HandleBroadcast }}is-hovered{{ else }}is-outlined{{ end }}" title="Handle status messages">
+                      <button class="button {{ if .IsSetBroadcasts }}{{ if .GetBroadcasts }}is-info is-hovered{{ else }}is-danger is-hovered{{ end }}{{ end }}" title="Handle Broadcast Messages">
                         <span class="icon is-small is-inline"><i class="fa fa-comment-dots"></i></span>
                       </button>
                     </form>
                   </p>
-                  <p>&nbsp;</p>
                   <p class="control"> 
-                    <form class="" method="post" action="/form/togglegroups">
+                    <form class="" method="post" action="/form/toggle?key=server-groups" data-value="{{ .Groups }}">
                       <input name="token" type="hidden" value="{{ .Token }}">
-                      <button class="button is-info {{ if .HandleGroups }}is-hovered{{ else }}is-outlined{{ end }}" title="Handle group messages">
+                      <button class="button {{ if .IsSetGroups }}{{ if .GetGroups }}is-info is-hovered{{ else }}is-danger is-hovered{{ end }}{{ end }}" title="Handle Group Messages">
                         <span class="icon is-small is-inline"><i class="fa fa-comments"></i></span>
+                      </button>
+                    </form>
+                  </p>
+                  <p class="control"> 
+                    <form class="" method="post" action="/form/toggle?key=server-readreceipts" data-value="{{ .ReadReceipts }}">
+                      <input name="token" type="hidden" value="{{ .Token }}">
+                      <button class="button {{ if .IsSetReadReceipts }}{{ if .GetReadReceipts }}is-info is-hovered{{ else }}is-danger is-hovered{{ end }}{{ end }}" title="Handle Read Receipts">
+                        <span class="icon is-small is-inline"><i class="fa fa-check"></i></span>
+                      </button>
+                    </form>
+                  </p>
+                  <p class="control"> 
+                    <form class="" method="post" action="/form/toggle?key=server-rejectcalls" data-value="{{ .RejectCalls }}">
+                      <input name="token" type="hidden" value="{{ .Token }}">
+                      <button class="button {{ if .IsSetRejectCalls }}{{ if .GetRejectCalls }}is-info is-hovered{{ else }}is-danger is-hovered{{ end }}{{ end }}" title="Auto Reject Calls">
+                        <span class="icon is-small is-inline"><i class="fa fa-phone"></i></span>
                       </button>
                     </form>
                   </p>
                 {{ end }}
                 <p>&nbsp;&nbsp;</p>
                 <p class="control">
-                  <form class="" method="post" action="/form/delete">
+                  <form class="" method="post" action="/form/delete?key=server">
                     <input name="token" type="hidden" value="{{ .Token }}">
-                    <button class="button  is-danger is-outlined" title="Delete this bot">
+                    <button class="button  is-danger is-outlined" title="Delete this server">
                       <i class="fa fa-trash"></i>&nbsp;&nbsp;
                       Delete
                     </button>
@@ -119,18 +136,44 @@
               </div>
             </td>
             <td style="text-align: center;">
-              <span class="button" disabled>
+              <a class="button" href="/form/webhooks?token={{ .Token }}">
                 {{ if .Webhooks }}
                   <span class="icon has-text-success" title="{{ .Webhooks }}"><i class="fas fa-check-square"></i> </span>
                   {{ else }}
                   <span class="icon has-text-warning"><i class="fas fa-exclamation-triangle"></i> </span>
                 {{ end }}
-              </span>
+              </a>
             </td>
             <td><span title="{{ .GetStartedTime }}">{{ .GetStatusString }}</span></td>
             </tr>            
         {{ end }}
         </tbody>
     </table>
-</div>
+      
+    {{ if not .Options.IsDefault }}
+      <div class="notification is-light is-small">
+        <div class="subtitle"><b>Whatsapp</b> service environment options:</div>
+        <div>
+          {{ if .Options.Groups }}<p>Groups: {{ .Options.Groups.ToString  }}</p>{{ end }}
+          {{ if .Options.Broadcasts }}<p>Broadcasts: {{ .Options.Broadcasts.ToString  }}</p>{{ end }}
+          {{ if .Options.ReadReceipts }}<p>ReadReceipts: {{ .Options.ReadReceipts.ToString  }}</p>{{ end }}
+          {{ if .Options.RejectCalls }}<p>RejectCalls: {{ .Options.RejectCalls.ToString  }}</p>{{ end }}
+          {{ if .Options.HistorySync }}<p>HistorySync: {{ .Options.HistorySync  }} days</p>{{ end }}
+          {{ if .Options.LogLevel }}<p>LogLevel: {{ .Options.LogLevel  }}</p>{{ end }}
+        </div>
+      </div>
+    {{ end }}
+    
+    {{ if not .WMOptions.IsDefault }}
+      <div class="notification is-light is-small">
+        <div class="subtitle"><b>Whatsmeow</b> service environment options:</div>
+        <div>
+          {{ if .WMOptions.WMLogLevel }}<p>LogLevel: {{ .WMOptions.WMLogLevel  }}</p>{{ end }}
+          {{ if .WMOptions.DBLogLevel }}<p>Database LogLevel: {{ .WMOptions.DBLogLevel  }}</p>{{ end }}
+        </div>
+      </div>
+    {{ end }}
+
+  </div>
+  <div>&nbsp;</div>
 {{ end }}

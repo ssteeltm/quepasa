@@ -3,8 +3,6 @@ package models
 import (
 	"strings"
 
-	log "github.com/sirupsen/logrus"
-
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	whatsmeow "github.com/nocodeleaks/quepasa/whatsmeow"
 )
@@ -19,8 +17,8 @@ func NewWhatsmeowEmptyConnection(callback func(string)) (conn whatsapp.IWhatsapp
 	return
 }
 
-func NewWhatsmeowConnection(wid string, logger *log.Entry) (whatsapp.IWhatsappConnection, error) {
-	return whatsmeow.WhatsmeowService.CreateConnection(wid, logger)
+func NewWhatsmeowConnection(options *whatsapp.WhatsappConnectionOptions) (whatsapp.IWhatsappConnection, error) {
+	return whatsmeow.WhatsmeowService.CreateConnection(options)
 }
 
 func ToQpMessageV2(source whatsapp.WhatsappMessage, server *QpWhatsappServer) (message QpMessageV2) {
@@ -30,7 +28,7 @@ func ToQpMessageV2(source whatsapp.WhatsappMessage, server *QpWhatsappServer) (m
 	message.FromMe = source.FromMe
 
 	message.Controller = QPEndpointV2{}
-	if !strings.Contains(server.WId, "@") {
+	if !strings.Contains(server.Wid, "@") {
 		message.Controller.ID = server.GetNumber() + "@c.us"
 	} else {
 		message.Controller.ID = server.GetNumber()

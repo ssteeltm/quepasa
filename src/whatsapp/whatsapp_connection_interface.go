@@ -43,6 +43,7 @@ type IWhatsappConnection interface {
 	// Define the log level for this connection
 	UpdateLog(*log.Entry)
 
+	GetLogger() *log.Entry
 	/*
 		<summary>
 			Disconnect if connected
@@ -71,4 +72,6 @@ type IWhatsappConnection interface {
 	IsOnWhatsApp(...string) ([]string, error)
 
 	HistorySync(time.Time) error
+
+	GetOptions() *WhatsappConnectionOptions
 }

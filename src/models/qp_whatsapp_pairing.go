@@ -1,10 +1,12 @@
 package models
 
 import (
+	"context"
+
 	"github.com/google/uuid"
-	log "github.com/sirupsen/logrus"
 	library "github.com/nocodeleaks/quepasa/library"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
+	log "github.com/sirupsen/logrus"
 )
 
 type QpWhatsappPairing struct {
@@ -12,25 +14,53 @@ type QpWhatsappPairing struct {
 	Token string `db:"token" json:"token" validate:"max=100"`
 
 	// Whatsapp session id
-	WId string `db:"wid" json:"wid" validate:"max=255"`
+	Wid string `db:"wid" json:"wid" validate:"max=255"`
 
 	User *QpUser `json:"user,omitempty"`
 
 	conn whatsapp.IWhatsappConnection `json:"-"`
 }
 
+func (source *QpWhatsappPairing) GetLogger() *log.Entry {
+	if source.conn != nil && !source.conn.IsInterfaceNil() {
+		return source.conn.GetLogger()
+	}
+
+	logger := log.WithContext(context.Background())
+
+	if len(source.Token) > 0 {
+		logger = logger.WithField("token", source.Token)
+	}
+
+	if len(source.Wid) > 0 {
+		logger = logger.WithField("wid", source.Wid)
+	}
+
+	return logger
+}
+
 func (source *QpWhatsappPairing) OnPaired(wid string) {
-	source.WId = wid
+	source.Wid = wid
 
 	// updating token if from user
 	if source.User != nil {
 		source.Token = source.GetUserToken()
 	}
 
-	log.Infof("paired whatsapp section %s, for token %s", source.WId, source.Token)
+	logger := source.GetLogger()
+	if source.conn != nil {
+		options := source.conn.GetOptions()
+		if options != nil {
+			options.EnableAutoReconnect = true
+			options.Wid = source.Wid
+			options.Logger = logger
+		}
+	}
+
+	logger.Info("paired whatsapp section")
 	server, err := WhatsappService.AppendPaired(source)
 	if err != nil {
-		log.Errorf("paired error: %s", err.Error())
+		logger.Errorf("paired error: %s", err.Error())
 		return
 	}
 
@@ -50,8 +80,10 @@ func (source *QpWhatsappPairing) GetConnection() (whatsapp.IWhatsappConnection, 
 }
 
 func (source *QpWhatsappPairing) GetUserToken() string {
-	phone := library.GetPhoneByWId(source.WId)
-	log.Infof("wid to phone: %s", phone)
+	phone := library.GetPhoneByWId(source.Wid)
+
+	logger := source.GetLogger()
+	logger.Infof("wid to phone: %s", phone)
 
 	servers := WhatsappService.GetServersForUser(source.User.Username)
 	for _, item := range servers {

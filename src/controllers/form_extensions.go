@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -64,57 +65,107 @@ func FormDebugController(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, FormAccountEndpoint, http.StatusFound)
 }
 
-// ToggleHandler renders route POST "/bot/toggle"
+//#region TOGGLE
+
+// ToggleHandler renders route POST "/form/toggle"
 func FormToggleController(w http.ResponseWriter, r *http.Request) {
+	var err error
+
 	_, server, err := GetUserAndServer(w, r)
 	if err != nil {
-		// retorno já tratado pela funcao
 		return
 	}
 
-	err = server.Toggle()
-	if err != nil {
-		response := &models.QpResponse{}
-		response.ParseError(err)
-		RespondInterface(w, response)
-		return
+	destination := FormAccountEndpoint
+	key := models.GetRequestParameter(r, "key")
+	if len(key) > 0 {
+
+		if strings.HasPrefix(key, "server") {
+
+			switch key {
+			case "server":
+				{
+					err = server.Toggle()
+					break
+				}
+			case "server-broadcasts":
+				{
+					_, err = server.ToggleBroadcasts()
+					break
+				}
+			case "server-groups":
+				{
+					_, err = server.ToggleGroups()
+					break
+				}
+			case "server-readreceipts":
+				{
+					_, err = server.ToggleReadReceipts()
+					break
+				}
+			case "server-rejectcalls":
+				{
+					_, err = server.ToggleRejectCalls()
+					break
+				}
+
+			default:
+				{
+					err = fmt.Errorf("invalid server key: %s", key)
+					break
+				}
+			}
+		} else if strings.HasPrefix(key, "webhook") {
+			destination = FormWebHooksEndpoint + "?token=" + server.Token
+			url := models.GetRequestParameter(r, "url")
+			webhook := server.GetWebHook(url)
+			if webhook != nil {
+				switch key {
+				case "webhook-forwardinternal":
+					{
+						_, err = webhook.ToggleForwardInternal()
+						break
+					}
+				case "webhook-broadcasts":
+					{
+						_, err = webhook.ToggleBroadcasts()
+						break
+					}
+				case "webhook-groups":
+					{
+						_, err = webhook.ToggleGroups()
+						break
+					}
+				case "webhook-readreceipts":
+					{
+						_, err = webhook.ToggleReadReceipts()
+						break
+					}
+				default:
+					{
+						err = fmt.Errorf("invalid webhook key: %s", key)
+						break
+					}
+				}
+			} else {
+				err = fmt.Errorf("webhook not found for url: %s", url)
+			}
+		} else {
+			err = fmt.Errorf("invalid key or prefix: %s", key)
+		}
+	} else {
+		err = fmt.Errorf("missing toggle key")
 	}
 
-	http.Redirect(w, r, FormAccountEndpoint, http.StatusFound)
-}
-
-// ToggleHandler renders route POST "/bot/toggle"
-func FormToggleBroadcastController(w http.ResponseWriter, r *http.Request) {
-	_, server, err := GetUserAndServer(w, r)
-	if err != nil {
-		// retorno já tratado pela funcao
-		return
-	}
-
-	_, err = server.ToggleBroadcast()
 	if err != nil {
 		RespondServerError(server, w, err)
 		return
 	}
 
-	http.Redirect(w, r, FormAccountEndpoint, http.StatusFound)
+	http.Redirect(w, r, destination, http.StatusFound)
 }
 
-func FormToggleGroupsController(w http.ResponseWriter, r *http.Request) {
-	_, server, err := GetUserAndServer(w, r)
-	if err != nil {
-		// retorno já tratado pela funcao
-		return
-	}
-
-	_, err = server.ToggleGroups()
-	if err != nil {
-		RespondServerError(server, w, err)
-		return
-	}
-
-	http.Redirect(w, r, FormAccountEndpoint, http.StatusFound)
-}
+//#endregion
 
 //
 // Verify
@@ -165,19 +216,50 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 
 // DeleteHandler renders route POST "/form/delete"
 func FormDeleteController(w http.ResponseWriter, r *http.Request) {
+	var err error
+
 	_, server, err := GetUserAndServer(w, r)
 	if err != nil {
-		// retorno já tratado pela funcao
 		return
 	}
 
-	server.Log.Warnf("delete requested by form !")
-	if err := models.WhatsappService.Delete(server); err != nil {
+	var destination string
+	key := models.GetRequestParameter(r, "key")
+	if len(key) > 0 {
+		logentry := server.GetLogger()
+
+		switch key {
+		case "server":
+			{
+				destination = FormAccountEndpoint
+				logentry.Warnf("delete requested by form !")
+				err = models.WhatsappService.Delete(server)
+			}
+		case "webhook":
+			{
+				destination = FormWebHooksEndpoint + "?token=" + server.Token
+				url := models.GetRequestParameter(r, "url")
+				var affected uint
+				affected, err = server.WebhookRemove(url)
+				if affected > 0 {
+					logentry.Infof("webhook delete requested by from, affected rows: %v", affected)
+				}
+			}
+		default:
+			{
+				err = fmt.Errorf("invalid delete key: %s", key)
+			}
+		}
+	} else {
+		err = fmt.Errorf("missing toggle key")
+	}
+
+	if err != nil {
 		RespondServerError(server, w, err)
 		return
 	}
 
-	http.Redirect(w, r, FormAccountEndpoint, http.StatusFound)
+	http.Redirect(w, r, destination, http.StatusFound)
 }
 
 //

@@ -4,14 +4,13 @@ import (
 	"errors"
 	"html/template"
 	"net/http"
-	"os"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth"
-	log "github.com/sirupsen/logrus"
 	models "github.com/nocodeleaks/quepasa/models"
+	log "github.com/sirupsen/logrus"
 )
 
 var FormLoginEndpoint string = "/login"
@@ -43,7 +42,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	password := r.Form.Get("password")
 
 	if username == "" || password == "" {
-		RespondUnauthorized(w, errors.New("Missing username or password"))
+		RespondUnauthorized(w, errors.New("missing username or password"))
 		return
 	}
 
@@ -53,13 +52,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenAuth := jwtauth.New("HS256", []byte(os.Getenv("SIGNING_SECRET")), nil)
 	claims := jwt.MapClaims{"user_id": user.Username}
 	jwtauth.SetIssuedNow(claims)
 	jwtauth.SetExpiryIn(claims, 24*time.Hour)
-	_, tokenString, err := tokenAuth.Encode(claims)
+	_, tokenString, err := TokenAuth.Encode(claims)
 	if err != nil {
-		RespondErrorCode(w, errors.New("Cannot encode token to save"), 500)
+		RespondErrorCode(w, errors.New("cannot encode token to save"), 500)
 		return
 	}
 

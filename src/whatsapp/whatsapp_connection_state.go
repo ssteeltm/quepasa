@@ -19,6 +19,9 @@ const (
 	Connecting
 
 	// Stopped requested
+	Stopping
+
+	// Stopped after request completed
 	Stopped
 
 	Restarting
@@ -59,6 +62,7 @@ func (s WhatsappConnectionState) String() string {
 		"UnVerified",
 		"Starting",
 		"Connecting",
+		"Stopping",
 		"Stopped",
 		"Restarting",
 		"Connected",

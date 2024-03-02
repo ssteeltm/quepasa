@@ -7,23 +7,22 @@ import (
 	"strings"
 	"time"
 
+	models "github.com/nocodeleaks/quepasa/models"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
-	models "github.com/nocodeleaks/quepasa/models"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
-	//docs "github.com/nocodeleaks/quepasa/docs"
-	//ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 	// swagger embed files
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func QPWebServerStart() {
 	r := newRouter()
-	webAPIPort := os.Getenv("WEBAPIPORT")
-	webAPIHost := os.Getenv("WEBAPIHOST")
+	webAPIPort := os.Getenv(models.ENV_WEBAPIPORT)
+	webAPIHost := os.Getenv(models.ENV_WEBAPIHOST)
 	if len(webAPIPort) == 0 {
 		webAPIPort = "31000"
 	}
@@ -36,7 +35,7 @@ func QPWebServerStart() {
 		Handler:      r,
 	}
 
-	log.Infof("Starting Web Server on Port: %s", webAPIPort)
+	log.Infof("starting web server on port: %s", webAPIPort)
 	err := server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
@@ -61,8 +60,8 @@ func newRouter() chi.Router {
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 
-	shouldLog, _ := models.GetEnvBool("HTTPLOGS", false)
-	if shouldLog {
+	shouldLog, _ := models.GetEnvBool("HTTPLOGS", proto.Bool(false))
+	if *shouldLog {
 		r.Use(middleware.Logger)
 	}
 
@@ -115,11 +114,11 @@ func fileServer(r chi.Router, path string, root http.FileSystem) {
 }
 
 func ServeSwaggerUi(r chi.Router) {
-	log.Debugln("Starting SwaggerUi Service")
+	log.Debug("starting swaggerUi service")
 	r.Mount("/swagger", httpSwagger.WrapHandler)
 }
 
 func ServeMetrics(r chi.Router) {
-	log.Debugln("Starting Metrics Service")
+	log.Debug("starting metrics service")
 	r.Handle("/metrics", promhttp.Handler())
 }

@@ -6,26 +6,75 @@ import (
 	"os"
 	"reflect"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	library "github.com/nocodeleaks/quepasa/library"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	log "github.com/sirupsen/logrus"
 	whatsmeow "go.mau.fi/whatsmeow"
+	"go.mau.fi/whatsmeow/appstate"
 	"go.mau.fi/whatsmeow/binary"
 	types "go.mau.fi/whatsmeow/types"
 	"go.mau.fi/whatsmeow/types/events"
 )
 
 type WhatsmeowHandlers struct {
-	Client                   *whatsmeow.Client
-	WAHandlers               whatsapp.IWhatsappHandlers
-	HistorySyncDays          uint
+	Client     *whatsmeow.Client
+	WAHandlers whatsapp.IWhatsappHandlers
+	Options    *whatsapp.WhatsappConnectionOptions
+
 	eventHandlerID           uint32
 	unregisterRequestedToken bool
-	log                      *log.Entry
+	service                  *WhatsmeowServiceModel
+}
 
-	ReadReceipt bool // Should follow Read Receipts to webhook
+// get default log entry, never nil
+func (handler *WhatsmeowHandlers) GetLogger() *log.Entry {
+	if handler.Options == nil {
+		handler.Options = &whatsapp.WhatsappConnectionOptions{}
+	}
+
+	return handler.Options.GetLogger()
+}
+
+func (handler WhatsmeowHandlers) GetServiceOptions() whatsapp.WhatsappOptions {
+	if handler.service == nil {
+		return handler.service.Options.WhatsappOptions
+	}
+
+	return whatsapp.WhatsappOptions{}
+}
+
+func (handler WhatsmeowHandlers) ShouldReadReceipts() bool {
+	options := handler.GetServiceOptions()
+
+	var opt *bool
+	if handler.Options != nil {
+		opt = handler.Options.ReadReceipts
+	}
+
+	return options.HandleReadReceipts(opt)
+}
+
+func (handler WhatsmeowHandlers) ShouldRejectCalls() bool {
+	options := handler.GetServiceOptions()
+
+	var opt *bool
+	if handler.Options != nil {
+		opt = handler.Options.RejectCalls
+	}
+
+	return options.HandleRejectCalls(opt)
+}
+
+func (source *WhatsmeowHandlers) HandleHistorySync() bool {
+	if source != nil {
+		if source.service != nil {
+			return source.service.Options.HistorySync != nil
+		}
+	}
+	return whatsapp.WhatsappHistorySync
 }
 
 // only affects whatsmeow
@@ -35,80 +84,116 @@ func (handler *WhatsmeowHandlers) UnRegister() {
 	// if is this session
 	found := handler.Client.RemoveEventHandler(handler.eventHandlerID)
 	if found {
-		handler.log.Infof("handler unregistered, id: %v", handler.eventHandlerID)
+		handler.GetLogger().Infof("handler unregistered, id: %v", handler.eventHandlerID)
 	}
 }
 
-func (handler *WhatsmeowHandlers) Register() (err error) {
-	if handler.Client.Store == nil {
+func (source *WhatsmeowHandlers) Register() (err error) {
+	if source.Client.Store == nil {
 		err = fmt.Errorf("this client lost the store, probably a logout from whatsapp phone")
 		return
 	}
 
-	handler.unregisterRequestedToken = false
-	handler.eventHandlerID = handler.Client.AddEventHandler(handler.EventsHandler)
-	handler.log.Infof("handler registered, id: %v", handler.eventHandlerID)
+	source.unregisterRequestedToken = false
+	source.eventHandlerID = source.Client.AddEventHandler(source.EventsHandler)
+
+	logger := source.GetLogger()
+	logger.Infof("handler registered, id: %v", source.eventHandlerID)
 
 	return
 }
 
+var historySyncID int32
+var startupTime = time.Now().Unix()
+
 // Define os diferentes tipos de eventos a serem reconhecidos
 // Aqui se define se vamos processar mensagens | confirmações de leitura | etc
-func (handler *WhatsmeowHandlers) EventsHandler(evt interface{}) {
-	if handler.unregisterRequestedToken {
-		handler.log.Info("unregister event handler requested")
-		handler.Client.RemoveEventHandler(handler.eventHandlerID)
+func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
+	if source == nil {
 		return
 	}
 
-	switch v := evt.(type) {
+	logger := source.GetLogger()
+
+	if source.unregisterRequestedToken {
+		logger.Info("unregister event handler requested")
+		source.Client.RemoveEventHandler(source.eventHandlerID)
+		return
+	}
+
+	switch evt := rawEvt.(type) {
 
 	case *events.Message:
-		go handler.Message(*v)
+		go source.Message(*evt)
 		return
 
 	case *events.CallOffer:
-		go handler.CallMessage(*&v.BasicCallMeta)
+		go source.CallMessage(evt.BasicCallMeta)
 		return
 
 	case *events.CallOfferNotice:
-		go handler.CallMessage(*&v.BasicCallMeta)
+		go source.CallMessage(evt.BasicCallMeta)
 		return
 
 	case *events.Receipt:
-		if handler.ReadReceipt {
-			go handler.Receipt(*v)
+		if source.ShouldReadReceipts() {
+			go source.Receipt(*evt)
 		}
 		return
 
 	case *events.Connected:
-		// zerando contador de tentativas de reconexão
-		// importante para zerar o tempo entre tentativas em caso de erro
-		handler.Client.AutoReconnectErrors = 0
+		if source.Client != nil {
+			// zerando contador de tentativas de reconexão
+			// importante para zerar o tempo entre tentativas em caso de erro
+			source.Client.AutoReconnectErrors = 0
+
+			PushNameSetting(source.Client, logger)
+		}
+
+		if source.WAHandlers != nil && !source.WAHandlers.IsInterfaceNil() {
+			go source.WAHandlers.OnConnected()
+		}
+		return
+
+	case *events.PushNameSetting:
+		PushNameSetting(source.Client, logger)
 		return
 
 	case *events.Disconnected:
 		msgDisconnected := "disconnected from server"
-		if handler.Client.EnableAutoReconnect {
-			handler.log.Info(msgDisconnected + ", dont worry, reconnecting")
+		if source.Client.EnableAutoReconnect {
+			logger.Info(msgDisconnected + ", dont worry, reconnecting")
 		} else {
-			handler.log.Warn(msgDisconnected)
+			logger.Warn(msgDisconnected)
+		}
+
+		if source.WAHandlers != nil && !source.WAHandlers.IsInterfaceNil() {
+			go source.WAHandlers.OnDisconnected()
 		}
 		return
 
 	case *events.LoggedOut:
-		handler.HandleLoggedOut(*v)
+		source.OnLoggedOutEvent(*evt)
 		return
 
 	case *events.HistorySync:
-		if handler.HistorySyncDays > 0 {
-			go handler.HistorySync(*v)
+		if source.HandleHistorySync() {
+			go source.OnHistorySyncEvent(*evt)
 		}
 		return
 
+	case *events.AppStateSyncComplete:
+		if len(source.Client.Store.PushName) > 0 && evt.Name == appstate.WAPatchCriticalBlock {
+			err := source.Client.SendPresence(types.PresenceAvailable)
+			if err != nil {
+				logger.Warnf("failed to send available presence: %v", err)
+			} else {
+				logger.Debug("marked self as available from app state sync")
+			}
+		}
+
 	case
 		*events.AppState,
-		*events.AppStateSyncComplete,
 		*events.CallTerminate,
 		*events.Contact,
 		*events.DeleteChat,
@@ -120,20 +205,34 @@ func (handler *WhatsmeowHandlers) EventsHandler(evt interface{}) {
 		*events.PairSuccess,
 		*events.Pin,
 		*events.PushName,
-		*events.PushNameSetting,
 		*events.GroupInfo,
 		*events.QR:
-		handler.log.Tracef("event ignored: %v", reflect.TypeOf(v))
+		logger.Tracef("event ignored: %v", reflect.TypeOf(evt))
 		return // ignoring not implemented yet
 
 	default:
-		handler.log.Debugf("event not handled: %v", reflect.TypeOf(v))
+		logger.Debugf("event not handled: %v", reflect.TypeOf(evt))
 		return
 	}
 }
 
+func PushNameSetting(cli *whatsmeow.Client, logger *log.Entry) {
+	if len(cli.Store.PushName) == 0 {
+		return
+	}
+	// Send presence available when connecting and when the pushname is changed.
+	// This makes sure that outgoing messages always have the right pushname.
+	err := cli.SendPresence(types.PresenceAvailable)
+	if err != nil {
+		logger.Warnf("failed to send available presence: %v", err)
+	} else {
+		logger.Debug("marked self as available")
+	}
+}
+
 func HistorySyncSaveJSON(evt events.HistorySync) {
-	fileName := "history-sync.json"
+	id := atomic.AddInt32(&historySyncID, 1)
+	fileName := fmt.Sprintf("history-%d-%d.json", startupTime, id)
 	file, err := os.OpenFile(fileName, os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		log.Errorf("Failed to open file to write history sync: %v", err)
@@ -150,26 +249,27 @@ func HistorySyncSaveJSON(evt events.HistorySync) {
 	_ = file.Close()
 }
 
-func (handler *WhatsmeowHandlers) HistorySync(evt events.HistorySync) {
-	handler.log.Infof("history sync: %s", evt.Data.SyncType)
-	//HistorySyncSaveJSON(evt)
+func (source *WhatsmeowHandlers) OnHistorySyncEvent(evt events.HistorySync) {
+	logentry := source.GetLogger()
+	logentry.Infof("history sync: %s", evt.Data.SyncType)
+	// HistorySyncSaveJSON(evt)
 
-	conversations := evt.Data.Conversations
+	conversations := evt.Data.GetConversations()
 	for _, conversation := range conversations {
 		for _, historyMsg := range conversation.GetMessages() {
 			wid, err := types.ParseJID(conversation.GetId())
 			if err != nil {
-				log.Errorf("failed to parse jid at history sync: %v", err)
+				logentry.Errorf("failed to parse jid at history sync: %v", err)
 				return
 			}
 
-			evt, err := handler.Client.ParseWebMessage(wid, historyMsg.GetMessage())
+			msgevt, err := source.Client.ParseWebMessage(wid, historyMsg.GetMessage())
 			if err != nil {
-				log.Errorf("failed to parse web message at history sync: %v", err)
+				logentry.Errorf("failed to parse web message at history sync: %v", err)
 				return
 			}
 
-			handler.Message(*evt)
+			source.Message(*msgevt)
 		}
 	}
 }
@@ -178,9 +278,17 @@ func (handler *WhatsmeowHandlers) HistorySync(evt events.HistorySync) {
 
 // Aqui se processar um evento de recebimento de uma mensagem genérica
 func (handler *WhatsmeowHandlers) Message(evt events.Message) {
-	handler.log.Trace("event message received")
+	logger := handler.GetLogger()
+	logger.Trace("event message received")
 	if evt.Message == nil {
-		handler.log.Error("nil message on receiving whatsmeow events | try use rawMessage !")
+		if evt.SourceWebMsg != nil {
+			// probably from recover history sync
+			logger.Info("web message cant be full decrypted, ignoring")
+			return
+		}
+
+		jsonstring, _ := json.Marshal(evt)
+		logger.Errorf("nil message on receiving whatsmeow events | try use rawMessage ! json: %s", string(jsonstring))
 		return
 	}
 
@@ -212,10 +320,6 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 		}
 	} else {
 		if len(message.Chat.Title) == 0 && message.FromMe {
-
-			// if you doesnt have the contact in your list, it will bring your name instead
-			// message.Chat.Title = evt.Info.PushName
-
 			message.Chat.Title = library.GetPhoneByWId(message.Chat.Id)
 		}
 	}
@@ -223,7 +327,7 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 	// Process diferent message types
 	HandleKnowingMessages(handler, message, evt.Message)
 	if message.Type == whatsapp.UnknownMessageType {
-		HandleUnknownMessage(handler.log, evt)
+		HandleUnknownMessage(logger, evt)
 	}
 
 	handler.Follow(message)
@@ -246,14 +350,14 @@ func (handler *WhatsmeowHandlers) Follow(message *whatsapp.WhatsappMessage) {
 		// following to internal handlers
 		go handler.WAHandlers.Message(message)
 	} else {
-		handler.log.Warn("no internal handler registered")
+		handler.GetLogger().Warn("no internal handler registered")
 	}
 }
 
 //#region EVENT CALL
 
 func (handler *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
-	handler.log.Trace("event CallMessage !")
+	handler.GetLogger().Trace("event CallMessage !")
 
 	message := &whatsapp.WhatsappMessage{Content: evt}
 
@@ -274,7 +378,10 @@ func (handler *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
 		go handler.WAHandlers.Message(message)
 	}
 
-	_ = handler.RejectCall(evt)
+	// should reject this call
+	if handler.ShouldRejectCalls() {
+		_ = handler.RejectCall(evt)
+	}
 }
 
 func (handler *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) (err error) {
@@ -297,7 +404,7 @@ func (handler *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) (err error) 
 		},
 	}
 
-	handler.log.Infof("rejecting incoming call from: %s", v.From)
+	handler.GetLogger().Infof("rejecting incoming call from: %s", v.From)
 	return handler.Client.DangerousInternals().SendNode(node)
 }
 
@@ -306,7 +413,7 @@ func (handler *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) (err error) 
 //#region EVENT READ RECEIPT
 
 func (handler *WhatsmeowHandlers) Receipt(evt events.Receipt) {
-	handler.log.Trace("event Receipt !")
+	handler.GetLogger().Trace("event Receipt !")
 
 	message := &whatsapp.WhatsappMessage{Content: evt}
 	message.Id = "readreceipt"
@@ -335,9 +442,9 @@ func (handler *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 
 //#region HANDLE LOGGED OUT EVENT
 
-func (handler *WhatsmeowHandlers) HandleLoggedOut(evt events.LoggedOut) {
+func (handler *WhatsmeowHandlers) OnLoggedOutEvent(evt events.LoggedOut) {
 	reason := evt.Reason.String()
-	handler.log.Tracef("logged out %s", reason)
+	handler.GetLogger().Tracef("logged out %s", reason)
 
 	if handler.WAHandlers != nil {
 		handler.WAHandlers.LoggedOut(reason)

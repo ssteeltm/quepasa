@@ -16,17 +16,34 @@ import (
 	whatsmeow "go.mau.fi/whatsmeow"
 	waProto "go.mau.fi/whatsmeow/binary/proto"
 	types "go.mau.fi/whatsmeow/types"
-	waLog "go.mau.fi/whatsmeow/util/log"
 )
 
 // Must Implement IWhatsappConnection
 type WhatsmeowConnection struct {
-	Client      *whatsmeow.Client
-	Handlers    *WhatsmeowHandlers
-	waLogger    waLog.Logger
-	log         *log.Entry
+	Client   *whatsmeow.Client
+	Handlers *WhatsmeowHandlers
+
 	failedToken bool
 	paired      func(string)
+}
+
+// get default log entry, never nil
+func (source *WhatsmeowConnection) GetLogger() *log.Entry {
+	if source.Handlers != nil {
+		return source.Handlers.GetLogger()
+	}
+
+	logger := log.StandardLogger()
+	logger.SetLevel(log.DebugLevel)
+
+	serverLogEntry := logger.WithContext(context.Background())
+
+	wid, err := source.GetWid()
+	if err == nil && len(wid) > 0 {
+		serverLogEntry = serverLogEntry.WithField("wid", wid)
+	}
+
+	return serverLogEntry
 }
 
 //region IMPLEMENT INTERFACE WHATSAPP CONNECTION
@@ -49,6 +66,13 @@ func (conn *WhatsmeowConnection) GetWid() (wid string, err error) {
 	}
 
 	return
+}
+
+func (source *WhatsmeowConnection) GetOptions() *whatsapp.WhatsappConnectionOptions {
+	if source.Handlers != nil {
+		return source.Handlers.Options
+	}
+	return nil
 }
 
 func (conn *WhatsmeowConnection) IsValid() bool {
@@ -110,29 +134,29 @@ func (conn *WhatsmeowConnection) GetChatTitle(wid string) string {
 }
 
 // Connect to websocket only, dot not authenticate yet, errors come after
-func (conn *WhatsmeowConnection) Connect() (err error) {
-	conn.log.Info("starting whatsmeow connection")
+func (source *WhatsmeowConnection) Connect() (err error) {
+	source.GetLogger().Info("starting whatsmeow connection")
 
-	err = conn.Client.Connect()
+	err = source.Client.Connect()
 	if err != nil {
-		conn.failedToken = true
+		source.failedToken = true
 		return
 	}
 
 	// waits 2 seconds for loggedin
 	// not required
-	_ = conn.Client.WaitForConnection(time.Millisecond * 2000)
+	_ = source.Client.WaitForConnection(time.Millisecond * 2000)
 
-	conn.failedToken = false
+	source.failedToken = false
 	return
 }
 
 // func (cli *Client) Download(msg DownloadableMessage) (data []byte, err error)
-func (conn *WhatsmeowConnection) DownloadData(imsg whatsapp.IWhatsappMessage) (data []byte, err error) {
+func (source *WhatsmeowConnection) DownloadData(imsg whatsapp.IWhatsappMessage) (data []byte, err error) {
 	msg := imsg.GetSource()
 	downloadable, ok := msg.(whatsmeow.DownloadableMessage)
 	if !ok {
-		conn.log.Debug("not downloadable type, trying default message")
+		source.GetLogger().Debug("not downloadable type, trying default message")
 		waMsg, ok := msg.(*waProto.Message)
 		if !ok {
 			attach := imsg.GetAttachment()
@@ -146,9 +170,9 @@ func (conn *WhatsmeowConnection) DownloadData(imsg whatsapp.IWhatsappMessage) (d
 			err = fmt.Errorf("parameter msg cannot be converted to an original message")
 			return
 		}
-		return conn.Client.DownloadAny(waMsg)
+		return source.Client.DownloadAny(waMsg)
 	}
-	return conn.Client.Download(downloadable)
+	return source.Client.Download(downloadable)
 }
 
 func (conn *WhatsmeowConnection) Download(imsg whatsapp.IWhatsappMessage, cache bool) (att *whatsapp.WhatsappAttachment, err error) {
@@ -175,23 +199,23 @@ func (conn *WhatsmeowConnection) Download(imsg whatsapp.IWhatsappMessage, cache 
 	return
 }
 
-func (conn *WhatsmeowConnection) Revoke(msg whatsapp.IWhatsappMessage) error {
+func (source *WhatsmeowConnection) Revoke(msg whatsapp.IWhatsappMessage) error {
 	jid, err := types.ParseJID(msg.GetChatId())
 	if err != nil {
-		conn.log.Infof("revoke error on get jid: %s", err)
+		source.GetLogger().Infof("revoke error on get jid: %s", err)
 		return err
 	}
 
 	participantJid, err := types.ParseJID(msg.GetParticipantId())
 	if err != nil {
-		conn.log.Infof("revoke error on get jid: %s", err)
+		source.GetLogger().Infof("revoke error on get jid: %s", err)
 		return err
 	}
 
-	newMessage := conn.Client.BuildRevoke(jid, participantJid, msg.GetId())
-	_, err = conn.Client.SendMessage(context.Background(), jid, newMessage)
+	newMessage := source.Client.BuildRevoke(jid, participantJid, msg.GetId())
+	_, err = source.Client.SendMessage(context.Background(), jid, newMessage)
 	if err != nil {
-		conn.log.Infof("revoke error: %s", err)
+		source.GetLogger().Infof("revoke error: %s", err)
 		return err
 	}
 
@@ -248,7 +272,7 @@ func isASCII(s string) bool {
 }
 
 // Default SEND method using WhatsappMessage Interface
-func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.IWhatsappSendResponse, error) {
+func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.IWhatsappSendResponse, error) {
 
 	var err error
 	messageText := msg.GetText()
@@ -265,7 +289,7 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 				var sender *string
 				if msg.FromGroup() {
 					// getting connection store id for use as group participant
-					storeid := conn.Client.Store.ID
+					storeid := source.Client.Store.ID
 
 					// formating sender without device and session info
 					jid := fmt.Sprintf("%s@%s", storeid.User, storeid.Server)
@@ -275,7 +299,7 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 				// getting quoted message if available on cache
 				// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
 				var quoted *waProto.Message
-				cached, _ := conn.Handlers.WAHandlers.GetMessage(msg.InReply)
+				cached, _ := source.Handlers.WAHandlers.GetMessage(msg.InReply)
 				if cached.Content != nil {
 					quoted = cached.Content.(*waProto.Message)
 				}
@@ -289,7 +313,7 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 			newMessage = &waProto.Message{ExtendedTextMessage: internal}
 		}
 	} else {
-		newMessage, err = conn.UploadAttachment(*msg)
+		newMessage, err = source.UploadAttachment(*msg)
 		if err != nil {
 			return msg, err
 		}
@@ -306,27 +330,27 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 
 	jid, err := types.ParseJID(formattedDestination)
 	if err != nil {
-		conn.log.Infof("send error on get jid: %s", err)
+		source.GetLogger().Infof("send error on get jid: %s", err)
 		return msg, err
 	}
 
 	// Generating a new unique MessageID
 	if len(msg.Id) == 0 {
-		msg.Id = conn.Client.GenerateMessageID()
+		msg.Id = source.Client.GenerateMessageID()
 	}
 
 	extra := whatsmeow.SendRequestExtra{
 		ID: msg.Id,
 	}
 
-	resp, err := conn.Client.SendMessage(context.Background(), jid, newMessage, extra)
+	resp, err := source.Client.SendMessage(context.Background(), jid, newMessage, extra)
 	if err != nil {
-		conn.log.Errorf("send error: %s", err)
+		source.GetLogger().Errorf("send error: %s", err)
 		return msg, err
 	}
 	msg.Timestamp = resp.Timestamp
 
-	conn.log.Infof("send: %s, on: %s", msg.Id, msg.Timestamp)
+	source.GetLogger().Infof("send: %s, on: %s", msg.Id, msg.Timestamp)
 	return msg, err
 }
 
@@ -358,13 +382,13 @@ func (conn *WhatsmeowConnection) Disconnect() (err error) {
 	return
 }
 
-func (conn *WhatsmeowConnection) GetInvite(groupId string) (link string, err error) {
+func (source *WhatsmeowConnection) GetInvite(groupId string) (link string, err error) {
 	jid, err := types.ParseJID(groupId)
 	if err != nil {
-		conn.log.Infof("getting invite error on parse jid: %s", err)
+		source.GetLogger().Infof("getting invite error on parse jid: %s", err)
 	}
 
-	link, err = conn.Client.GetGroupInviteLink(jid, false)
+	link, err = source.Client.GetGroupInviteLink(jid, false)
 	return
 }
 
@@ -416,19 +440,21 @@ func TryUpdateChannel(ch chan<- string, value string) (closed bool) {
 	return true // <=> closed = false; return
 }
 
-func (conn *WhatsmeowConnection) GetWhatsAppQRChannel(ctx context.Context, out chan<- string) (err error) {
+func (source *WhatsmeowConnection) GetWhatsAppQRChannel(ctx context.Context, out chan<- string) error {
+	logger := source.GetLogger()
+
 	// No ID stored, new login
-	qrChan, err := conn.Client.GetQRChannel(ctx)
+	qrChan, err := source.Client.GetQRChannel(ctx)
 	if err != nil {
-		log.Errorf("error on getting whatsapp qrcode channel: %s", err.Error())
-		return
+		logger.Errorf("error on getting whatsapp qrcode channel: %s", err.Error())
+		return err
 	}
 
-	if !conn.Client.IsConnected() {
-		err = conn.Client.Connect()
+	if !source.Client.IsConnected() {
+		err = source.Client.Connect()
 		if err != nil {
-			log.Errorf("error on connecting for getting whatsapp qrcode: %s", err.Error())
-			return
+			logger.Errorf("error on connecting for getting whatsapp qrcode: %s", err.Error())
+			return err
 		}
 	}
 
@@ -440,12 +466,11 @@ func (conn *WhatsmeowConnection) GetWhatsAppQRChannel(ctx context.Context, out c
 			if !TryUpdateChannel(out, evt.Code) {
 				// expected error, means that websocket was closed
 				// probably user has gone out page
-				err = fmt.Errorf("cant write to output")
-				break
+				return fmt.Errorf("cant write to output")
 			}
 		} else {
 			if evt.Event == "timeout" {
-				err = errors.New("timeout")
+				return errors.New("timeout")
 			}
 			wg.Done()
 			break
@@ -453,40 +478,40 @@ func (conn *WhatsmeowConnection) GetWhatsAppQRChannel(ctx context.Context, out c
 	}
 
 	wg.Wait()
-	return
+	return nil
 }
 
-func (conn *WhatsmeowConnection) HistorySync(timestamp time.Time) (err error) {
+func (source *WhatsmeowConnection) HistorySync(timestamp time.Time) (err error) {
+	logentry := source.GetLogger()
 
-	leading := conn.Handlers.WAHandlers.GetLeadingMessage()
+	leading := source.Handlers.WAHandlers.GetLeadingMessage()
 	if leading == nil {
 		err = fmt.Errorf("no valid msg in cache for retrieve parents")
-		conn.log.Error(err)
-		return
+		return err
 	}
 
 	// Convert interface to struct using type assertion
 	info, ok := leading.Info.(types.MessageInfo)
 	if !ok {
-		conn.log.Error("error converting leading for history")
+		logentry.Error("error converting leading for history")
 	}
 
-	conn.log.Infof("getting history from: %s", timestamp)
+	logentry.Infof("getting history from: %s", timestamp)
 	extra := whatsmeow.SendRequestExtra{Peer: true}
 
 	//info := &types.MessageInfo{ }
-	msg := conn.Client.BuildHistorySyncRequest(&info, 100)
-	response, err := conn.Client.SendMessage(context.Background(), conn.Client.Store.ID.ToNonAD(), msg, extra)
+	msg := source.Client.BuildHistorySyncRequest(&info, 50)
+	response, err := source.Client.SendMessage(context.Background(), source.Client.Store.ID.ToNonAD(), msg, extra)
 	if err != nil {
-		conn.log.Errorf("getting history error: %s", err.Error())
+		logentry.Errorf("getting history error: %s", err.Error())
 	}
 
-	conn.log.Infof("history: %v", response)
+	logentry.Infof("history: %v", response)
 	return
 }
 
-func (conn *WhatsmeowConnection) UpdateLog(entry *log.Entry) {
-	conn.log = entry
+func (source *WhatsmeowConnection) UpdateLog(entry *log.Entry) {
+	source.Handlers.Options.Logger = entry
 }
 
 func (conn *WhatsmeowConnection) UpdateHandler(handlers whatsapp.IWhatsappHandlers) {
@@ -516,29 +541,23 @@ func (conn *WhatsmeowConnection) PairedCallBack(jid types.JID, platform, busines
 
 </summary>
 */
-func (conn *WhatsmeowConnection) Dispose(reason string) {
-	if conn.log != nil {
-		conn.log.Infof("disposing connection: %s", reason)
-		conn.log = nil
+func (source *WhatsmeowConnection) Dispose(reason string) {
+
+	source.GetLogger().Infof("disposing connection: %s", reason)
+
+	if source.Handlers != nil {
+		go source.Handlers.UnRegister()
+		source.Handlers = nil
 	}
 
-	if conn.log != nil {
-		conn.log = nil
-	}
-
-	if conn.Handlers != nil {
-		go conn.Handlers.UnRegister()
-		conn.Handlers = nil
-	}
-
-	if conn.Client != nil {
-		if conn.Client.IsConnected() {
-			go conn.Client.Disconnect()
+	if source.Client != nil {
+		if source.Client.IsConnected() {
+			go source.Client.Disconnect()
 		}
-		conn.Client = nil
+		source.Client = nil
 	}
 
-	conn = nil
+	source = nil
 }
 
 /*
@@ -548,19 +567,19 @@ func (conn *WhatsmeowConnection) Dispose(reason string) {
 
 </summary>
 */
-func (conn *WhatsmeowConnection) Delete() (err error) {
-	if conn != nil {
-		if conn.Client != nil {
-			if conn.Client.IsLoggedIn() {
-				err = conn.Client.Logout()
+func (source *WhatsmeowConnection) Delete() (err error) {
+	if source != nil {
+		if source.Client != nil {
+			if source.Client.IsLoggedIn() {
+				err = source.Client.Logout()
 				if err != nil {
 					return
 				}
-				conn.log.Infof("logged out for delete")
+				source.GetLogger().Infof("logged out for delete")
 			}
 
-			if conn.Client.Store != nil {
-				err = conn.Client.Store.Delete()
+			if source.Client.Store != nil {
+				err = source.Client.Store.Delete()
 				if err != nil {
 					// ignoring error about JID, just checked and the delete process was succeed
 					if strings.Contains(err.Error(), "device JID must be known before accessing database") {
@@ -570,13 +589,11 @@ func (conn *WhatsmeowConnection) Delete() (err error) {
 						return
 					}
 				}
-
-				// here the conn.log (*Entry) is already nil
 			}
 		}
 	}
 
-	conn.Dispose("Delete")
+	source.Dispose("Delete")
 	return
 }
 

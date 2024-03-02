@@ -6,7 +6,7 @@
     </div>
   {{ end }}
 
-  <h2 class="title is-2">Messages for {{ .Number }}</h2>
+  <h2 class="title is-2">({{ .Count }}) Messages for {{ .Number }}</h2>
   {{ range .Messages }}
     <pre id="msg-{{ .Id }}">
       On: {{ .Timestamp }} => ID: {{ .Id }} => From Me: {{ .FromMe }} => Edited: {{ .Edited }}{{ if .HasAttachment }} => Attachment: <a download target="_blank" title="{{ .Attachment.Mimetype }} {{ if .Attachment.FileName }}({{ .Attachment.FileName }}){{ end }}" href="{{ $DOWNLOADPREFIX }}{{ .Id }}">Download</a>{{ end }}  

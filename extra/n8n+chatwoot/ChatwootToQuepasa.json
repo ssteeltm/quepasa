@@ -999,8 +999,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.18) Updates\n* Ensuring chatid for conversation avaliation\n\n## Recommendations \n* Remember set timeout to 30 seconds",
-        "height": 188.50589779739215,
+        "content": "## (1.0.19) Updates\n* Quepasa continue on fail\n\n## (1.0.18) Updates\n* Ensuring chatid for conversation avaliation\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "height": 262.4598840042887,
         "width": 457.17616077915915
       },
       "id": "224d6d50-a48c-4de4-a996-154f372cf182",
@@ -1009,7 +1009,7 @@
       "typeVersion": 1,
       "position": [
         -9140,
-        4580
+        4540
       ]
     },
     {
@@ -1187,7 +1187,9 @@
       "retryOnFail": true,
       "maxTries": 2,
       "waitBetweenTries": 2000,
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": false,
+      "continueOnFail": true
     },
     {
       "parameters": {
@@ -1212,7 +1214,8 @@
       "retryOnFail": true,
       "maxTries": 2,
       "waitBetweenTries": 2000,
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "continueOnFail": true
     },
     {
       "parameters": {
@@ -2150,7 +2153,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "8290d80b-7a01-4182-8426-2be62ac57cc3",
+  "versionId": "313c9f52-1ff9-4392-a392-b20faff11736",
   "id": "1008",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

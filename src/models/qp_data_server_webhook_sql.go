@@ -50,14 +50,14 @@ func (source QpDataServerWebhookSql) All() ([]*QpServerWebhook, error) {
 }
 
 func (source QpDataServerWebhookSql) Add(element *QpServerWebhook) error {
-	query := `INSERT OR IGNORE INTO webhooks (context, url, forwardinternal, trackid, extra) VALUES (?, ?, ?, ?, ?)`
-	_, err := source.db.Exec(query, element.Context, element.Url, element.ForwardInternal, element.TrackId, element.GetExtraText())
+	query := `INSERT OR IGNORE INTO webhooks (context, url, forwardinternal, trackid, readreceipts, groups, broadcasts, extra) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+	_, err := source.db.Exec(query, element.Context, element.Url, element.ForwardInternal, element.TrackId, element.ReadReceipts, element.Groups, element.Broadcasts, element.GetExtraText())
 	return err
 }
 
 func (source QpDataServerWebhookSql) Update(element *QpServerWebhook) error {
-	query := `UPDATE webhooks SET forwardinternal = ?, trackid = ?, extra = ? WHERE context = ? AND url = ?`
-	_, err := source.db.Exec(query, element.ForwardInternal, element.TrackId, element.GetExtraText(), element.Context, element.Url)
+	query := `UPDATE webhooks SET forwardinternal = ?, trackid = ?, readreceipts = ?, groups = ?, broadcasts = ?, extra = ? WHERE context = ? AND url = ?`
+	_, err := source.db.Exec(query, element.ForwardInternal, element.TrackId, element.ReadReceipts, element.Groups, element.Broadcasts, element.GetExtraText(), element.Context, element.Url)
 	return err
 }
 

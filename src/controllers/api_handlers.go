@@ -179,7 +179,7 @@ func CommandController(w http.ResponseWriter, r *http.Request) {
 	case "groups":
 		handle, err := server.ToggleGroups()
 		if err == nil {
-			message := "groups toggled: " + strconv.FormatBool(handle)
+			message := "groups toggled: " + strconv.FormatBool(*handle)
 			response.ParseSuccess(message)
 		}
 	default:

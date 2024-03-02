@@ -3,23 +3,49 @@ package models
 import (
 	"crypto/tls"
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 )
 
-// Encaminha msg ao WebHook específicado
+// handle message deliver to individual webhook distribution
 func PostToWebHookFromServer(server *QpWhatsappServer, message *whatsapp.WhatsappMessage) (err error) {
+	if server == nil {
+		err = fmt.Errorf("server nil")
+		return err
+	}
+
 	wid := server.GetWId()
 
-	// Ignorando certificado ao realizar o post
-	// Não cabe a nós a segurança do cliente
+	// ignoring ssl issues
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
+	logentry := server.GetLogger()
 	for _, element := range server.Webhooks {
+		sublogentry := logentry.WithField("url", element.Url)
+
+		if message.Id == "readreceipt" && element.IsSetReadReceipts() && !*element.ReadReceipts {
+			sublogentry.Debugf("ignoring read receipt message: %s", message.Text)
+			continue
+		}
+
+		if message.FromGroup() && element.IsSetGroups() && !*element.Groups {
+			sublogentry.Debugf("ignoring group message: %s", message.Id)
+			continue
+		}
+
+		if message.FromBroadcast() && element.IsSetBroadcasts() && !*element.Broadcasts {
+			sublogentry.Debugf("ignoring broadcast message: %s", message.Id)
+			continue
+		}
+
 		if !message.FromInternal || (element.ForwardInternal && (len(element.TrackId) == 0 || element.TrackId != message.TrackId)) {
-			element.Post(wid, message)
+			elerr := element.Post(wid, message)
+			if elerr != nil {
+				sublogentry.Errorf("error on post webhook: %s", elerr.Error())
+			}
 		}
 	}
 
@@ -39,7 +65,7 @@ func GetServerFromID(source string) (server *QpWhatsappServer, err error) {
 }
 
 func GetServerFromBot(source QPBot) (server *QpWhatsappServer, err error) {
-	return GetServerFromID(source.WId)
+	return GetServerFromID(source.Wid)
 }
 
 func GetServerFromToken(token string) (server *QpWhatsappServer, err error) {

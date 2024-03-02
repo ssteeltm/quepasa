@@ -37,10 +37,22 @@ func main() {
 		whatsapp.WhatsappWebAppSystem = title
 	}
 
-	whatsmeow.WhatsmeowService.Start()
-	whatsmeow.WhatsmeowService.LogLevel = models.ENV.WhatsmeowLogLevel()
-	whatsmeow.WhatsmeowService.ReadReceipt = models.ENV.ShouldReadReceipts()
-	whatsmeow.WhatsmeowService.HistorySyncDays = models.ENV.HistorySyncDays()
+	whatsapp.Options = whatsapp.WhatsappOptions{
+		Groups:       models.ENV.Groups(),
+		Broadcasts:   models.ENV.Broadcasts(),
+		ReadReceipts: models.ENV.ReadReceipts(),
+		RejectCalls:  models.ENV.RejectCalls(),
+		HistorySync:  models.ENV.HistorySync(),
+		LogLevel:     models.ENV.LogLevel(),
+	}
+
+	options := whatsmeow.WhatsmeowOptions{
+		WhatsappOptions: whatsapp.Options,
+		WMLogLevel:      models.ENV.WhatsmeowLogLevel(),
+		DBLogLevel:      models.ENV.WhatsmeowDBLogLevel(),
+	}
+
+	whatsmeow.Start(options)
 
 	// must execute after whatsmeow started
 	for _, element := range models.Running {
