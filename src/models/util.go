@@ -120,7 +120,7 @@ func QueryHasKey(query *url.URL, key string) bool {
 func QueryGetValue(url *url.URL, key string) string {
 	query := url.Query()
 	for k := range query {
-		if strings.ToLower(k) == strings.ToLower(key) {
+		if strings.EqualFold(k, key) {
 			return query.Get(k)
 		}
 	}
