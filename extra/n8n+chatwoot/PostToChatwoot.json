@@ -241,7 +241,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.9) Updates\n* edited messages content adjust\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "content": "## (1.0.10) Updates\n* edited messages continue even if not found\n\n## Recommendations \n* Remember set timeout to 10 seconds",
         "height": 189.357048321488,
         "width": 489.8474320052134
       },
@@ -472,6 +472,7 @@
         -2580,
         540
       ],
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "1",
@@ -1490,7 +1491,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "a2869abd-aa75-4435-85df-020cc1c28dc9",
+  "versionId": "00629b26-683c-4b3e-b2a1-bf19742b0d41",
   "id": "1006",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
