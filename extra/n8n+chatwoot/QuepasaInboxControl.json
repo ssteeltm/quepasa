@@ -3,25 +3,25 @@
   "nodes": [
     {
       "parameters": {
-        "baseUrl": "={{$json[\"query\"][\"qphost\"]}}",
-        "token": "={{$json[\"query\"][\"qptoken\"]}}",
+        "baseUrl": "={{$json.extra.qphost}}",
+        "token": "={{$json.extra.qptoken}}",
         "resource": "webhook",
         "operation": "setup",
-        "url": "={{ $json.query.n8nhost?.replace(/\\/+$/, '') ?? \"https://\" + $json.headers.host }}/webhook/to-chatwoot",
+        "url": "={{ $json.extra.n8nhost?.replace(/\\/+$/, '') ?? \"https://\" + $json.headers.host }}/webhook/to-chatwoot",
         "trackId": "chatwoot",
         "extraAttributes": {
           "attribute": [
             {
               "key": "identifier",
-              "value": "={{$json[\"query\"][\"identifier\"]}}"
+              "value": "={{$json.extra.identifier}}"
             },
             {
               "key": "cwhost",
-              "value": "={{$json[\"query\"][\"cwhost\"]}}"
+              "value": "={{$json.extra.cwhost}}"
             },
             {
               "key": "inbox",
-              "value": "={{$json[\"query\"][\"inbox\"]}}"
+              "value": "={{$json.extra.inbox}}"
             },
             {
               "key": "account",
@@ -29,23 +29,23 @@
             },
             {
               "key": "utoken",
-              "value": "={{$json[\"query\"][\"utoken\"]}}"
+              "value": "={{$json.extra.utoken}}"
             },
             {
               "key": "atoken",
-              "value": "={{$json[\"query\"][\"atoken\"]}}"
+              "value": "={{$json.extra.atoken}}"
             },
             {
               "key": "account",
-              "value": "={{$json[\"query\"][\"account\"]}}"
+              "value": "={{$json.extra.account}}"
             },
             {
               "key": "qphost",
-              "value": "={{$json[\"query\"][\"qphost\"]}}"
+              "value": "={{$json.extra.qphost}}"
             },
             {
               "key": "qptoken",
-              "value": "={{$json[\"query\"][\"qptoken\"]}}"
+              "value": "={{$json.extra.qptoken}}"
             }
           ]
         }
@@ -62,8 +62,8 @@
     },
     {
       "parameters": {
-        "baseUrl": "={{$json[\"query\"][\"qphost\"]}}",
-        "token": "={{$json[\"query\"][\"qptoken\"]}}",
+        "baseUrl": "={{$json.extra.qphost}}",
+        "token": "={{$json.extra.qptoken}}",
         "resource": "webhook",
         "operation": "remove",
         "url": "=https://{{$json[\"headers\"][\"host\"]}}/webhook/to-chatwoot"
@@ -112,10 +112,10 @@
     },
     {
       "parameters": {
-        "baseUrl": "={{ $json.params.cwhost }}",
+        "baseUrl": "={{ $json.extra.cwhost }}",
         "sourceId": "={{ $json.params.source_id }}",
         "operation": "messageCreate",
-        "inboxIdentifier": "={{ $json.params.identifier }}",
+        "inboxIdentifier": "={{ $json.extra.identifier }}",
         "conversationId": "={{ $json.params.conversation_id }}",
         "content": "={{$json[\"response\"]}}"
       },
@@ -225,7 +225,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -4020,
+        -4060,
         420
       ]
     },
@@ -236,7 +236,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -3780,
+        -3860,
         580
       ]
     },
@@ -284,8 +284,8 @@
     },
     {
       "parameters": {
-        "baseUrl": "={{$json[\"query\"][\"qphost\"]}}",
-        "token": "={{$json[\"query\"][\"qptoken\"]}}",
+        "baseUrl": "={{$json.extra.qphost}}",
+        "token": "={{$json.extra.qptoken}}",
         "resource": "information"
       },
       "id": "815775f7-c630-4d75-9c59-15ff119484fa",
@@ -355,8 +355,8 @@
     },
     {
       "parameters": {
-        "baseUrl": "={{$json[\"query\"][\"qphost\"]}}",
-        "token": "={{$json[\"query\"][\"qptoken\"]}}",
+        "baseUrl": "={{$json.extra.qphost}}",
+        "token": "={{$json.extra.qptoken}}",
         "resource": "webhook",
         "operation": "clear"
       },
@@ -460,19 +460,19 @@
             },
             {
               "name": "cwhost",
-              "value": "={{$json.query.cwhost}}"
+              "value": "={{$json.extra.cwhost}}"
             },
             {
               "name": "account",
-              "value": "={{$json.query.account}}"
+              "value": "={{$json.extra.account}}"
             },
             {
               "name": "inbox",
-              "value": "={{$json.query.inbox}}"
+              "value": "={{$json.extra.inbox}}"
             },
             {
               "name": "utoken",
-              "value": "={{$json.query.utoken}}"
+              "value": "={{$json.extra.utoken}}"
             }
           ]
         },
@@ -483,7 +483,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -3780,
+        -3900,
         400
       ]
     },
@@ -512,13 +512,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$json.cwhost}}/api/v1/accounts/{{$json.account}}/inboxes/{{$json.inbox}}/set_agent_bot",
+        "url": "={{$json.extra.cwhost}}/api/v1/accounts/{{$json.extra.account}}/inboxes/{{$json.extra.inbox}}/set_agent_bot",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "api_access_token",
-              "value": "={{$json.utoken}}"
+              "value": "={{$json.extra.utoken}}"
             }
           ]
         },
@@ -661,7 +661,7 @@
           "parameters": [
             {
               "name": "identifier",
-              "value": "={{ $json.query.identifier }}"
+              "value": "={{ $json.extra.identifier }}"
             },
             {
               "name": "destination",
@@ -694,7 +694,7 @@
           "parameters": [
             {
               "name": "identifier",
-              "value": "={{ $json.query.identifier }}"
+              "value": "={{ $json.extra.identifier }}"
             },
             {
               "name": "contextId",
@@ -812,8 +812,9 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.2) Recommendations \n* Remember set timeout to 15 seconds \n* string empty for switch\n* getting identifier from postgres",
-        "width": 395
+        "content": "## (1.0.4) Updates\n* query to extra\n\n## Recommendations \n* Remember set timeout to 15 seconds \n* string empty for switch\n* getting identifier from postgres",
+        "height": 221.8901373993275,
+        "width": 444.914796845942
       },
       "id": "ccf59cc4-7a1b-47c4-afeb-56e49290d5e6",
       "name": "Sticky Note",
@@ -821,7 +822,7 @@
       "typeVersion": 1,
       "position": [
         -4360,
-        -20
+        -59.063754053345974
       ]
     },
     {
@@ -924,12 +925,12 @@
               "value": "={{ $json.params }}"
             },
             {
-              "name": "params.cwhost",
-              "value": "={{$json.query.cwhost}}"
+              "name": "extra.cwhost",
+              "value": "={{ $json.query.cwhost ?? $json.extra.cwhost }}"
             },
             {
-              "name": "params.identifier",
-              "value": "={{$json.query.identifier}}"
+              "name": "extra.identifier",
+              "value": "={{ $json.query.identifier }}"
             }
           ]
         },
@@ -994,6 +995,31 @@
       "position": [
         3000,
         320
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "extra.qphost",
+              "value": "={{$json.extra.qphost ?? $json.query.qphost}}"
+            },
+            {
+              "name": "extra.qptoken",
+              "value": "={{$json.extra.qptoken ?? $json.query.qptoken ?? $json.extra.identifier ?? $json.query.identifier}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3c765636-8af2-4dba-adc7-9d978f9ed49c",
+      "name": "Set Extra Payload Adjusts",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -3740,
+        400
       ]
     }
   ],
@@ -1246,7 +1272,7 @@
       "main": [
         [
           {
-            "node": "If Body Not Empty",
+            "node": "Set Extra Payload Adjusts",
             "type": "main",
             "index": 0
           }
@@ -1579,6 +1605,17 @@
           }
         ]
       ]
+    },
+    "Set Extra Payload Adjusts": {
+      "main": [
+        [
+          {
+            "node": "If Body Not Empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1588,18 +1625,12 @@
     "executionTimeout": 15,
     "executionOrder": "v1"
   },
-  "versionId": "57bac283-d6ea-4c57-8619-a2c2707913e7",
+  "versionId": "320ca98b-e855-4182-80cd-6092c5e6c931",
   "id": "1001",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
   "tags": [
-    {
-      "createdAt": "2022-10-13T15:26:11.519Z",
-      "updatedAt": "2023-08-25T18:50:53.269Z",
-      "id": "5",
-      "name": "quepasa"
-    },
     {
       "createdAt": "2022-10-13T15:26:19.857Z",
       "updatedAt": "2023-08-24T21:01:00.296Z",
@@ -1607,10 +1638,16 @@
       "name": "chatwoot"
     },
     {
-      "createdAt": "2023-05-19T22:53:24.375Z",
-      "updatedAt": "2023-05-19T22:53:24.375Z",
-      "id": "11",
-      "name": "NOCODELEAKS"
+      "createdAt": "2022-10-13T15:26:11.519Z",
+      "updatedAt": "2023-08-25T18:50:53.269Z",
+      "id": "5",
+      "name": "quepasa"
+    },
+    {
+      "createdAt": "2023-05-19T22:54:38.266Z",
+      "updatedAt": "2023-05-19T22:54:38.266Z",
+      "id": "13",
+      "name": "github.com/nocodeleaks"
     }
   ]
 }

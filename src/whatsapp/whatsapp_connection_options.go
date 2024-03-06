@@ -9,7 +9,7 @@ import (
 type WhatsappConnectionOptions struct {
 
 	// whatsapp connection id and session
-	Wid string `json:"wid"`
+	Wid string `json:"-"`
 
 	// should emit read receipts
 	ReadReceipts *bool `json:"readreceipts,omitempty"`
