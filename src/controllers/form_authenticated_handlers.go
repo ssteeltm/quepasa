@@ -3,6 +3,7 @@ package controllers
 import (
 	"html/template"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth"
@@ -90,9 +91,8 @@ func FormWebHooksController(w http.ResponseWriter, r *http.Request) {
 
 	token := models.GetRequestParameter(r, "token")
 	if len(token) > 0 {
-
 		servers := models.GetServersForUser(user)
-		data.Server = servers[token]
+		data.Server = servers[strings.ToLower(token)]
 		if data.Server == nil {
 			data.ErrorMessage = "server token not found or dont owned by you"
 		}
