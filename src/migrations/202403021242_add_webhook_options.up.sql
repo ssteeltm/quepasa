@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `webhooks_202403021242` (
 );
 
 INSERT INTO `webhooks_202403021242` (`context`, `url`,`forwardinternal`,`trackid`,`extra`)
-SELECT `context` || "@migrated", `url`, `forwardinternal`,`trackid`,`extra` 
+SELECT `context`, `url`, `forwardinternal`, `trackid`, `extra` 
 FROM `webhooks`;
 
 DROP TABLE `webhooks`;
