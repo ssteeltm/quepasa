@@ -63,10 +63,10 @@ func (server *QpWhatsappServer) GetStatus() whatsapp.WhatsappConnectionState {
 		}
 	} else {
 		if server.StopRequested {
-			if !server.connection.IsConnected() {
-				return whatsapp.Stopped
-			} else {
+			if server.connection != nil && !server.connection.IsInterfaceNil() && server.connection.IsConnected() {
 				return whatsapp.Stopping
+			} else {
+				return whatsapp.Stopped
 			}
 		} else {
 			state := server.connection.GetStatus()
@@ -373,7 +373,8 @@ func (source *QpWhatsappServer) Stop(cause string) (err error) {
 		source.StopRequested = true
 
 		// loggging properly
-		source.GetLogger().Infof("stopping server: %s", cause)
+		logentry := source.GetLogger()
+		logentry.Infof("stopping server: %s", cause)
 
 		source.Disconnect("stop: " + cause)
 
@@ -394,7 +395,9 @@ func (source *QpWhatsappServer) Restart() (err error) {
 	// wait 1 second before continue
 	time.Sleep(1 * time.Second)
 
-	source.GetLogger().Info("re-initializing whatsapp server ...")
+	logentry := source.GetLogger()
+	logentry.Info("re-initializing whatsapp server ...")
+
 	return source.Start()
 }
 
@@ -402,7 +405,9 @@ func (source *QpWhatsappServer) Restart() (err error) {
 func (source *QpWhatsappServer) Disconnect(cause string) {
 	if source.connection != nil && !source.connection.IsInterfaceNil() {
 		if source.connection.IsConnected() {
-			source.GetLogger().Infof("disconnecting whatsapp server by: %s", cause)
+			logentry := source.GetLogger()
+			logentry.Infof("disconnecting whatsapp server by: %s", cause)
+
 			source.connection.Dispose(cause)
 			source.connection = nil
 		}
@@ -427,6 +432,9 @@ func (server *QpWhatsappServer) GetOwnerID() string {
 // Check if the current connection state is valid for a start method
 func IsValidToStart(status whatsapp.WhatsappConnectionState) bool {
 	if status == whatsapp.Stopped {
+		return true
+	}
+	if status == whatsapp.Stopping {
 		return true
 	}
 	if status == whatsapp.Disconnected {

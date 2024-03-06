@@ -70,7 +70,7 @@ func GetServerFromBot(source QPBot) (server *QpWhatsappServer, err error) {
 
 func GetServerFromToken(token string) (server *QpWhatsappServer, err error) {
 	for _, item := range WhatsappService.Servers {
-		if item != nil && strings.ToLower(item.Token) == strings.ToLower(token) {
+		if item != nil && strings.EqualFold(item.Token, token) {
 			server = item
 			break
 		}
