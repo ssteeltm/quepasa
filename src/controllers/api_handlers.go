@@ -144,7 +144,7 @@ func ScannerController(w http.ResponseWriter, r *http.Request) {
 }
 
 func CommandController(w http.ResponseWriter, r *http.Request) {
-	// setting default reponse type as json
+	// setting default response type as json
 	w.Header().Set("Content-Type", "application/json")
 
 	response := &models.QpResponse{}
@@ -183,7 +183,7 @@ func CommandController(w http.ResponseWriter, r *http.Request) {
 			response.ParseSuccess(message)
 		}
 	default:
-		err = fmt.Errorf("invalid action: {%s}, try {start,stop,restart,status,groups} !", action)
+		err = fmt.Errorf("invalid action: {%s}, try {start,stop,restart,status,groups}", action)
 	}
 
 	if err != nil {
