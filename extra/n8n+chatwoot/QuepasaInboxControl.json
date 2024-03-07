@@ -919,7 +919,7 @@
             },
             {
               "name": "extra.identifier",
-              "value": "={{ $json.query.identifier }}"
+              "value": "={{ $json.query.identifier ?? $json.extra.identifier }}"
             }
           ]
         },
@@ -1581,7 +1581,7 @@
     "executionTimeout": 15,
     "executionOrder": "v1"
   },
-  "versionId": "559a0fa0-2e3f-4a64-a107-d5ef9d9517ff",
+  "versionId": "80036bea-166c-4158-88d0-a3c1b5a65f23",
   "id": "1001",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

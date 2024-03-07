@@ -7,35 +7,47 @@
 * [(1.0.2) Quepasa Automatic](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaAutomatic.json)
 * [(1.0.2) Quepasa Chat Control](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaChatControl.json)
 * [(1.0.4) Quepasa Inbox Control](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaInboxControl.json)
-* [(1.0.0) Quepasa Qrcode](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaQrcode.json)
+* [(1.0.1) Quepasa Qrcode](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaQrcode.json)
 * [(1.0.5) Quepasa To Chatwoot](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaToChatwoot.json)
 * [(1.0.6) Get Chatwoot Contacts](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/GetChatwootContacts.json)
 * [(1.0.0) Post To WebCallBack](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/PostToWebCallBack.json)
+* [(1.0.0) Chatwoot Extra](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootExtra.json)
 
 ### Use N8N Environment File to set these variables:
 > use your respectives ids
 
 	# C8Q_QUEPASAINBOXCONTROL
 	> (integer) Workflow Id - QuepasaInboxControl, used by ChatwootToQuepasa
-
-	# C8Q_QUEPASACHATCONTROL
-	> (integer) Workflow Id - QuepasaChatControl, used by ChatwootToQuepasa | QuepasaToChatwoot
-
-	# C8Q_CHATWOOTPROFILEUPDATE
-	> (integer) Workflow Id - ChatwootProfileUpdate, used by ChatwootToQuepasa
-
-	# C8Q_POSTTOCHATWOOT
-	> (integer) Workflow Id - PostToChatwoot, used by QuepasaToChatwoot
-
-	# C8Q_POSTTOWEBCALLBACK
-	> (integer) Workflow Id - PostToWebCallBack, used by QuepasaToChatwoot
-
-	# C8Q_CHATWOOTTOQUEPASAGREETINGS
-	> (integer) Workflow Id - ChatwootToQuepasaGreetings, used by QuepasaToChatwoot
+	> (default) 1001
 
 	# C8Q_GETCHATWOOTCONTACTS
 	> (integer) Workflow Id - GetChatwootContacts, (2023/06/19) used by QuepasaToChatwoot
-
+	> (default) 1002
+		
+	# C8Q_QUEPASACHATCONTROL
+	> (integer) Workflow Id - QuepasaChatControl, used by ChatwootToQuepasa | QuepasaToChatwoot
+	> (default) 1003
+	
+	# C8Q_CHATWOOTPROFILEUPDATE
+	> (integer) Workflow Id - ChatwootProfileUpdate, used by ChatwootToQuepasa
+	> (default) 1004
+	
+	# C8Q_POSTTOWEBCALLBACK
+	> (integer) Workflow Id - PostToWebCallBack, used by QuepasaToChatwoot
+	> (default) 1005
+	
+	# C8Q_POSTTOCHATWOOT
+	> (integer) Workflow Id - PostToChatwoot, used by QuepasaToChatwoot
+	> (default) 1006
+	
+	# C8Q_CHATWOOTTOQUEPASAGREETINGS
+	> (integer) Workflow Id - ChatwootToQuepasaGreetings, used by QuepasaToChatwoot
+	> (default) 1007
+	
+	# C8Q_CHATWOOTEXTRA
+	> (string) Workflow Id - ChatwootExtra, used by QuepasaQrcode
+	> (default) iiEsUj7ybtzEZAFj
+	
 	# C8Q_SINGLETHREAD
 	> (boolean => true | false) Enable a single conversation per contact, for all life time, not just a ticket
 	
