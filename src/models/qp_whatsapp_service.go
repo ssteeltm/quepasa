@@ -112,12 +112,14 @@ func (source *QPWhatsappService) AppendPaired(paired *QpWhatsappPairing) (server
 
 		source.Servers[info.Token] = server
 	} else {
+		server.Token = paired.Token
+		server.Wid = paired.Wid
+
 		// updating cached item
 		logger.Infof("updating paired server on cache: %s, old wid: %s, new wid: %s", server.Token, server.Wid, paired.Wid)
 	}
 
 	server.connection = paired.conn
-	server.Wid = paired.Wid
 	server.Verified = true
 
 	// checking user
@@ -148,10 +150,10 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 
 	logger := log.New()
 	logger.SetLevel(serverLogLevel)
-	entry := logger.WithField("token", info.Token)
+	logentry := logger.WithField("token", info.Token)
 
 	if len(info.Wid) > 0 {
-		entry = entry.WithField("wid", info.Wid)
+		logentry = logentry.WithField("wid", info.Wid)
 	}
 
 	options := &whatsapp.WhatsappConnectionOptions{
@@ -159,7 +161,7 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 		ReadReceipts:        info.ReadReceipts,
 		RejectCalls:         info.RejectCalls,
 		EnableAutoReconnect: true,
-		Logger:              entry,
+		Logger:              logentry,
 	}
 
 	server = &QpWhatsappServer{
@@ -173,7 +175,7 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 		db:            service.DB.Servers,
 	}
 
-	entry.Info("server created")
+	logentry.Info("server created")
 
 	server.HandlerEnsure()
 	server.WebHookEnsure()

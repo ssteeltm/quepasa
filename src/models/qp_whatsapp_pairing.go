@@ -42,25 +42,30 @@ func (source *QpWhatsappPairing) GetLogger() *log.Entry {
 func (source *QpWhatsappPairing) OnPaired(wid string) {
 	source.Wid = wid
 
-	// updating token if from user
-	if source.User != nil {
-		source.Token = source.GetUserToken()
+	// if token was not setted
+	// remember that user may want a different section for the same whatsapp
+	if len(source.Token) == 0 {
+
+		// updating token if from user
+		if source.User != nil {
+			source.Token = source.GetUserToken()
+		}
 	}
 
-	logger := source.GetLogger()
+	logentry := source.GetLogger()
 	if source.conn != nil {
 		options := source.conn.GetOptions()
 		if options != nil {
 			options.EnableAutoReconnect = true
 			options.Wid = source.Wid
-			options.Logger = logger
+			options.Logger = logentry
 		}
 	}
 
-	logger.Info("paired whatsapp section")
+	logentry.Info("paired whatsapp section")
 	server, err := WhatsappService.AppendPaired(source)
 	if err != nil {
-		logger.Errorf("paired error: %s", err.Error())
+		logentry.Errorf("paired error: %s", err.Error())
 		return
 	}
 
@@ -79,11 +84,12 @@ func (source *QpWhatsappPairing) GetConnection() (whatsapp.IWhatsappConnection, 
 	return source.conn, nil
 }
 
+// gets an existent token for same phone number and user, or create a new token
 func (source *QpWhatsappPairing) GetUserToken() string {
 	phone := library.GetPhoneByWId(source.Wid)
 
-	logger := source.GetLogger()
-	logger.Infof("wid to phone: %s", phone)
+	logentry := source.GetLogger()
+	logentry.Infof("wid to phone: %s", phone)
 
 	servers := WhatsappService.GetServersForUser(source.User.Username)
 	for _, item := range servers {
