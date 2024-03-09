@@ -25,7 +25,7 @@ func main() {
 		log.SetLevel(log.InfoLevel)
 	}
 
-	// Verifica se é necessario realizar alguma migração de base de dados
+	// checks for pending database migrations
 	err := models.MigrateToLatest()
 	if err != nil {
 		log.Fatalf("Database migration error: %s", err.Error())

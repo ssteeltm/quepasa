@@ -99,7 +99,7 @@ func RegisterAPIControllers(r chi.Router) {
 }
 
 func ScannerController(w http.ResponseWriter, r *http.Request) {
-	// setting default reponse type as json
+	// setting default response type as json
 	w.Header().Set("Content-Type", "application/json")
 
 	response := &models.QpResponse{}

@@ -3,7 +3,6 @@ package models
 import (
 	"database/sql"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"sort"
 	"strings"
@@ -119,7 +118,7 @@ func MigrateToLatest() (err error) {
 		}
 	}
 
-	log.Debugf("fullpath database: %s", fullPath)
+	log.Debugf("full path database: %s", fullPath)
 
 	migrations := Migrations(fullPath)
 	config := GetDBConfig()
@@ -136,7 +135,7 @@ func MigrateToLatest() (err error) {
 
 func Migrations(fullPath string) (migrations []migrate.SqlxMigration) {
 	log.Debugf("migrating files from: %s", fullPath)
-	files, err := ioutil.ReadDir(fullPath)
+	files, err := os.ReadDir(fullPath)
 	if err != nil {
 		if strings.Contains(err.Error(), "cannot find the file specified") {
 			log.Warnf("no migrations found at: %s", fullPath)
@@ -228,8 +227,7 @@ func GetBase() migrate.SqlxMigration {
 	  ('202209281840'),
 	  ('202303011900'),
 	  ('202402291556'),
-	  ('202403021242'),
-	  ;
+	  ('202403021242');
 	  `, "")
 	return migration
 }

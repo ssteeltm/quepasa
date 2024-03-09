@@ -136,6 +136,7 @@
         "READRECEIPTS",
         "REMOVEDIGIT",
         "SYNOPSISLENGTH",
+        "Splitted",
         "VARCHAR",
         "WASYSTEMCHAT",
         "WEBAPIHOST",
