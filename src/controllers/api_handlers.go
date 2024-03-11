@@ -113,6 +113,7 @@ func ScannerController(w http.ResponseWriter, r *http.Request) {
 
 	user, err := GetUser(r)
 	if err != nil {
+		err := fmt.Errorf("user not found: %s", err.Error())
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
@@ -121,6 +122,7 @@ func ScannerController(w http.ResponseWriter, r *http.Request) {
 	pairing := &models.QpWhatsappPairing{Token: token, User: user}
 	con, err := pairing.GetConnection()
 	if err != nil {
+		err := fmt.Errorf("cant get connection: %s", err.Error())
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
@@ -132,6 +134,7 @@ func ScannerController(w http.ResponseWriter, r *http.Request) {
 	var png []byte
 	png, err = qrcode.Encode(result, qrcode.Medium, 256)
 	if err != nil {
+		err := fmt.Errorf("cant get qrcode: %s", err.Error())
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
