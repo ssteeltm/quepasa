@@ -827,8 +827,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.5) Updates\n* defaults workflows ids\n\n## (1.0.4) Updates\n* Adjustments to revoke\n\n## Recommendations \n* Remember set timeout to 30 seconds",
-        "height": 288.02784606114983,
+        "content": "## (1.0.6) Updates\n* get internal id for revoked\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "height": 227.37978039831683,
         "width": 398.97654103837476
       },
       "id": "97661b0f-d79b-4d77-bb42-c99a3e1c4f1a",
@@ -837,7 +837,7 @@
       "typeVersion": 1,
       "position": [
         6620,
-        -720
+        -659.3519343371669
       ]
     },
     {
@@ -1131,8 +1131,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        8940,
-        760
+        9000,
+        800
       ]
     },
     {
@@ -1146,7 +1146,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        9260,
+        9320,
         980
       ]
     },
@@ -1164,7 +1164,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        9480,
+        9540,
         980
       ],
       "id": "f99d96cc-c113-4c9b-882b-b4b5d976d688",
@@ -1197,8 +1197,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.3,
       "position": [
-        8700,
-        860
+        8780,
+        920
       ],
       "credentials": {
         "postgres": {
@@ -1225,28 +1225,7 @@
       "typeVersion": 1,
       "position": [
         8380,
-        840
-      ]
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "body.internalid",
-              "value": "={{ $json.body.id.split(/-/).pop() }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "ce9e977b-dfd4-4e17-a385-f99c9ed607a5",
-      "name": "Internal Id",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 2,
-      "position": [
-        8540,
-        720
+        900
       ]
     },
     {
@@ -1260,7 +1239,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.3,
       "position": [
-        8700,
+        8780,
         680
       ],
       "credentials": {
@@ -1269,6 +1248,20 @@
           "name": "Postgres account"
         }
       }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "function isNumeric(str) {\n  if (typeof str != \"string\") return false;\n  return !isNaN(str) && !isNaN(parseFloat(str));\n}\nconst splitted = $input.item.json.body.id.split(/-/);\nlet internalid = splitted.pop();\nif (!isNumeric(internalid)){\n  internalid = splitted[2];\n}\n\n$input.item.json.internalid = internalid;\nreturn $input.item;"
+      },
+      "id": "d0314adc-b780-4e2c-8614-a363053d4d60",
+      "name": "Get Internal Id",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8580,
+        780
+      ]
     }
   ],
   "pinData": {},
@@ -1952,7 +1945,7 @@
       "main": [
         [
           {
-            "node": "Internal Id",
+            "node": "Get Internal Id",
             "type": "main",
             "index": 0
           }
@@ -1960,17 +1953,6 @@
         [
           {
             "node": "Get Revoked Message Info",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Internal Id": {
-      "main": [
-        [
-          {
-            "node": "Get Revoked Internal Message Info",
             "type": "main",
             "index": 0
           }
@@ -1987,6 +1969,17 @@
           }
         ]
       ]
+    },
+    "Get Internal Id": {
+      "main": [
+        [
+          {
+            "node": "Get Revoked Internal Message Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -1995,7 +1988,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "c49730ee-2ec0-43cc-b02f-488b5d8304d0",
+  "versionId": "c669b756-3671-4c00-a10a-9c281dcc2e6a",
   "id": "1009",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

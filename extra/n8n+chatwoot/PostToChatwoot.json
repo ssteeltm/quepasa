@@ -67,7 +67,7 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        -3180,
+        -3300,
         760
       ]
     },
@@ -223,6 +223,10 @@
               "value": "={{ $json.extra.qphost ?? \"http://127.0.0.1:31000\" }}"
             },
             {
+              "name": "extra.cwhost",
+              "value": "={{ $json.extra.cwhost ?? \"http://127.0.0.1:3000\" }}"
+            },
+            {
               "name": "extra.qptoken",
               "value": "={{ $json.extra.qptoken ?? $json.extra.identifier }}"
             }
@@ -235,13 +239,13 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        -2780,
-        880
+        -3140,
+        760
       ]
     },
     {
       "parameters": {
-        "content": "## (1.0.10) Updates\n* edited messages continue even if not found\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "content": "## (1.0.11) Updates\n* added cwhost to defaults\n\n## Recommendations \n* Remember set timeout to 10 seconds",
         "height": 189.357048321488,
         "width": 489.8474320052134
       },
@@ -309,7 +313,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        -1960,
+        -2060,
         620
       ],
       "id": "943ba096-84d6-4793-9b53-d856db56a478",
@@ -905,8 +909,19 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        -2160,
+        -2220,
         620
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "839e4c90-46b3-4247-96c2-3349bd32fe6a",
+      "name": "No Operation, do nothing4",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -2780,
+        880
       ]
     }
   ],
@@ -956,7 +971,7 @@
       "main": [
         [
           {
-            "node": "If Edited Message ?",
+            "node": "Defaults",
             "type": "main",
             "index": 0
           }
@@ -1070,7 +1085,7 @@
       "main": [
         [
           {
-            "node": "If InReply | Reaction ?",
+            "node": "If Edited Message ?",
             "type": "main",
             "index": 0
           }
@@ -1161,7 +1176,7 @@
         ],
         [
           {
-            "node": "Defaults",
+            "node": "No Operation, do nothing4",
             "type": "main",
             "index": 0
           }
@@ -1483,6 +1498,17 @@
           }
         ]
       ]
+    },
+    "No Operation, do nothing4": {
+      "main": [
+        [
+          {
+            "node": "If InReply | Reaction ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1491,7 +1517,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "00629b26-683c-4b3e-b2a1-bf19742b0d41",
+  "versionId": "f9719cb4-a7f7-4a08-854d-9fba6e350453",
   "id": "1006",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
