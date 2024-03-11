@@ -17,7 +17,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        11680,
+        11900,
         -263.21073188545233
       ],
       "id": "7a5b8b0d-7386-4e52-95b0-5806180d3521"
@@ -57,7 +57,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        10980,
+        11200,
         -483.21073188545233
       ],
       "id": "f298b95a-045a-437e-a369-38a671315924",
@@ -85,7 +85,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        11220,
+        11440,
         -483.21073188545233
       ],
       "id": "fc98c588-e5f5-41d7-bf7b-faaba57ec8ca"
@@ -117,7 +117,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        11940,
+        12160,
         -483.21073188545233
       ],
       "id": "5adac819-e66b-4a2a-b4c9-5e6a3e9234b6"
@@ -152,7 +152,7 @@
       "typeVersion": 1,
       "position": [
         8880,
-        56.78926811454767
+        60
       ],
       "id": "c1e9b772-02d2-455d-9968-03b90e1f5fab"
     },
@@ -201,7 +201,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        10440,
+        10660,
         -283.21073188545233
       ],
       "alwaysOutputData": false,
@@ -237,7 +237,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        11000,
+        11220,
         -823.2107318854523
       ]
     },
@@ -250,7 +250,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        11460,
+        11680,
         -823.2107318854523
       ],
       "continueOnFail": true
@@ -264,7 +264,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        11240,
+        11460,
         -823.2107318854523
       ]
     },
@@ -277,7 +277,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        15720,
+        15940,
         -683.2107318854523
       ],
       "continueOnFail": true
@@ -336,7 +336,7 @@
       "typeVersion": 1,
       "position": [
         8100,
-        36.78926811454767
+        40
       ]
     },
     {
@@ -350,7 +350,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        10240,
+        10460,
         -283.21073188545233
       ]
     },
@@ -361,7 +361,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        10740,
+        10960,
         -483.21073188545233
       ]
     },
@@ -376,7 +376,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        11480,
+        11700,
         -323.21073188545233
       ]
     },
@@ -387,7 +387,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        12520,
+        12740,
         -243.21073188545233
       ]
     },
@@ -402,7 +402,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        12280,
+        12500,
         -303.21073188545233
       ]
     },
@@ -423,7 +423,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        12120,
+        12340,
         -483.21073188545233
       ],
       "id": "35e494cc-41a3-4d0c-97aa-b77cc2f37768"
@@ -452,7 +452,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        15160,
+        15380,
         -363.21073188545233
       ],
       "id": "929eb1c5-5a57-4603-867f-860e15de3cdb"
@@ -466,7 +466,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        15720,
+        15940,
         -343.21073188545233
       ],
       "alwaysOutputData": true,
@@ -504,7 +504,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        12800,
+        13020,
         -243.21073188545233
       ]
     },
@@ -531,7 +531,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        13080,
+        13300,
         -383.21073188545233
       ]
     },
@@ -544,7 +544,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        13360,
+        13580,
         -583.2107318854523
       ],
       "executeOnce": true,
@@ -567,8 +567,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        9400,
-        216.78926811454767
+        9420,
+        220
       ]
     },
     {
@@ -581,8 +581,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        9760,
-        296.78926811454767
+        9800,
+        300
       ],
       "webhookId": "13d982e4-e253-4616-9e0a-3da472be5e56"
     },
@@ -608,8 +608,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        9920,
-        36.78926811454767
+        9960,
+        40
       ]
     },
     {
@@ -683,7 +683,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        14900,
+        15120,
         -363.21073188545233
       ],
       "id": "a5b6fc06-5c43-4269-b324-eead5bf58486"
@@ -700,7 +700,7 @@
       "typeVersion": 1,
       "position": [
         8520,
-        136.78926811454767
+        140
       ],
       "retryOnFail": false,
       "waitBetweenTries": 2000,
@@ -723,7 +723,7 @@
       "typeVersion": 1,
       "position": [
         8700,
-        136.78926811454767
+        140
       ]
     },
     {
@@ -742,8 +742,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        9040,
-        56.78926811454767
+        9060,
+        60
       ]
     },
     {
@@ -763,8 +763,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        9580,
-        216.78926811454767
+        9600,
+        220
       ]
     },
     {
@@ -785,8 +785,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        9220,
-        136.78926811454767
+        9240,
+        140
       ]
     },
     {
@@ -797,7 +797,7 @@
       "typeVersion": 1,
       "position": [
         8340,
-        36.78926811454767
+        40
       ]
     },
     {
@@ -807,8 +807,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        9400,
-        36.78926811454767
+        9420,
+        40
       ]
     },
     {
@@ -821,13 +821,13 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        9760,
-        136.78926811454767
+        9800,
+        140
       ]
     },
     {
       "parameters": {
-        "content": "## (1.0.6) Updates\n* get internal id for revoked\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.7) Updates\n* error control after get contact\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 227.37978039831683,
         "width": 398.97654103837476
       },
@@ -837,7 +837,7 @@
       "typeVersion": 1,
       "position": [
         6620,
-        -659.3519343371669
+        -659
       ]
     },
     {
@@ -850,7 +850,7 @@
       "typeVersion": 1,
       "position": [
         7360,
-        -300
+        -280
       ],
       "continueOnFail": true
     },
@@ -877,7 +877,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        15400,
+        15620,
         -363.21073188545233
       ]
     },
@@ -897,7 +897,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        13060,
+        13280,
         -83.21073188545233
       ]
     },
@@ -908,7 +908,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        14360,
+        14580,
         -363.21073188545233
       ]
     },
@@ -923,7 +923,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.3,
       "position": [
-        13460,
+        13680,
         156.78926811454767
       ],
       "alwaysOutputData": true,
@@ -945,7 +945,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        13700,
+        13920,
         -43.21073188545233
       ]
     },
@@ -970,7 +970,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        14080,
+        14300,
         -23.210731885452333
       ]
     },
@@ -991,7 +991,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        13260,
+        13480,
         36.78926811454767
       ]
     },
@@ -1012,7 +1012,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        13460,
+        13680,
         16.789268114547667
       ]
     },
@@ -1032,7 +1032,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        13880,
+        14100,
         -43.21073188545233
       ]
     },
@@ -1068,17 +1068,6 @@
       "position": [
         7160,
         -380
-      ]
-    },
-    {
-      "parameters": {},
-      "id": "790129b9-9f8d-4874-81c7-34606f301dd2",
-      "name": "New Payload",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        7540,
-        -300
       ]
     },
     {
@@ -1261,6 +1250,26 @@
       "position": [
         8580,
         780
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.error }}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "id": "e4177ea6-0d86-4aa4-aec9-a3b58ef4a1f3",
+      "name": "If Success To Get Contact",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        7540,
+        -280
       ]
     }
   ],
@@ -1701,7 +1710,7 @@
       "main": [
         [
           {
-            "node": "New Payload",
+            "node": "If Success To Get Contact",
             "type": "main",
             "index": 0
           }
@@ -1858,22 +1867,6 @@
         ]
       ]
     },
-    "New Payload": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Set Filter Conversation Parameters",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If Not Revoked ?": {
       "main": [
         [
@@ -1980,15 +1973,32 @@
           }
         ]
       ]
+    },
+    "If Success To Get Contact": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set Filter Conversation Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "saveManualExecutions": false,
     "callerPolicy": "workflowsFromSameOwner",
-    "executionTimeout": 30
+    "executionTimeout": 30,
+    "executionOrder": "v1"
   },
-  "versionId": "c669b756-3671-4c00-a10a-9c281dcc2e6a",
+  "versionId": "0097ae74-4d37-4241-ba3e-a4f7be23a901",
   "id": "1009",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
