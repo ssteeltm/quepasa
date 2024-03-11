@@ -49,7 +49,7 @@
       "typeVersion": 1,
       "position": [
         1040,
-        -240
+        -220
       ]
     },
     {
@@ -62,7 +62,7 @@
       "typeVersion": 1,
       "position": [
         1240,
-        -240
+        -220
       ]
     },
     {
@@ -127,7 +127,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        840,
+        680,
         -320
       ]
     },
@@ -206,6 +206,10 @@
             {
               "value1": "={{$json.payload}}",
               "operation": "isNotEmpty"
+            },
+            {
+              "value1": "={{$json.error}}",
+              "operation": "isEmpty"
             }
           ]
         }
@@ -329,6 +333,12 @@
               "name": "attempts",
               "value": "={{ ($json.attempts ?? 0) + 1 }}"
             }
+          ],
+          "string": [
+            {
+              "name": "error",
+              "value": "={{ undefined }}"
+            }
           ]
         },
         "options": {}
@@ -392,7 +402,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.5) Updates\n* synopsis\n\n## Recommendations \n* Remember set timeout to 20 seconds",
+        "content": "## (1.0.7) Updates\n* extra defaults\n\n## Recommendations \n* Remember set timeout to 20 seconds",
         "height": 201.45401153644474,
         "width": 467.54452018877896
       },
@@ -401,8 +411,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        640,
-        -580
+        460,
+        -560
       ]
     },
     {
@@ -412,7 +422,7 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        660,
+        520,
         -320
       ]
     },
@@ -631,6 +641,31 @@
         2420,
         -220
       ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "extra.qphost",
+              "value": "={{ $json.extra.qphost ?? \"http://127.0.0.1:31000\" }}"
+            },
+            {
+              "name": "extra.cwhost",
+              "value": "={{ $json.extra.cwhost ?? \"http://127.0.0.1:3000\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a280c016-e515-4e00-af76-4a1bc196c6e4",
+      "name": "Defaults",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        840,
+        -320
+      ]
     }
   ],
   "pinData": {},
@@ -672,12 +707,7 @@
       "main": [
         [
           {
-            "node": "Clearing Payload For Contacts",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Parameters + Contacts",
+            "node": "Defaults",
             "type": "main",
             "index": 0
           }
@@ -971,6 +1001,22 @@
           }
         ]
       ]
+    },
+    "Defaults": {
+      "main": [
+        [
+          {
+            "node": "Parameters + Contacts",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Clearing Payload For Contacts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -979,7 +1025,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "77f11969-cc19-4e4b-a281-31c6407aad24",
+  "versionId": "264b8606-a491-49bc-8c84-4b636ec218a9",
   "id": "1002",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
