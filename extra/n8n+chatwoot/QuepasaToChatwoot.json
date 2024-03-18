@@ -1281,7 +1281,7 @@
               "value": "={{ $json.body.extra }}"
             },
             {
-              "name": "=extra.cwhost",
+              "name": "extra.cwhost",
               "value": "={{ $json.extra.cwhost ?? 'http://127.0.0.1:3000' }}"
             }
           ]
@@ -2034,7 +2034,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "2ecbfbdb-0726-49a7-b19b-8e80b08ae745",
+  "versionId": "dc5bb072-6c6f-4d00-a8ce-769ec11338df",
   "id": "1009",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
