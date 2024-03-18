@@ -12,17 +12,6 @@ type QpDataServerSql struct {
 	db *sqlx.DB
 }
 
-/*
-	FindAll() []*QpServer
-	FindByToken(string) (*QpServer, error)
-	FindForUser(string, string) (*QpServer, error)
-	Exists(string) (bool, error)
-
-	Add(QpServer) error
-	Update(QpServer) error
-	Delete(string) error
-*/
-
 func (source QpDataServerSql) FindForUser(token string, user string) (response *QpServer, err error) {
 	err = source.db.Get(&response, "SELECT * FROM servers WHERE token = ? AND user = ?", token, user)
 	return
@@ -53,13 +42,13 @@ func (source QpDataServerSql) FindByToken(token string) (response *QpServer, err
 }
 
 func (source QpDataServerSql) Add(element *QpServer) error {
-	query := `INSERT INTO servers (token, wid, verified, devel, groups, broadcasts, readreceipts, rejectcalls, user) VALUES (:token, :wid, :verified, :devel, :groups, :broadcasts, :readreceipts, :rejectcalls, :user)`
+	query := `INSERT INTO servers (token, wid, verified, devel, groups, broadcasts, readreceipts, calls, user) VALUES (:token, :wid, :verified, :devel, :groups, :broadcasts, :readreceipts, :calls, :user)`
 	_, err := source.db.NamedExec(query, element)
 	return err
 }
 
 func (source QpDataServerSql) Update(element *QpServer) error {
-	query := `UPDATE servers SET wid = :wid, verified = :verified, devel = :devel, groups = :groups, broadcasts = :broadcasts, readreceipts = :readreceipts, rejectcalls = :rejectcalls, user = :user WHERE token = :token`
+	query := `UPDATE servers SET wid = :wid, verified = :verified, devel = :devel, groups = :groups, broadcasts = :broadcasts, readreceipts = :readreceipts, calls = :calls, user = :user WHERE token = :token`
 	_, err := source.db.NamedExec(query, element)
 	return err
 }

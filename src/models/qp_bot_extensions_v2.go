@@ -36,8 +36,8 @@ func ToQpServerV2(source *QpServer) (destination *QpServerV2) {
 		Token:           source.Token,
 		UserID:          source.User,
 		Devel:           source.Devel,
-		HandleGroups:    *source.Groups,
-		HandleBroadcast: *source.Broadcasts,
+		HandleGroups:    source.Groups.ToBoolean(false),
+		HandleBroadcast: source.Broadcasts.ToBoolean(false),
 		UpdatedAt:       source.Timestamp.String(),
 		Version:         "multi",
 	}

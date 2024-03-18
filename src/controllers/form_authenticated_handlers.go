@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/jwtauth"
 
 	models "github.com/nocodeleaks/quepasa/models"
+	"github.com/nocodeleaks/quepasa/whatsapp"
 	"github.com/nocodeleaks/quepasa/whatsmeow"
 )
 
@@ -69,7 +70,7 @@ func FormAccountController(w http.ResponseWriter, r *http.Request) {
 	data := models.QPFormAccountData{
 		PageTitle: "Account",
 		User:      *user,
-		Options:   whatsmeow.WhatsmeowService.Options.WhatsappOptions,
+		Options:   whatsapp.Options,
 		WMOptions: whatsmeow.WhatsmeowService.Options,
 	}
 

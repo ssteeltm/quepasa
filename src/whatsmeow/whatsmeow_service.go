@@ -23,7 +23,7 @@ type WhatsmeowServiceModel struct {
 	Container *sqlstore.Container
 	Options   WhatsmeowOptions
 
-	LogEntry *log.Entry `json:"-"`
+	LogEntry *log.Entry `json:"-"` // log entry
 }
 
 var WhatsmeowService *WhatsmeowServiceModel
@@ -107,6 +107,10 @@ func Start(options WhatsmeowOptions) {
 	}
 }
 
+func (source WhatsmeowServiceModel) GetServiceOptions() whatsapp.WhatsappOptionsExtended {
+	return source.Options.WhatsappOptionsExtended
+}
+
 func (source *WhatsmeowServiceModel) GetHistorySync() *uint32 {
 	return source.Options.HistorySync
 }
@@ -115,7 +119,7 @@ func (source *WhatsmeowServiceModel) GetHistorySync() *uint32 {
 // Dont forget to attach handlers after success login
 func (source *WhatsmeowServiceModel) CreateEmptyConnection() (conn *WhatsmeowConnection, err error) {
 	options := &whatsapp.WhatsappConnectionOptions{
-		EnableAutoReconnect: false,
+		Reconnect: false,
 	}
 	return source.CreateConnection(options)
 }
@@ -126,13 +130,16 @@ func (source *WhatsmeowServiceModel) CreateConnection(options *whatsapp.Whatsapp
 		return
 	}
 
-	client.EnableAutoReconnect = options.EnableAutoReconnect
+	logentry := options.GetLogger()
+	client.EnableAutoReconnect = options.GetReconnect()
 
 	handlers := &WhatsmeowHandlers{
-		Client:  client,
-		Options: options,
+		WhatsappOptions:  options.WhatsappOptions,
+		WhatsmeowOptions: source.Options,
+		Client:           client,
+		service:          source,
 
-		service: source,
+		LogEntry: logentry,
 	}
 
 	err = handlers.Register()
@@ -143,13 +150,16 @@ func (source *WhatsmeowServiceModel) CreateConnection(options *whatsapp.Whatsapp
 	conn = &WhatsmeowConnection{
 		Client:   client,
 		Handlers: handlers,
+
+		LogEntry: logentry,
 	}
 
 	client.PrePairCallback = conn.PairedCallBack
 	return
 }
 
-func (service *WhatsmeowServiceModel) GetStoreFromWid(wid string) (str *store.Device, err error) {
+// Gets an existing store or create a new one for empty wid
+func (service *WhatsmeowServiceModel) GetOrCreateStore(wid string) (str *store.Device, err error) {
 	if wid == "" {
 		str = service.Container.NewDevice()
 	} else {
@@ -199,21 +209,24 @@ func (service *WhatsmeowServiceModel) GetStoreForMigrated(phone string) (str *st
 	return
 }
 
-func (source *WhatsmeowServiceModel) GetWhatsAppClient(options *whatsapp.WhatsappConnectionOptions) (client *whatsmeow.Client, err error) {
+func (source *WhatsmeowServiceModel) GetWhatsAppClient(options whatsapp.IWhatsappConnectionOptions) (client *whatsmeow.Client, err error) {
 	loglevel := WhatsmeowClientLogLevel
 	_, logerr := log.ParseLevel(source.Options.WMLogLevel)
 	if logerr == nil {
 		loglevel = source.Options.WMLogLevel
 	}
 
+	wid := options.GetWid()
 	clientLog := waLog.Stdout("whatsmeow/client", loglevel, true)
-	clientLog = clientLog.Sub(options.Wid)
+	if len(wid) > 0 {
+		clientLog = clientLog.Sub(wid)
+	}
 
-	deviceStore, err := source.GetStoreFromWid(options.Wid)
+	deviceStore, err := source.GetOrCreateStore(wid)
 	if deviceStore != nil {
 		client = whatsmeow.NewClient(deviceStore, clientLog)
 		client.AutoTrustIdentity = true
-		client.EnableAutoReconnect = options.EnableAutoReconnect
+		client.EnableAutoReconnect = options.GetReconnect()
 	}
 	return
 }

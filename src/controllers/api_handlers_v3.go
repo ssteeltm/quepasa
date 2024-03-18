@@ -84,7 +84,7 @@ func RegisterAPIV3Controllers(r chi.Router) {
 
 // InformationController renders route GET "/{version}/info"
 func InformationControllerV3(w http.ResponseWriter, r *http.Request) {
-	// setting default reponse type as json
+	// setting default response type as json
 	w.Header().Set("Content-Type", "application/json")
 
 	response := &models.QpInfoResponse{}

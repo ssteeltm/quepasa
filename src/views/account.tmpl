@@ -97,9 +97,9 @@
                     </form>
                   </p>
                   <p class="control"> 
-                    <form class="" method="post" action="/form/toggle?key=server-rejectcalls" data-value="{{ .RejectCalls }}">
+                    <form class="" method="post" action="/form/toggle?key=server-calls" data-value="{{ .Calls }}">
                       <input name="token" type="hidden" value="{{ .Token }}">
-                      <button class="button {{ if .IsSetRejectCalls }}{{ if .GetRejectCalls }}is-info is-hovered{{ else }}is-danger is-hovered{{ end }}{{ end }}" title="Auto Reject Calls">
+                      <button class="button {{ if .IsSetCalls }}{{ if .GetCalls }}is-info is-hovered{{ else }}is-danger is-hovered{{ end }}{{ end }}" title="Handle Calls">
                         <span class="icon is-small is-inline"><i class="fa fa-phone"></i></span>
                       </button>
                     </form>
@@ -154,10 +154,10 @@
       <div class="notification is-light is-small">
         <div class="subtitle"><b>Whatsapp</b> service environment options:</div>
         <div>
-          {{ if .Options.Groups }}<p>Groups: {{ .Options.Groups.ToString  }}</p>{{ end }}
-          {{ if .Options.Broadcasts }}<p>Broadcasts: {{ .Options.Broadcasts.ToString  }}</p>{{ end }}
-          {{ if .Options.ReadReceipts }}<p>ReadReceipts: {{ .Options.ReadReceipts.ToString  }}</p>{{ end }}
-          {{ if .Options.RejectCalls }}<p>RejectCalls: {{ .Options.RejectCalls.ToString  }}</p>{{ end }}
+          {{ if .Options.Groups }}<p>Groups: {{ .Options.Groups.String  }}</p>{{ end }}
+          {{ if .Options.Broadcasts }}<p>Broadcasts: {{ .Options.Broadcasts.String  }}</p>{{ end }}
+          {{ if .Options.ReadReceipts }}<p>ReadReceipts: {{ .Options.ReadReceipts.String  }}</p>{{ end }}
+          {{ if .Options.Calls }}<p>Calls: {{ .Options.Calls.String  }}</p>{{ end }}
           {{ if .Options.HistorySync }}<p>HistorySync: {{ .Options.HistorySync  }} days</p>{{ end }}
           {{ if .Options.LogLevel }}<p>LogLevel: {{ .Options.LogLevel  }}</p>{{ end }}
         </div>

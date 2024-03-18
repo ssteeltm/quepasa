@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	models "github.com/nocodeleaks/quepasa/models"
@@ -13,13 +13,13 @@ import (
 
 func UserController(w http.ResponseWriter, r *http.Request) {
 
-	// setting default reponse type as json
+	// setting default response type as json
 	w.Header().Set("Content-Type", "application/json")
 
 	response := &models.QpInfoResponse{}
 
 	// reading body to avoid converting to json if empty
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		response.ParseError(err)
 		RespondInterface(w, response)
@@ -42,7 +42,6 @@ func UserController(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// creating an empty webhook, to filter or clear it all
 	if request == nil || len(request.Username) == 0 {
 		jsonErr := fmt.Errorf("invalid user body: %s", string(body))
 		response.ParseError(jsonErr)
@@ -76,7 +75,6 @@ func UserController(w http.ResponseWriter, r *http.Request) {
 
 	response.PatchSuccess(server, "server attached for user: "+request.Username)
 	RespondSuccess(w, response)
-	return
 }
 
 //endregion

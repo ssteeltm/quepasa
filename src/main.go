@@ -37,19 +37,19 @@ func main() {
 		whatsapp.WhatsappWebAppSystem = title
 	}
 
-	whatsapp.Options = whatsapp.WhatsappOptions{
+	whatsapp.Options = whatsapp.WhatsappOptionsExtended{
 		Groups:       models.ENV.Groups(),
 		Broadcasts:   models.ENV.Broadcasts(),
 		ReadReceipts: models.ENV.ReadReceipts(),
-		RejectCalls:  models.ENV.RejectCalls(),
+		Calls:        models.ENV.Calls(),
 		HistorySync:  models.ENV.HistorySync(),
 		LogLevel:     models.ENV.LogLevel(),
 	}
 
 	options := whatsmeow.WhatsmeowOptions{
-		WhatsappOptions: whatsapp.Options,
-		WMLogLevel:      models.ENV.WhatsmeowLogLevel(),
-		DBLogLevel:      models.ENV.WhatsmeowDBLogLevel(),
+		WhatsappOptionsExtended: whatsapp.Options,
+		WMLogLevel:              models.ENV.WhatsmeowLogLevel(),
+		DBLogLevel:              models.ENV.WhatsmeowDBLogLevel(),
 	}
 
 	whatsmeow.Start(options)

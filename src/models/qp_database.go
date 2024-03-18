@@ -201,10 +201,10 @@ func GetBase() migrate.SqlxMigration {
 		"wid" VARCHAR (255) UNIQUE NOT NULL,
 		"verified" BOOLEAN NOT NULL DEFAULT FALSE,
 		"devel" BOOLEAN NOT NULL DEFAULT FALSE,
-		"groups" BOOLEAN DEFAULT NULL,
-  		"broadcasts" BOOLEAN DEFAULT NULL,
-  		"readreceipts" BOOLEAN DEFAULT NULL,
-  		"rejectcalls" BOOLEAN DEFAULT NULL,
+		"groups" INT(1) NOT NULL DEFAULT 0,
+  		"broadcasts" INT(1) NOT NULL DEFAULT 0,
+  		"readreceipts" INT(1) NOT NULL DEFAULT 0,
+  		"calls" INT(1) NOT NULL DEFAULT 0,
 		"user" CHAR (255) DEFAULT NULL REFERENCES "users"("username"),
 		"timestamp" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 	  );
@@ -214,9 +214,9 @@ func GetBase() migrate.SqlxMigration {
 		"url" VARCHAR (255) NOT NULL,
 		"forwardinternal" BOOLEAN NOT NULL DEFAULT FALSE,
 		"trackid" VARCHAR (100) NOT NULL DEFAULT '',
-		"readreceipts" BOOLEAN DEFAULT NULL,
-  		"groups" BOOLEAN DEFAULT NULL,
-  		"broadcasts" BOOLEAN DEFAULT NULL,
+		"readreceipts" INT(1) NOT NULL DEFAULT 0,
+  		"groups" INT(1) NOT NULL DEFAULT 0,
+  		"broadcasts" INT(1) NOT NULL DEFAULT 0,
 		"extra" BLOB DEFAULT NULL,
 		"timestamp" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		CONSTRAINT "webhooks_pkey" PRIMARY KEY ("context", "url")
@@ -227,7 +227,8 @@ func GetBase() migrate.SqlxMigration {
 	  ('202209281840'),
 	  ('202303011900'),
 	  ('202402291556'),
-	  ('202403021242');
+	  ('202403021242'),
+	  ('202403141920');
 	  `, "")
 	return migration
 }

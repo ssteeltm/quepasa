@@ -11,6 +11,6 @@ type QPFormAccountData struct {
 	Version      string
 	Servers      map[string]*QpWhatsappServer
 	User         QpUser
-	Options      whatsapp.WhatsappOptions   `json:"options,omitempty"`
-	WMOptions    whatsmeow.WhatsmeowOptions `json:"wmoptions,omitempty"`
+	Options      whatsapp.WhatsappOptionsExtended `json:"options,omitempty"`
+	WMOptions    whatsmeow.WhatsmeowOptions       `json:"wmoptions,omitempty"`
 }

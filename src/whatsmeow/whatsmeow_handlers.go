@@ -1,6 +1,7 @@
 package whatsmeow
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -20,60 +21,82 @@ import (
 )
 
 type WhatsmeowHandlers struct {
+	*whatsapp.WhatsappOptions
+	WhatsmeowOptions
+
 	Client     *whatsmeow.Client
 	WAHandlers whatsapp.IWhatsappHandlers
-	Options    *whatsapp.WhatsappConnectionOptions
 
 	eventHandlerID           uint32
 	unregisterRequestedToken bool
 	service                  *WhatsmeowServiceModel
+
+	LogEntry *log.Entry
 }
 
 // get default log entry, never nil
-func (handler *WhatsmeowHandlers) GetLogger() *log.Entry {
-	if handler.Options == nil {
-		handler.Options = &whatsapp.WhatsappConnectionOptions{}
+func (source *WhatsmeowHandlers) GetLogger() *log.Entry {
+	if source.LogEntry != nil {
+		return source.LogEntry
 	}
 
-	return handler.Options.GetLogger()
+	return log.WithContext(context.Background())
 }
 
-func (handler WhatsmeowHandlers) GetServiceOptions() whatsapp.WhatsappOptions {
-	if handler.service == nil {
-		return handler.service.Options.WhatsappOptions
+func (handler *WhatsmeowHandlers) GetServiceOptions() (options whatsapp.WhatsappOptionsExtended) {
+	if handler != nil {
+		return handler.WhatsappOptionsExtended
 	}
 
-	return whatsapp.WhatsappOptions{}
+	return
 }
 
-func (handler WhatsmeowHandlers) ShouldReadReceipts() bool {
-	options := handler.GetServiceOptions()
+//#region WHATSAPP OPTIONS
 
-	var opt *bool
-	if handler.Options != nil {
-		opt = handler.Options.ReadReceipts
+func (source *WhatsmeowHandlers) HandleBroadcasts() bool {
+	if source == nil {
+		return false
 	}
 
-	return options.HandleReadReceipts(opt)
+	options := source.GetServiceOptions()
+	return options.HandleBroadcasts(source.Broadcasts)
 }
 
-func (handler WhatsmeowHandlers) ShouldRejectCalls() bool {
-	options := handler.GetServiceOptions()
-
-	var opt *bool
-	if handler.Options != nil {
-		opt = handler.Options.RejectCalls
+func (source *WhatsmeowHandlers) HandleGroups() bool {
+	if source == nil {
+		return false
 	}
 
-	return options.HandleRejectCalls(opt)
+	options := source.GetServiceOptions()
+	return options.HandleGroups(source.Groups)
 }
 
-func (source *WhatsmeowHandlers) HandleHistorySync() bool {
-	if source != nil {
-		if source.service != nil {
-			return source.service.Options.HistorySync != nil
-		}
+func (source *WhatsmeowHandlers) HandleReadReceipts() bool {
+	if source == nil {
+		return false
 	}
+
+	options := source.GetServiceOptions()
+	return options.HandleReadReceipts(source.ReadReceipts)
+}
+
+func (source *WhatsmeowHandlers) HandleCalls() bool {
+	if source == nil {
+		return false
+	}
+
+	options := source.GetServiceOptions()
+	return options.HandleCalls(source.Calls)
+}
+
+//#endregion
+
+func (source WhatsmeowHandlers) HandleHistorySync() bool {
+	options := source.GetServiceOptions()
+	if options.HistorySync != nil {
+		return true
+	}
+
 	return whatsapp.WhatsappHistorySync
 }
 
@@ -136,7 +159,7 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		return
 
 	case *events.Receipt:
-		if source.ShouldReadReceipts() {
+		if source.HandleReadReceipts() {
 			go source.Receipt(*evt)
 		}
 		return
@@ -379,17 +402,21 @@ func (handler *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
 	}
 
 	// should reject this call
-	if handler.ShouldRejectCalls() {
+	if !handler.HandleCalls() {
 		_ = handler.RejectCall(evt)
 	}
 }
 
-func (handler *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) (err error) {
+func (source *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) error {
+	if source == nil {
+		return fmt.Errorf("nil source handler")
+	}
+
 	var node = binary.Node{
 		Tag: "call",
 		Attrs: binary.Attrs{
 			"to": v.From,
-			"id": handler.Client.GenerateMessageID(),
+			"id": source.Client.GenerateMessageID(),
 		},
 		Content: []binary.Node{
 			{
@@ -404,8 +431,8 @@ func (handler *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) (err error) 
 		},
 	}
 
-	handler.GetLogger().Infof("rejecting incoming call from: %s", v.From)
-	return handler.Client.DangerousInternals().SendNode(node)
+	source.GetLogger().Infof("rejecting incoming call from: %s", v.From)
+	return source.Client.DangerousInternals().SendNode(node)
 }
 
 //#endregion

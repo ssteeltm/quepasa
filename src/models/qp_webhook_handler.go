@@ -37,11 +37,6 @@ func (source *QPWebhookHandler) HandleWebHook(payload *whatsapp.WhatsappMessage)
 		return
 	}
 
-	if payload.FromBroadcast() && !*source.server.Broadcasts {
-		logger.Debugf("ignoring broadcast message on webhook request: %s", payload.Id)
-		return
-	}
-
 	err := PostToWebHookFromServer(source.server, payload)
 	if err != nil {
 		logger.Errorf("error on handle webhook distributions: %s", err.Error())

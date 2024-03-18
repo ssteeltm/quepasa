@@ -230,3 +230,59 @@ func ToWhatsappMessage(destination string, text string, attach *whatsapp.Whatsap
 	return
 
 }
+
+//#region USING WHATSAPP OPTIONS INTERFACE
+
+func ToggleReadReceipts(source whatsapp.IWhatsappOptions) error {
+	options := source.GetOptions()
+
+	if options.ReadReceipts == whatsapp.UnSetBooleanType {
+		options.ReadReceipts = whatsapp.TrueBooleanType
+	} else if options.ReadReceipts == whatsapp.TrueBooleanType {
+		options.ReadReceipts = whatsapp.FalseBooleanType
+	} else {
+		options.ReadReceipts = whatsapp.UnSetBooleanType
+	}
+	return source.Save()
+}
+
+func ToggleGroups(source whatsapp.IWhatsappOptions) error {
+	options := source.GetOptions()
+
+	if options.Groups == whatsapp.UnSetBooleanType {
+		options.Groups = whatsapp.TrueBooleanType
+	} else if options.Groups == whatsapp.TrueBooleanType {
+		options.Groups = whatsapp.FalseBooleanType
+	} else {
+		options.Groups = whatsapp.UnSetBooleanType
+	}
+	return source.Save()
+}
+
+func ToggleBroadcasts(source whatsapp.IWhatsappOptions) error {
+	options := source.GetOptions()
+
+	if options.Broadcasts == whatsapp.UnSetBooleanType {
+		options.Broadcasts = whatsapp.TrueBooleanType
+	} else if options.Broadcasts == whatsapp.TrueBooleanType {
+		options.Broadcasts = whatsapp.FalseBooleanType
+	} else {
+		options.Broadcasts = whatsapp.UnSetBooleanType
+	}
+	return source.Save()
+}
+
+func ToggleCalls(source whatsapp.IWhatsappOptions) error {
+	options := source.GetOptions()
+
+	if options.Calls == whatsapp.UnSetBooleanType {
+		options.Calls = whatsapp.TrueBooleanType
+	} else if options.Calls == whatsapp.TrueBooleanType {
+		options.Calls = whatsapp.FalseBooleanType
+	} else {
+		options.Calls = whatsapp.UnSetBooleanType
+	}
+	return source.Save()
+}
+
+//#endregion

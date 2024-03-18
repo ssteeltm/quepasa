@@ -1,43 +1,30 @@
 package whatsapp
 
-import (
-	"context"
+import log "github.com/sirupsen/logrus"
 
-	log "github.com/sirupsen/logrus"
-)
-
+// Used only as parameters for start a new connection, wont propagate
 type WhatsappConnectionOptions struct {
+	*WhatsappOptions
 
-	// whatsapp connection id and session
-	Wid string `json:"-"`
+	Wid       string
+	Reconnect bool
 
-	// should emit read receipts
-	ReadReceipts *bool `json:"readreceipts,omitempty"`
-
-	// should auto reject calls
-	RejectCalls *bool `json:"rejectcalls,omitempty"`
-
-	// should auto reconnect, false for qrcode scanner
-	EnableAutoReconnect bool `json:"enableautoreconnect"`
-
-	// log entry
-	Logger *log.Entry `json:"-"`
+	LogEntry *log.Entry
 }
 
-// get default log entry, never nil
-func (source WhatsappConnectionOptions) GetLogger() *log.Entry {
-	if source.Logger == nil {
-		logger := log.StandardLogger()
-		logger.SetLevel(log.ErrorLevel)
+func (source *WhatsappConnectionOptions) GetWid() string {
+	return source.Wid
+}
 
-		serverLogEntry := logger.WithContext(context.Background())
+// should auto reconnect, false for qrcode scanner
+func (source *WhatsappConnectionOptions) SetReconnect(value bool) {
+	source.Reconnect = value
+}
 
-		if len(source.Wid) > 0 {
-			serverLogEntry = serverLogEntry.WithField("wid", source.Wid)
-		}
+func (source *WhatsappConnectionOptions) GetReconnect() bool {
+	return source.Reconnect
+}
 
-		source.Logger = serverLogEntry
-	}
-
-	return source.Logger
+func (source *WhatsappConnectionOptions) GetLogger() *log.Entry {
+	return source.LogEntry
 }

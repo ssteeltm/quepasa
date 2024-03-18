@@ -7,7 +7,6 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	"google.golang.org/protobuf/proto"
 
 	"github.com/google/uuid"
 	library "github.com/nocodeleaks/quepasa/library"
@@ -18,14 +17,22 @@ type QpWhatsappServer struct {
 	*QpServer
 	QpDataWebhooks
 
-	Options        *whatsapp.WhatsappConnectionOptions `json:"options,omitempty"`
-	connection     whatsapp.IWhatsappConnection        `json:"-"`
-	syncConnection *sync.Mutex                         `json:"-"` // Objeto de sinaleiro para evitar chamadas simultâneas a este objeto
-	syncMessages   *sync.Mutex                         `json:"-"` // Objeto de sinaleiro para evitar chamadas simultâneas a este objeto
-	Battery        *WhatsAppBateryStatus               `json:"battery,omitempty"`
-	StartTime      time.Time                           `json:"starttime,omitempty"`
-	Handler        *QPWhatsappHandlers                 `json:"-"`
-	WebHook        *QPWebhookHandler                   `json:"-"`
+	// should auto reconnect, false for qrcode scanner
+	Reconnect bool `json:"reconnect"`
+
+	connection     whatsapp.IWhatsappConnection `json:"-"`
+	syncConnection *sync.Mutex                  `json:"-"` // Objeto de sinaleiro para evitar chamadas simultâneas a este objeto
+	syncMessages   *sync.Mutex                  `json:"-"` // Objeto de sinaleiro para evitar chamadas simultâneas a este objeto
+
+	//Battery        *WhatsAppBateryStatus        `json:"battery,omitempty"`
+
+	StartTime time.Time `json:"starttime,omitempty"`
+
+	// log entry
+	Logger *log.Entry `json:"-"`
+
+	Handler *QPWhatsappHandlers `json:"-"`
+	WebHook *QPWebhookHandler   `json:"-"`
 
 	// Stop request token
 	StopRequested bool                   `json:"-"`
@@ -34,8 +41,25 @@ type QpWhatsappServer struct {
 
 // get default log entry, never nil
 func (source *QpWhatsappServer) GetLogger() *log.Entry {
-	return source.Options.GetLogger()
+	return source.Logger
 }
+
+//#region IMPLEMENTING WHATSAPP OPTIONS INTERFACE
+
+func (source *QpWhatsappServer) GetOptions() *whatsapp.WhatsappOptions {
+	if source == nil {
+		return nil
+	}
+
+	return &source.WhatsappOptions
+}
+
+func (source *QpWhatsappServer) SetOptions(options *whatsapp.WhatsappOptions) error {
+	source.WhatsappOptions = *options
+	return source.Save()
+}
+
+//#endregion
 
 // Ensure default handler
 func (server *QpWhatsappServer) HandlerEnsure() {
@@ -234,11 +258,18 @@ func (source *QpWhatsappServer) EnsureUnderlying() (err error) {
 
 	// conectar dispositivo
 	if source.connection == nil {
-
 		logger := source.GetLogger()
-		logger.Infof("trying to create new whatsapp connection, auto reconnect: %v ...", source.Options.EnableAutoReconnect)
 
-		connection, err := NewConnection(source.Options)
+		options := &whatsapp.WhatsappConnectionOptions{
+			WhatsappOptions: &source.WhatsappOptions,
+			Wid:             source.Wid,
+			Reconnect:       true,
+			LogEntry:        logger,
+		}
+
+		logger.Infof("trying to create new whatsapp connection, auto reconnect: %v ...", options.Reconnect)
+
+		connection, err := NewConnection(options)
 		if err != nil {
 			waError, ok := err.(whatsapp.WhatsappError)
 			if ok {
@@ -477,14 +508,6 @@ func (server *QpWhatsappServer) GetStartedTime() time.Time {
 	return server.StartTime
 }
 
-func (server *QpWhatsappServer) GetBatteryInfo() WhatsAppBateryStatus {
-	if server.Battery != nil {
-		return *server.Battery
-	} else {
-		return WhatsAppBateryStatus{}
-	}
-}
-
 func (server *QpWhatsappServer) GetConnection() whatsapp.IWhatsappConnection {
 	return server.connection
 }
@@ -582,50 +605,6 @@ func (server *QpWhatsappServer) MarkVerified(value bool) (err error) {
 		return server.Save()
 	}
 	return nil
-}
-
-func (server *QpWhatsappServer) ToggleGroups() (handle *bool, err error) {
-	if server.Groups == nil {
-		server.Groups = proto.Bool(true)
-	} else if *server.Groups {
-		server.Groups = proto.Bool(false)
-	} else {
-		server.Groups = nil
-	}
-	return server.Groups, server.Save()
-}
-
-func (server *QpWhatsappServer) ToggleBroadcasts() (handle *bool, err error) {
-	if server.Broadcasts == nil {
-		server.Broadcasts = proto.Bool(true)
-	} else if *server.Broadcasts {
-		server.Broadcasts = proto.Bool(false)
-	} else {
-		server.Broadcasts = nil
-	}
-	return server.Broadcasts, server.Save()
-}
-
-func (server *QpWhatsappServer) ToggleReadReceipts() (handle *bool, err error) {
-	if server.ReadReceipts == nil {
-		server.ReadReceipts = proto.Bool(true)
-	} else if *server.ReadReceipts {
-		server.ReadReceipts = proto.Bool(false)
-	} else {
-		server.ReadReceipts = nil
-	}
-	return server.ReadReceipts, server.Save()
-}
-
-func (server *QpWhatsappServer) ToggleRejectCalls() (handle *bool, err error) {
-	if server.RejectCalls == nil {
-		server.RejectCalls = proto.Bool(true)
-	} else if *server.RejectCalls {
-		server.RejectCalls = proto.Bool(false)
-	} else {
-		server.RejectCalls = nil
-	}
-	return server.RejectCalls, server.Save()
 }
 
 func (source *QpWhatsappServer) ToggleDevel() (handle bool, err error) {

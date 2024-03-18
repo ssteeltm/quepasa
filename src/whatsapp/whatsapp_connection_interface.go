@@ -8,10 +8,10 @@ import (
 )
 
 type IWhatsappConnection interface {
+	IWhatsappConnectionOptions
+
 	GetStatus() WhatsappConnectionState
 
-	// Retorna o ID do controlador whatsapp
-	GetWid() (string, error)
 	GetChatTitle(string) string
 
 	Connect() error
@@ -40,10 +40,8 @@ type IWhatsappConnection interface {
 	// Default send message method
 	Send(*WhatsappMessage) (IWhatsappSendResponse, error)
 
-	// Define the log level for this connection
-	UpdateLog(*log.Entry)
-
 	GetLogger() *log.Entry
+
 	/*
 		<summary>
 			Disconnect if connected
@@ -72,6 +70,4 @@ type IWhatsappConnection interface {
 	IsOnWhatsApp(...string) ([]string, error)
 
 	HistorySync(time.Time) error
-
-	GetOptions() *WhatsappConnectionOptions
 }

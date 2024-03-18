@@ -12,12 +12,13 @@ import (
 )
 
 type QpWebhook struct {
+	// Optional whatsapp options
+	// ------------------------
+	whatsapp.WhatsappOptions
+
 	Url             string      `db:"url" json:"url,omitempty"`                         // destination
 	ForwardInternal bool        `db:"forwardinternal" json:"forwardinternal,omitempty"` // forward internal msg from api
 	TrackId         string      `db:"trackid" json:"trackid,omitempty"`                 // identifier of remote system to avoid loop
-	ReadReceipts    *bool       `db:"readreceipts" json:"readreceipts,omitempty"`       // should emit read receipts
-	Groups          *bool       `db:"groups" json:"groups,omitempty"`                   // should handle groups messages
-	Broadcasts      *bool       `db:"broadcasts" json:"broadcasts,omitempty"`           // should handle broadcast messages
 	Extra           interface{} `db:"extra" json:"extra,omitempty"`                     // extra info to append on payload
 	Failure         *time.Time  `json:"failure,omitempty"`                              // first failure timestamp
 	Success         *time.Time  `json:"success,omitempty"`                              // last success timestamp
@@ -27,27 +28,35 @@ type QpWebhook struct {
 //#region VIEWS TRICKS
 
 func (source QpWebhook) GetReadReceipts() bool {
-	return *source.ReadReceipts
+	return source.ReadReceipts.Boolean()
 }
 
 func (source QpWebhook) IsSetReadReceipts() bool {
-	return source.ReadReceipts != nil
+	return source.ReadReceipts != whatsapp.UnSetBooleanType
 }
 
 func (source QpWebhook) GetGroups() bool {
-	return *source.Groups
+	return source.Groups.Boolean()
 }
 
 func (source QpWebhook) IsSetGroups() bool {
-	return source.Groups != nil
+	return source.Groups != whatsapp.UnSetBooleanType
 }
 
 func (source QpWebhook) GetBroadcasts() bool {
-	return *source.Broadcasts
+	return source.Broadcasts.Boolean()
 }
 
 func (source QpWebhook) IsSetBroadcasts() bool {
-	return source.Broadcasts != nil
+	return source.Broadcasts != whatsapp.UnSetBooleanType
+}
+
+func (source QpWebhook) GetCalls() bool {
+	return source.Calls.Boolean()
+}
+
+func (source QpWebhook) IsSetCalls() bool {
+	return source.Calls != whatsapp.UnSetBooleanType
 }
 
 func (source QpWebhook) IsSetExtra() bool {

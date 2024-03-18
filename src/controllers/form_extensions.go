@@ -90,22 +90,22 @@ func FormToggleController(w http.ResponseWriter, r *http.Request) {
 				}
 			case "server-broadcasts":
 				{
-					_, err = server.ToggleBroadcasts()
+					err = models.ToggleBroadcasts(server)
 					break
 				}
 			case "server-groups":
 				{
-					_, err = server.ToggleGroups()
+					err = models.ToggleGroups(server)
 					break
 				}
 			case "server-readreceipts":
 				{
-					_, err = server.ToggleReadReceipts()
+					err = models.ToggleReadReceipts(server)
 					break
 				}
-			case "server-rejectcalls":
+			case "server-calls":
 				{
-					_, err = server.ToggleRejectCalls()
+					err = models.ToggleCalls(server)
 					break
 				}
 
@@ -128,17 +128,22 @@ func FormToggleController(w http.ResponseWriter, r *http.Request) {
 					}
 				case "webhook-broadcasts":
 					{
-						_, err = webhook.ToggleBroadcasts()
+						err = models.ToggleBroadcasts(webhook)
 						break
 					}
 				case "webhook-groups":
 					{
-						_, err = webhook.ToggleGroups()
+						err = models.ToggleGroups(webhook)
 						break
 					}
 				case "webhook-readreceipts":
 					{
-						_, err = webhook.ToggleReadReceipts()
+						err = models.ToggleReadReceipts(webhook)
+						break
+					}
+				case "webhook-calls":
+					{
+						err = models.ToggleCalls(webhook)
 						break
 					}
 				default:

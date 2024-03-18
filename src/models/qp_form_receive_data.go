@@ -4,7 +4,7 @@ import (
 	. "github.com/nocodeleaks/quepasa/whatsapp"
 )
 
-// Parameters to be acessed/passed on Views (receive.tmpl)
+// Parameters to be accessed/passed on Views (receive.tmpl)
 type QPFormReceiveData struct {
 	PageTitle           string
 	ErrorMessage        string

@@ -25,32 +25,71 @@ type WhatsmeowConnection struct {
 
 	failedToken bool
 	paired      func(string)
+
+	LogEntry *log.Entry `json:"-"` // log entry
+}
+
+//#region IMPLEMENT WHATSAPP CONNECTION OPTIONS INTERFACE
+
+func (conn *WhatsmeowConnection) GetWid() string {
+	if conn != nil {
+		wid, err := conn.GetWidInternal()
+		if err != nil {
+			return wid
+		}
+	}
+
+	return ""
 }
 
 // get default log entry, never nil
 func (source *WhatsmeowConnection) GetLogger() *log.Entry {
-	if source.Handlers != nil {
-		return source.Handlers.GetLogger()
+	if source == nil {
+		return log.WithContext(context.Background())
 	}
 
-	logger := log.StandardLogger()
-	logger.SetLevel(log.DebugLevel)
+	if source.LogEntry == nil {
+		logger := log.StandardLogger()
+		logger.SetLevel(log.DebugLevel)
 
-	serverLogEntry := logger.WithContext(context.Background())
+		logentry := logger.WithContext(context.Background())
 
-	wid, err := source.GetWid()
-	if err == nil && len(wid) > 0 {
-		serverLogEntry = serverLogEntry.WithField("wid", wid)
+		wid, err := source.GetWidInternal()
+		if err == nil && len(wid) > 0 {
+			logentry = logentry.WithField("wid", wid)
+		}
+
+		source.LogEntry = logentry
 	}
 
-	return serverLogEntry
+	return source.LogEntry
 }
+
+func (conn *WhatsmeowConnection) SetReconnect(value bool) {
+	if conn != nil {
+		if conn.Client != nil {
+			conn.Client.EnableAutoReconnect = value
+		}
+	}
+}
+
+func (conn *WhatsmeowConnection) GetReconnect() bool {
+	if conn != nil {
+		if conn.Client != nil {
+			return conn.Client.EnableAutoReconnect
+		}
+	}
+
+	return false
+}
+
+//#endregion
 
 //region IMPLEMENT INTERFACE WHATSAPP CONNECTION
 
 func (conn *WhatsmeowConnection) GetVersion() string { return "multi" }
 
-func (conn *WhatsmeowConnection) GetWid() (wid string, err error) {
+func (conn *WhatsmeowConnection) GetWidInternal() (wid string, err error) {
 	if conn.Client == nil {
 		err = fmt.Errorf("client not defined on trying to get wid")
 	} else {
@@ -66,13 +105,6 @@ func (conn *WhatsmeowConnection) GetWid() (wid string, err error) {
 	}
 
 	return
-}
-
-func (source *WhatsmeowConnection) GetOptions() *whatsapp.WhatsappConnectionOptions {
-	if source.Handlers != nil {
-		return source.Handlers.Options
-	}
-	return nil
 }
 
 func (conn *WhatsmeowConnection) IsValid() bool {
@@ -508,10 +540,6 @@ func (source *WhatsmeowConnection) HistorySync(timestamp time.Time) (err error) 
 
 	logentry.Infof("history: %v", response)
 	return
-}
-
-func (source *WhatsmeowConnection) UpdateLog(entry *log.Entry) {
-	source.Handlers.Options.Logger = entry
 }
 
 func (conn *WhatsmeowConnection) UpdateHandler(handlers whatsapp.IWhatsappHandlers) {

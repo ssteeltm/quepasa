@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -35,7 +36,7 @@ const (
 	ENV_CONVERT_WAVE_TO_OGG = "CONVERT_WAVE_TO_OGG"
 
 	ENV_READRECEIPTS    = "READRECEIPTS"
-	ENV_REJECTCALLS     = "REJECTCALLS"
+	ENV_CALLS           = "CALLS"
 	ENV_GROUPS          = "GROUPS"
 	ENV_BROADCASTS      = "BROADCASTS"
 	ENV_HISTORYSYNCDAYS = "HISTORYSYNCDAYS"
@@ -154,40 +155,46 @@ func (*Environment) ShouldRemoveDigit9() bool {
 
 //#region WHATSAPP SERVICE OPTIONS - WHATSMEOW
 
-func ParseWhatsappBoolean(v string) whatsapp.WhatsappOptionsBoolean {
-	if len(v) > 0 {
-		switch strings.ToLower(v) {
-		case "1", "t", "true", "yes":
-			return whatsapp.TrueBooleanType
-		case "0", "f", "false", "no":
-			return whatsapp.FalseBooleanType
-		case "forcedfalse":
-			return whatsapp.ForcedFalseBooleanType
-		case "forcedtrue":
-			return whatsapp.ForcedTrueBooleanType
-		}
-	}
+func ParseWhatsappBoolean(value string) whatsapp.WhatsappBooleanExtended {
 
-	return whatsapp.UnknownBooleanType
+	formatted := strings.TrimSpace(value)
+	formatted = strings.Trim(formatted, `"`)
+	formatted = strings.ToLower(formatted)
+
+	switch strings.ToLower(formatted) {
+	case "", "0":
+		return whatsapp.WhatsappBooleanExtended(whatsapp.UnSetBooleanType)
+	case "1", "t", "true", "yes":
+		return whatsapp.WhatsappBooleanExtended(whatsapp.TrueBooleanType)
+	case "-1", "f", "false", "no":
+		return whatsapp.WhatsappBooleanExtended(whatsapp.FalseBooleanType)
+	case "-2", "forcedfalse":
+		return whatsapp.ForcedFalseBooleanType
+	case "2", "forcedtrue":
+		return whatsapp.ForcedTrueBooleanType
+	default:
+		message := fmt.Sprintf("unknown extended boolean type: {%s}", value)
+		panic(message)
+	}
 }
 
-func (*Environment) Broadcasts() whatsapp.WhatsappOptionsBoolean {
+func (*Environment) Broadcasts() whatsapp.WhatsappBooleanExtended {
 	v := os.Getenv(ENV_BROADCASTS)
 	return ParseWhatsappBoolean(v)
 }
 
-func (*Environment) Groups() whatsapp.WhatsappOptionsBoolean {
+func (*Environment) Groups() whatsapp.WhatsappBooleanExtended {
 	v := os.Getenv(ENV_GROUPS)
 	return ParseWhatsappBoolean(v)
 }
 
-func (*Environment) ReadReceipts() whatsapp.WhatsappOptionsBoolean {
+func (*Environment) ReadReceipts() whatsapp.WhatsappBooleanExtended {
 	v := os.Getenv(ENV_READRECEIPTS)
 	return ParseWhatsappBoolean(v)
 }
 
-func (*Environment) RejectCalls() whatsapp.WhatsappOptionsBoolean {
-	v := os.Getenv(ENV_REJECTCALLS)
+func (*Environment) Calls() whatsapp.WhatsappBooleanExtended {
+	v := os.Getenv(ENV_CALLS)
 	return ParseWhatsappBoolean(v)
 }
 

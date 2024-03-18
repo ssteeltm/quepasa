@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	log "github.com/sirupsen/logrus"
@@ -20,8 +19,8 @@ func RegisterAPIControllers(r chi.Router) {
 
 		// CONTROL METHODS ************************
 		// ----------------------------------------
-		r.Get(endpoint+"/info", InformationControllerV3)
-		r.Patch(endpoint+"/info", UserController)
+		r.Get(endpoint+"/info", InformationController)
+		r.Patch(endpoint+"/info", InformationController)
 
 		r.Get(endpoint+"/scan", ScannerController)
 		r.Get(endpoint+"/command", CommandController)
@@ -180,9 +179,27 @@ func CommandController(w http.ResponseWriter, r *http.Request) {
 		status := server.GetStatus()
 		response.ParseSuccess(status.String())
 	case "groups":
-		handle, err := server.ToggleGroups()
+		err := models.ToggleGroups(server)
 		if err == nil {
-			message := "groups toggled: " + strconv.FormatBool(*handle)
+			message := "groups toggled: " + server.Groups.String()
+			response.ParseSuccess(message)
+		}
+	case "broadcasts":
+		err := models.ToggleBroadcasts(server)
+		if err == nil {
+			message := "broadcasts toggled: " + server.Broadcasts.String()
+			response.ParseSuccess(message)
+		}
+	case "readreceipts":
+		err := models.ToggleReadReceipts(server)
+		if err == nil {
+			message := "readreceipts toggled: " + server.ReadReceipts.String()
+			response.ParseSuccess(message)
+		}
+	case "calls":
+		err := models.ToggleCalls(server)
+		if err == nil {
+			message := "calls toggled: " + server.Calls.String()
 			response.ParseSuccess(message)
 		}
 	default:

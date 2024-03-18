@@ -52,16 +52,11 @@ func (source *QpWhatsappPairing) OnPaired(wid string) {
 		}
 	}
 
-	logentry := source.GetLogger()
 	if source.conn != nil {
-		options := source.conn.GetOptions()
-		if options != nil {
-			options.EnableAutoReconnect = true
-			options.Wid = source.Wid
-			options.Logger = logentry
-		}
+		source.conn.SetReconnect(true)
 	}
 
+	logentry := source.GetLogger()
 	logentry.Info("paired whatsapp section")
 	server, err := WhatsappService.AppendPaired(source)
 	if err != nil {

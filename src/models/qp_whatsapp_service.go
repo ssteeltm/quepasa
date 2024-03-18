@@ -156,21 +156,14 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 		logentry = logentry.WithField("wid", info.Wid)
 	}
 
-	options := &whatsapp.WhatsappConnectionOptions{
-		Wid:                 info.Wid,
-		ReadReceipts:        info.ReadReceipts,
-		RejectCalls:         info.RejectCalls,
-		EnableAutoReconnect: true,
-		Logger:              logentry,
-	}
-
 	server = &QpWhatsappServer{
 		QpServer:       info,
-		Options:        options,
+		Reconnect:      true,
 		syncConnection: &sync.Mutex{},
 		syncMessages:   &sync.Mutex{},
 		StartTime:      time.Now().UTC(),
 
+		Logger:        logentry,
 		StopRequested: false, // setting initial state
 		db:            service.DB.Servers,
 	}

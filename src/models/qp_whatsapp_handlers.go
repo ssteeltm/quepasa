@@ -36,29 +36,23 @@ func (source *QPWhatsappHandlers) GetLogger() *log.Entry {
 }
 
 func (source QPWhatsappHandlers) HandleGroups() bool {
-	options := whatsapp.Options
+	global := whatsapp.Options
 
-	var opt *bool
+	var local whatsapp.WhatsappBoolean
 	if source.server != nil {
-		if source.server.Groups != nil {
-			opt = source.server.Groups
-		}
+		local = source.server.Groups
 	}
-
-	return options.HandleGroups(opt)
+	return global.HandleGroups(local)
 }
 
 func (source QPWhatsappHandlers) HandleBroadcasts() bool {
-	options := whatsapp.Options
+	global := whatsapp.Options
 
-	var opt *bool
+	var local whatsapp.WhatsappBoolean
 	if source.server != nil {
-		if source.server.Broadcasts != nil {
-			opt = source.server.Broadcasts
-		}
+		local = source.server.Broadcasts
 	}
-
-	return options.HandleBroadcasts(opt)
+	return global.HandleBroadcasts(local)
 }
 
 //#region EVENTS FROM WHATSAPP SERVICE

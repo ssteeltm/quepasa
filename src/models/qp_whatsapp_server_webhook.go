@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	log "github.com/sirupsen/logrus"
-	"google.golang.org/protobuf/proto"
 )
 
 type QpWhatsappServerWebhook struct {
@@ -26,6 +26,18 @@ func (source *QpWhatsappServerWebhook) GetLogger() *log.Entry {
 	logger := log.New()
 	return logger.WithContext(context.Background())
 }
+
+//#region IMPLEMENTING WHATSAPP OPTIONS INTERFACE
+
+func (source *QpWhatsappServerWebhook) GetOptions() *whatsapp.WhatsappOptions {
+	if source == nil {
+		return nil
+	}
+
+	return &source.WhatsappOptions
+}
+
+//#endregion
 
 func (source *QpWhatsappServerWebhook) Save() (err error) {
 
@@ -58,37 +70,4 @@ func (source *QpWhatsappServerWebhook) Save() (err error) {
 func (source *QpWhatsappServerWebhook) ToggleForwardInternal() (handle bool, err error) {
 	source.ForwardInternal = !source.ForwardInternal
 	return source.ForwardInternal, source.Save()
-}
-
-func (source *QpWhatsappServerWebhook) ToggleBroadcasts() (handle *bool, err error) {
-	if source.Broadcasts == nil {
-		source.Broadcasts = proto.Bool(true)
-	} else if *source.Broadcasts {
-		source.Broadcasts = proto.Bool(false)
-	} else {
-		source.Broadcasts = nil
-	}
-	return source.Broadcasts, source.Save()
-}
-
-func (source *QpWhatsappServerWebhook) ToggleReadReceipts() (handle *bool, err error) {
-	if source.ReadReceipts == nil {
-		source.ReadReceipts = proto.Bool(true)
-	} else if *source.ReadReceipts {
-		source.ReadReceipts = proto.Bool(false)
-	} else {
-		source.ReadReceipts = nil
-	}
-	return source.ReadReceipts, source.Save()
-}
-
-func (source *QpWhatsappServerWebhook) ToggleGroups() (handle *bool, err error) {
-	if source.Groups == nil {
-		source.Groups = proto.Bool(true)
-	} else if *source.Groups {
-		source.Groups = proto.Bool(false)
-	} else {
-		source.Groups = nil
-	}
-	return source.Groups, source.Save()
 }
