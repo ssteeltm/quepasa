@@ -138,7 +138,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6560,
+        6420,
         -340
       ],
       "id": "72697f1d-f457-4d47-9248-3b8923722028"
@@ -167,7 +167,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        6380,
+        6240,
         -340
       ],
       "webhookId": "f0d0e1da-e8cf-4956-8715-dccf5fe3c892"
@@ -182,7 +182,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        6760,
+        6620,
         -220
       ]
     },
@@ -483,8 +483,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        12740,
-        -363.21073188545233
+        12680,
+        -360
       ]
     },
     {
@@ -1277,12 +1277,8 @@
         "values": {
           "string": [
             {
-              "name": "extra",
-              "value": "={{ $json.body.extra }}"
-            },
-            {
               "name": "extra.cwhost",
-              "value": "={{ $json.extra.cwhost ?? $json.body.extra.cwhost ?? \"http://127.0.0.1:3000\" }}"
+              "value": "={{ $json.extra.cwhost ?? \"http://127.0.0.1:3000\" }}"
             }
           ]
         },
@@ -1293,7 +1289,28 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        6760,
+        6780,
+        -360
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "extra",
+              "value": "={{ $json.extra ?? $json.body.extra }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6212abc7-c4d2-4538-8e4f-7be0b6791b39",
+      "name": "Extra",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        6620,
         -360
       ]
     }
@@ -1365,7 +1382,7 @@
       "main": [
         [
           {
-            "node": "Defaults",
+            "node": "Extra",
             "type": "main",
             "index": 0
           }
@@ -2025,6 +2042,17 @@
           }
         ]
       ]
+    },
+    "Extra": {
+      "main": [
+        [
+          {
+            "node": "Defaults",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -2034,7 +2062,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "de908add-2ed9-422c-8a0d-74895457a13b",
+  "versionId": "a0ac58fb-32c9-4876-9a4e-937b87e5c687",
   "id": "1009",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

@@ -72,7 +72,7 @@
           "string": [
             {
               "name": "extra",
-              "value": "={{$json.body.extra}}"
+              "value": "={{$json.extra ?? $json.body.extra}}"
             },
             {
               "name": "chat",
@@ -402,7 +402,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.7) Updates\n* extra defaults\n\n## Recommendations \n* Remember set timeout to 20 seconds",
+        "content": "## (1.0.8) Updates\n* extra defaults\n\n## Recommendations \n* Remember set timeout to 20 seconds",
         "height": 201.45401153644474,
         "width": 467.54452018877896
       },
@@ -1025,7 +1025,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "264b8606-a491-49bc-8c84-4b636ec218a9",
+  "versionId": "91cc15b3-3b79-40c6-a223-a48a87abdafd",
   "id": "1002",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
