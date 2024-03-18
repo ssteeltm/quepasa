@@ -147,26 +147,6 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{$json.payload.attachment}}",
-              "operation": "isEmpty"
-            }
-          ]
-        }
-      },
-      "name": "Text Only ?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -3940,
-        4660
-      ],
-      "id": "8daf93f0-5a6d-4090-bcb6-8a46574536dd"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
               "value1": "={{$json[\"body\"][\"message_type\"]}}",
               "value2": "outgoing"
             }
@@ -414,8 +394,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -4160,
-        4440
+        -4060,
+        4800
       ]
     },
     {
@@ -432,16 +412,16 @@
     {
       "parameters": {
         "content": "## POSTING THROW QUEPASA\n",
-        "height": 701.60213414902,
-        "width": 1034.409491520598
+        "height": 573.6978415211975,
+        "width": 792.2861392210125
       },
       "id": "5b8c9486-938c-4aef-98e9-66361857db8c",
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -4460,
-        4300.424087946016
+        -4220,
+        4695.789159090442
       ]
     },
     {
@@ -752,7 +732,7 @@
       "typeVersion": 1,
       "position": [
         -4660,
-        5140
+        5120
       ]
     },
     {
@@ -891,27 +871,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "=SELECT account_id FROM inboxes WHERE id = '{{ $json.extra.inbox }}'",
-        "additionalFields": {}
-      },
-      "id": "698cd172-4d43-4feb-9890-a9d49ab70df9",
-      "name": "Postgres",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 1,
-      "position": [
-        -6760,
-        5260
-      ],
-      "credentials": {
-        "postgres": {
-          "id": "1",
-          "name": "Postgres account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "conditions": {
           "string": [
             {
@@ -999,8 +958,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.19) Updates\n* Quepasa continue on fail\n\n## (1.0.18) Updates\n* Ensuring chatid for conversation avaliation\n\n## Recommendations \n* Remember set timeout to 30 seconds",
-        "height": 262.4598840042887,
+        "content": "## (1.0.20) Updates\n* Notify Back Chatwoot\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "height": 184.30667672289223,
         "width": 457.17616077915915
       },
       "id": "224d6d50-a48c-4de4-a996-154f372cf182",
@@ -1009,7 +968,7 @@
       "typeVersion": 1,
       "position": [
         -9140,
-        4540
+        4618.153207281396
       ]
     },
     {
@@ -1161,8 +1120,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        -2160,
-        4620
+        -3180,
+        5080
       ],
       "id": "9e3e5773-53eb-4421-a1ba-0610d12c5c0b"
     },
@@ -1181,8 +1140,8 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        -3660,
-        4540
+        -3580,
+        5060
       ],
       "retryOnFail": true,
       "maxTries": 2,
@@ -1208,8 +1167,8 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        -3660,
-        4780
+        -3580,
+        4860
       ],
       "retryOnFail": true,
       "maxTries": 2,
@@ -1219,55 +1178,8 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "={{ $('From ChatWoot').item.json[\"query\"][\"cwhost\"] }}/api/v1/accounts/{{ $('From ChatWoot').item.json[\"body\"][\"account\"][\"id\"]}}/conversations/{{ $('From ChatWoot').item.json[\"body\"][\"conversation\"][\"id\"] }}/messages ",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "api_access_token",
-              "value": "={{ $json.server.webhooks[0].extra.utoken }}"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\"private\": false, \"content\": \"❌ O WhatsApp está desconectado.\\n Por favor, reabra o aplicativo e faça a leitura do código QR novamente.\\n{{ $('Was Success?').item.json.message }}\", \"message_type\": 2, \"content_type\": \"text\"}",
-        "options": {}
-      },
-      "id": "cc6d137e-ab2a-43a1-b116-24bac110a736",
-      "name": "Success?",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        -2620,
-        4800
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.success }}",
-              "value2": "={{true}}"
-            }
-          ]
-        }
-      },
-      "id": "dee76c8e-b6e0-4a0f-86e3-fa678bffbd7d",
-      "name": "Was Success?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -3320,
-        4640
-      ]
-    },
-    {
-      "parameters": {
-        "baseUrl": "={{ $('From ChatWoot').item.json.query.qphost }}",
-        "token": "={{ $('From ChatWoot').item.json.query.identifier }}",
+        "baseUrl": "={{ $json.query.qphost }}",
+        "token": "={{ $json.query.identifier }}",
         "resource": "information"
       },
       "id": "5fad6a7a-5606-4da9-bbc1-843e400cf018",
@@ -1275,43 +1187,23 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        -3120,
-        4820
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.server.verified }}",
-              "value2": "={{false}}"
-            }
-          ]
-        }
-      },
-      "id": "2aef27c6-b07d-4877-8420-c9813a4b7ed8",
-      "name": "Is Connect?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -2880,
-        4820
+        -2980,
+        4920
       ]
     },
     {
       "parameters": {
         "respondWith": "json",
         "options": {
-          "responseCode": "={{ $('Was Success?').item.json.message.slice('-3') }}"
+          "responseCode": "={{ $('Has Errors ?').item.json.message.slice('-3') }}"
         }
       },
       "name": "Failled",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        -2660,
-        5020
+        -2400,
+        4960
       ],
       "id": "f2d50481-e54e-4bec-a4fd-3a9e6466c846"
     },
@@ -1326,8 +1218,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        -2340,
-        4800
+        -2220,
+        4820
       ],
       "id": "668c6424-ce01-4d73-91d5-8394db022701"
     },
@@ -1405,6 +1297,164 @@
         -7800,
         5420
       ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT account_id FROM inboxes WHERE id = '{{ $json.extra.inbox }}'",
+        "additionalFields": {}
+      },
+      "id": "698cd172-4d43-4feb-9890-a9d49ab70df9",
+      "name": "Get Account From Inbox",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        -6760,
+        5260
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.payload.attachment}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Has Attachment ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -3780,
+        4960
+      ],
+      "id": "8daf93f0-5a6d-4090-bcb6-8a46574536dd"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "b07e0549-9c40-4e2c-858d-5b271d0680be",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        -3180,
+        4820
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.success }}",
+              "operation": "isEmpty"
+            }
+          ],
+          "boolean": [
+            {
+              "value1": "={{ $json.success }}"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "dee76c8e-b6e0-4a0f-86e3-fa678bffbd7d",
+      "name": "Has Errors ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -3380,
+        4960
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.server.verified }}"
+            }
+          ]
+        }
+      },
+      "id": "2aef27c6-b07d-4877-8420-c9813a4b7ed8",
+      "name": "Isn't Verified ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -2600,
+        4840
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$json.extra.cwhost}}/api/v1/accounts/{{$json.extra.account}}/conversations/{{json.payload.conversationid}}/messages ",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $json.extra.utoken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"private\": true, \"content\": \"❌ O WhatsApp não está verificado.\\n Por favor, reabra o aplicativo e faça a leitura do código QR novamente.\\n{{$json.message}}\", \"message_type\": 2, \"content_type\": \"text\"}",
+        "options": {}
+      },
+      "id": "cc6d137e-ab2a-43a1-b116-24bac110a736",
+      "name": "Success ?",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -2400,
+        4820
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "09de5977-0910-4a6f-9c43-1f6d29c3f67f",
+      "name": "Merge3",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        -2780,
+        4840
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## NOTIFY BACK CHATWOOT\n",
+        "height": 573.6978415211971,
+        "width": 1417.5960142903764
+      },
+      "id": "bee32407-8584-4c4c-8af8-266bc6f14765",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3431.5813068216858,
+        4695.789159090442
+      ]
     }
   ],
   "pinData": {},
@@ -1454,24 +1504,6 @@
         [
           {
             "node": "Sent by agent ?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Text Only ?": {
-      "main": [
-        [
-          {
-            "node": "Quepasa Send Text",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Quepasa Send Attach",
             "type": "main",
             "index": 0
           }
@@ -1636,7 +1668,12 @@
       "main": [
         [
           {
-            "node": "Quepasa Send Text",
+            "node": "Has Attachment ?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
             "type": "main",
             "index": 0
           }
@@ -1647,7 +1684,7 @@
       "main": [
         [
           {
-            "node": "Text Only ?",
+            "node": "No Operation, do nothing",
             "type": "main",
             "index": 0
           }
@@ -1870,23 +1907,12 @@
         ],
         [
           {
-            "node": "Postgres",
+            "node": "Get Account From Inbox",
             "type": "main",
             "index": 0
           },
           {
             "node": "Merge Account Id",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Postgres": {
-      "main": [
-        [
-          {
-            "node": "Set Account in Query",
             "type": "main",
             "index": 0
           }
@@ -2032,7 +2058,7 @@
       "main": [
         [
           {
-            "node": "Was Success?",
+            "node": "Has Errors ?",
             "type": "main",
             "index": 0
           }
@@ -2043,36 +2069,7 @@
       "main": [
         [
           {
-            "node": "Was Success?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Success?": {
-      "main": [
-        [
-          {
-            "node": "Disconnected Failed",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Was Success?": {
-      "main": [
-        [
-          {
-            "node": "Normal Exit (RAS)",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Get Info",
+            "node": "Has Errors ?",
             "type": "main",
             "index": 0
           }
@@ -2083,27 +2080,9 @@
       "main": [
         [
           {
-            "node": "Is Connect?",
+            "node": "Merge3",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Is Connect?": {
-      "main": [
-        [
-          {
-            "node": "Success?",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Failled",
-            "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -2145,6 +2124,109 @@
           }
         ]
       ]
+    },
+    "Get Account From Inbox": {
+      "main": [
+        [
+          {
+            "node": "Set Account in Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Attachment ?": {
+      "main": [
+        [
+          {
+            "node": "Quepasa Send Attach",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Quepasa Send Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Errors ?": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Normal Exit (RAS)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Isn't Verified ?": {
+      "main": [
+        [
+          {
+            "node": "Success ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Success ?": {
+      "main": [
+        [
+          {
+            "node": "Disconnected Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Isn't Verified ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -2153,7 +2235,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "313c9f52-1ff9-4392-a392-b20faff11736",
+  "versionId": "05fde86c-4500-4c5d-8124-73b5baf4e5cb",
   "id": "1008",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

@@ -138,7 +138,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6740,
+        6560,
         -340
       ],
       "id": "72697f1d-f457-4d47-9248-3b8923722028"
@@ -167,7 +167,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        6540,
+        6380,
         -340
       ],
       "webhookId": "f0d0e1da-e8cf-4956-8715-dccf5fe3c892"
@@ -182,7 +182,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        6940,
+        6760,
         -220
       ]
     },
@@ -827,8 +827,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.7) Updates\n* error control after get contact\n\n## Recommendations \n* Remember set timeout to 30 seconds",
-        "height": 227.37978039831683,
+        "content": "## (1.0.8) Updates\n* defaults\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "height": 200.52521040961017,
         "width": 398.97654103837476
       },
       "id": "97661b0f-d79b-4d77-bb42-c99a3e1c4f1a",
@@ -836,8 +836,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        6620,
-        -659
+        6320,
+        -580
       ]
     },
     {
@@ -1142,7 +1142,7 @@
     {
       "parameters": {
         "requestMethod": "POST",
-        "url": "={{ $json.body.extra.cwhost }}/api/v1/accounts/{{ $json.revoked.account_id }}/conversations/{{ $json.revoked.conversation_id }}/messages",
+        "url": "={{ $json.extra.cwhost }}/api/v1/accounts/{{ $json.revoked.account_id }}/conversations/{{ $json.revoked.conversation_id }}/messages",
         "allowUnauthorizedCerts": true,
         "jsonParameters": true,
         "options": {},
@@ -1271,6 +1271,31 @@
         7540,
         -280
       ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "extra",
+              "value": "={{ $json.body.extra }}"
+            },
+            {
+              "name": "=extra.cwhost",
+              "value": "={{ $json.extra.cwhost ?? 'http://127.0.0.1:3000' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "32b3f039-dd25-4073-86d4-bf1a101fa173",
+      "name": "Defaults",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        6760,
+        -360
+      ]
     }
   ],
   "pinData": {},
@@ -1340,7 +1365,7 @@
       "main": [
         [
           {
-            "node": "If Not Revoked ?",
+            "node": "Defaults",
             "type": "main",
             "index": 0
           }
@@ -1989,6 +2014,17 @@
           }
         ]
       ]
+    },
+    "Defaults": {
+      "main": [
+        [
+          {
+            "node": "If Not Revoked ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -1998,7 +2034,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "0097ae74-4d37-4241-ba3e-a4f7be23a901",
+  "versionId": "2ecbfbdb-0726-49a7-b19b-8e80b08ae745",
   "id": "1009",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
