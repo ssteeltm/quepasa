@@ -8,8 +8,8 @@ import (
 	"github.com/go-chi/jwtauth"
 
 	models "github.com/nocodeleaks/quepasa/models"
-	"github.com/nocodeleaks/quepasa/whatsapp"
-	"github.com/nocodeleaks/quepasa/whatsmeow"
+	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
+	whatsmeow "github.com/nocodeleaks/quepasa/whatsmeow"
 )
 
 // Prefix on forms endpoints to avoid conflict with api

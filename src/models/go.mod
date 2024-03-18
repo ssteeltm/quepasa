@@ -21,7 +21,7 @@ require (
 	github.com/nocodeleaks/quepasa/whatsmeow v0.0.0-00010101000000-000000000000
 	github.com/sirupsen/logrus v1.9.3
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	golang.org/x/crypto v0.19.0
+	golang.org/x/crypto v0.21.0
 )
 
 require (
@@ -40,10 +40,10 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rs/zerolog v1.32.0 // indirect
 	go.mau.fi/libsignal v0.1.0 // indirect
-	go.mau.fi/util v0.3.1-0.20240208085450-32294da153ab // indirect
-	go.mau.fi/whatsmeow v0.0.0-20240227155050-c5e8575efc35 // indirect
-	golang.org/x/sys v0.17.0 // indirect
-	google.golang.org/protobuf v1.32.0 // indirect
+	go.mau.fi/util v0.4.1 // indirect
+	go.mau.fi/whatsmeow v0.0.0-20240316104858-18372a0653fa // indirect
+	golang.org/x/sys v0.18.0 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 )
 
 go 1.20
