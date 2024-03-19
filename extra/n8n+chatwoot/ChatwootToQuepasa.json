@@ -1178,8 +1178,8 @@
     },
     {
       "parameters": {
-        "baseUrl": "={{ $json.query.qphost }}",
-        "token": "={{ $json.query.identifier }}",
+        "baseUrl": "={{ $json.extra.qphost }}",
+        "token": "={{ $json.extra.identifier }}",
         "resource": "information"
       },
       "id": "5fad6a7a-5606-4da9-bbc1-843e400cf018",
@@ -2235,7 +2235,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "05fde86c-4500-4c5d-8124-73b5baf4e5cb",
+  "versionId": "2c05ea75-e5b8-47b2-9568-4a098078150b",
   "id": "1008",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

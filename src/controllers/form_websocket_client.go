@@ -7,8 +7,8 @@ import (
 	"time"
 
 	websocket "github.com/gorilla/websocket"
-	log "github.com/sirupsen/logrus"
 	models "github.com/nocodeleaks/quepasa/models"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -96,7 +96,7 @@ func (c *Client) QrCodeScanner(user *models.QpUser) {
 		}
 	}()
 
-	// Exibindo código QR
+	// show qrcode
 	err := models.SignInWithQRCode(c.ctx, user, out)
 	if err != nil {
 		if strings.Contains(err.Error(), "time") {
@@ -108,7 +108,6 @@ func (c *Client) QrCodeScanner(user *models.QpUser) {
 		log.Info("complete to read qr code on websocket")
 		c.hub.broadcast <- []byte("complete")
 	}
-	return
 }
 
 // writePump pumps messages from the hub to the websocket connection.
