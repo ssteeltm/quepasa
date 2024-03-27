@@ -304,7 +304,7 @@
           "parameter": [
             {
               "name": "api_access_token",
-              "value": "={{$json.extra.utoken}}"
+              "value": "={{$json.extra.atoken}}"
             }
           ]
         }
@@ -958,7 +958,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.20) Updates\n* Notify Back Chatwoot\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.21) Updates\n* Change OpenConversation to AToken\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 184.30667672289223,
         "width": 457.17616077915915
       },
@@ -2235,7 +2235,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 50
   },
-  "versionId": "2c05ea75-e5b8-47b2-9568-4a098078150b",
+  "versionId": "b166bcf2-294a-4a1e-a62a-74107d70733d",
   "id": "1008",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
