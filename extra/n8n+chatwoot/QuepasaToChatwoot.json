@@ -827,7 +827,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.8) Updates\n* defaults\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.9) Updates\n* issue on revoke internal message\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
         "width": 398.97654103837476
       },
@@ -1220,7 +1220,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT messages.account_id, conversations.display_id as conversation_id, messages.id\nFROM messages INNER JOIN conversations \nON messages.conversation_id = conversations.id\nWHERE messages.account_id = '{{ $json.body.extra.account }}' AND messages.id = '{{ $json.body.internalid }}';",
+        "query": "SELECT messages.account_id, conversations.display_id as conversation_id, messages.id\nFROM messages INNER JOIN conversations \nON messages.conversation_id = conversations.id\nWHERE messages.account_id = '{{ $json.body.extra.account }}' AND messages.id = '{{ $json.internalid }}';",
         "options": {}
       },
       "id": "206e5a0d-80bc-4843-baf1-2bdbd9495dcd",
@@ -2062,7 +2062,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "a0ac58fb-32c9-4876-9a4e-937b87e5c687",
+  "versionId": "8c9dd4d7-cb1b-4d32-8955-2dfdec39d789",
   "id": "1009",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
