@@ -245,7 +245,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.11) Updates\n* added cwhost to defaults\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "content": "## (1.0.12) Updates\n* vcard handle improvment\n\n## Recommendations \n* Remember set timeout to 10 seconds",
         "height": 189.357048321488,
         "width": 489.8474320052134
       },
@@ -369,7 +369,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const base64string = Buffer.from($input.item.binary[\"data\"].data, 'base64').toString();\n$input.item.json.vcard = base64string;\nreturn $input.item;"
+        "jsCode": "const data = $input.item.binary[\"data\"].data;\nconst text = Buffer.from(data, 'base64').toString();\n\nconst vcard = {};\nvcard.text = text;\n\n// split the string on \\n or \\r characters\nconst lines = text.match(/[^\\r\\n]+/g);\n\nconst fn = lines.find(element => element.startsWith(\"FN:\"));\nif (fn) {\n  vcard.fn = fn.substring(3);\n}\n\nconst items = [];\n\nfunction ForEachItem(element, index, array) {\n  element = element.substring(4);\n  const itemindex = element.split('.')[0];  \n  let item = items.find(element => element.index == itemindex);\n  if (!item) { item = { index: itemindex }; items.push(item); }\n\n  const telprefix = itemindex + \".TEL\";\n  if (element.startsWith(telprefix)) {\n\n    // getting phone\n    item.phone = element.split(\":\").pop();\n    if (item.phone) {\n      item.phone = item.phone.replace(/\\D/g, \"\");\n      if (item.phone.length === 0) item.phone = undefined;\n    }\n    \n    // getting phone old method\n    item.phone_old = element.split('TEL')[1].split(':')[0].split('waid=')[1];\n    if (item.phone_old) {\n      item.phone_old = item.phone_old.replace(/\\D/g, \"\");\n      if (item.phone_old.length === 0) item.phone_old = undefined;\n    }\n    \n    // getting whatsapp id\n    const waidindex = element.indexOf(\"waid=\");\n    if (waidindex > -1) {\n      item.waid = element.substring(waidindex + 5).split(':')[0];\n      if (item.waid) {\n        item.waid = item.waid.replace(/\\D/g, \"\");\n        if (item.waid.length === 0) item.waid = undefined;\n      }\n    }    \n  }    \n}\n\nconst itemlines = lines.filter(element => element.startsWith(\"item\"));\nitemlines.forEach(ForEachItem);\nvcard.items = items;\n\n// setting default phone\nvcard.phone = vcard.items[0].waid ?? vcard.items[0].phone ?? vcard.items[0].phone_old;\n\n$input.item.json.vcard = vcard;\n\nreturn $input.item;"
       },
       "id": "81eeb5d6-981f-42df-97db-dd8cd7ca27eb",
       "name": "Get vCard Infos",
@@ -398,15 +398,15 @@
           "parameters": [
             {
               "name": "name",
-              "value": "={{ $json.vcard.split('FN:')[1].split('TEL')[0].split('item')[0] }}"
+              "value": "={{ $json.vcard.fn }}"
             },
             {
               "name": "phone_number",
-              "value": "=+{{ $json.vcard.split('TEL')[1].split(':')[0].split('waid=')[1] }}"
+              "value": "=+{{ $json.vcard.phone }}"
             },
             {
               "name": "identifier",
-              "value": "={{ $json.vcard.split('TEL')[1].split(':')[0].split('waid=')[1] }}@s.whatsapp.net"
+              "value": "={{ $json.vcard.phone }}@s.whatsapp.net"
             }
           ]
         },
@@ -745,7 +745,7 @@
           "string": [
             {
               "name": "payload.content",
-              "value": "=**Nome:** {{ $json.vcard.split('FN:')[1].split('TEL')[0].split('item1.')[0] }}\n**Telefone:** {{ $json.vcard.split('TEL')[1].split(':')[0].split('waid=')[1] }}\n"
+              "value": "=**Nome:** {{ $json.vcard.fn }}\n**Telefone:** {{ $json.vcard.phone }}\n"
             }
           ]
         },
@@ -1517,7 +1517,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "f9719cb4-a7f7-4a08-854d-9fba6e350453",
+  "versionId": "f0757e64-ecc5-4e7c-aa8e-bab424bed375",
   "id": "1006",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
