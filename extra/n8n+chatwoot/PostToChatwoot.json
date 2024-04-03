@@ -245,7 +245,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.12) Updates\n* vcard handle improvment\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "content": "## (1.0.13) Updates\n* vcard handle improvment extra\n\n## Recommendations \n* Remember set timeout to 10 seconds",
         "height": 189.357048321488,
         "width": 489.8474320052134
       },
@@ -369,7 +369,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const data = $input.item.binary[\"data\"].data;\nconst text = Buffer.from(data, 'base64').toString();\n\nconst vcard = {};\nvcard.text = text;\n\n// split the string on \\n or \\r characters\nconst lines = text.match(/[^\\r\\n]+/g);\n\nconst fn = lines.find(element => element.startsWith(\"FN:\"));\nif (fn) {\n  vcard.fn = fn.substring(3);\n}\n\nconst items = [];\n\nfunction ForEachItem(element, index, array) {\n  element = element.substring(4);\n  const itemindex = element.split('.')[0];  \n  let item = items.find(element => element.index == itemindex);\n  if (!item) { item = { index: itemindex }; items.push(item); }\n\n  const telprefix = itemindex + \".TEL\";\n  if (element.startsWith(telprefix)) {\n\n    // getting phone\n    item.phone = element.split(\":\").pop();\n    if (item.phone) {\n      item.phone = item.phone.replace(/\\D/g, \"\");\n      if (item.phone.length === 0) item.phone = undefined;\n    }\n    \n    // getting phone old method\n    item.phone_old = element.split('TEL')[1].split(':')[0].split('waid=')[1];\n    if (item.phone_old) {\n      item.phone_old = item.phone_old.replace(/\\D/g, \"\");\n      if (item.phone_old.length === 0) item.phone_old = undefined;\n    }\n    \n    // getting whatsapp id\n    const waidindex = element.indexOf(\"waid=\");\n    if (waidindex > -1) {\n      item.waid = element.substring(waidindex + 5).split(':')[0];\n      if (item.waid) {\n        item.waid = item.waid.replace(/\\D/g, \"\");\n        if (item.waid.length === 0) item.waid = undefined;\n      }\n    }    \n  }    \n}\n\nconst itemlines = lines.filter(element => element.startsWith(\"item\"));\nitemlines.forEach(ForEachItem);\nvcard.items = items;\n\n// setting default phone\nvcard.phone = vcard.items[0].waid ?? vcard.items[0].phone ?? vcard.items[0].phone_old;\n\n$input.item.json.vcard = vcard;\n\nreturn $input.item;"
+        "jsCode": "const data = $input.item.binary[\"data\"].data;\nconst text = Buffer.from(data, 'base64').toString();\n\nconst vcard = {};\nvcard.text = text;\n\n// split the string on \\n or \\r characters\nconst lines = text.match(/[^\\r\\n]+/g);\n\nconst fn = lines.find(element => element.startsWith(\"FN:\"));\nif (fn) {\n  vcard.fn = fn.substring(3);\n}\n\nconst items = [];\n\nfunction HandlerPhone(item, phoneline){\n  // getting phone\n    item.phone = phoneline.split(\":\").pop();\n    if (item.phone) {\n      item.phone = item.phone.replace(/\\D/g, \"\");\n      if (item.phone.length === 0) item.phone = undefined;\n    }\n    \n    // getting phone old method\n    item.phone_old = phoneline.split('TEL')[1]?.split(':')[0]?.split('waid=')[1];\n    if (item.phone_old) {\n      item.phone_old = item.phone_old.replace(/\\D/g, \"\");\n      if (item.phone_old.length === 0) item.phone_old = undefined;\n    }\n    \n    // getting whatsapp id\n    const waidindex = phoneline.indexOf(\"waid=\");\n    if (waidindex > -1) {\n      item.waid = phoneline.substring(waidindex + 5).split(':')[0];\n      if (item.waid) {\n        item.waid = item.waid.replace(/\\D/g, \"\");\n        if (item.waid.length === 0) item.waid = undefined;\n      }\n    }    \n}\n\nfunction ForEachItem(element, index, array) {\n  element = element.substring(4);\n  const itemindex = element.split('.')[0];    \n  const telprefix = itemindex + \".TEL;\";\n  if (element.startsWith(telprefix)) {\n    element = element.substring(5);\n    \n    let item = items.find(s => s.index == itemindex);\n    if (!item) { item = { index: itemindex }; items.push(item); }\n\n    HandlerPhone(item, element);\n  }    \n}\n\nfunction ForEachTEL(element, index, array) {\n  element = element.substring(4);  \n    \n  const item = {}; \n  items.push(item);\n\n  HandlerPhone(item, element);  \n}\n\nconst itemlines = lines.filter(element => element.startsWith(\"item\"));\nitemlines.forEach(ForEachItem);\n\nconst tellines = lines.filter(element => element.startsWith(\"TEL;\"));\ntellines.forEach(ForEachTEL);\n\nvcard.items = items;\n\nif (vcard.items.length > 0) {\n  // setting default phone\n  vcard.phone = vcard.items[0].waid ?? vcard.items[0].phone ?? vcard.items[0].phone_old;\n}\n\n$input.item.json.vcard = vcard;\n\nreturn $input.item;"
       },
       "id": "81eeb5d6-981f-42df-97db-dd8cd7ca27eb",
       "name": "Get vCard Infos",
@@ -1517,7 +1517,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "f0757e64-ecc5-4e7c-aa8e-bab424bed375",
+  "versionId": "f21d1c4e-9a27-43e4-a349-8df8edd0a569",
   "id": "1006",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
