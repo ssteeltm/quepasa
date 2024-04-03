@@ -102,7 +102,19 @@ func (source *WhatsappMessage) FromGroup() bool {
 }
 
 func (source *WhatsappMessage) FromBroadcast() bool {
-	return source.Chat.Id == "status" || source.Chat.Id == "status@broadcast"
+	if source.Chat.Id == "status" {
+		return true
+	}
+
+	if source.Chat.Id == "status@broadcast" {
+		return true
+	}
+
+	if strings.HasSuffix(source.Chat.Id, "@newsletter") {
+		return true
+	}
+
+	return false
 }
 
 func (source *WhatsappMessage) GetAttachment() *WhatsappAttachment {

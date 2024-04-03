@@ -159,6 +159,7 @@
         "historysync",
         "imsg",
         "initlock",
+        "isbroadcast",
         "jsonstring",
         "jwtauth",
         "logentry",
