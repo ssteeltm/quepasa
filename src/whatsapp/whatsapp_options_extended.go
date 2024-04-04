@@ -50,7 +50,7 @@ func (source WhatsappOptionsExtended) HandleCalls(local WhatsappBoolean) bool {
 			return local.Boolean()
 		}
 
-		return source.ReadReceipts.ToBoolean(WhatsappCalls)
+		return source.Calls.ToBoolean(WhatsappCalls)
 	}
 }
 
@@ -80,7 +80,7 @@ func (source WhatsappOptionsExtended) HandleGroups(local WhatsappBoolean) bool {
 			return local.Boolean()
 		}
 
-		return source.ReadReceipts.ToBoolean(WhatsappGroups)
+		return source.Groups.ToBoolean(WhatsappGroups)
 	}
 }
 
@@ -95,6 +95,6 @@ func (source WhatsappOptionsExtended) HandleBroadcasts(local WhatsappBoolean) bo
 			return local.Boolean()
 		}
 
-		return source.ReadReceipts.ToBoolean(WhatsappBroadcasts)
+		return source.Broadcasts.ToBoolean(WhatsappBroadcasts)
 	}
 }
