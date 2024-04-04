@@ -50,7 +50,7 @@ func (source WhatsappOptionsExtended) HandleCalls(local WhatsappBoolean) bool {
 			return local.Boolean()
 		}
 
-		return source.ReadReceipts.ToBoolean(WhatsappCalls)
+		return source.Calls.ToBoolean(WhatsappCalls)
 	}
 }
 
