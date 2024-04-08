@@ -333,9 +333,7 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 				var quoted *waProto.Message
 				cached, _ := source.Handlers.WAHandlers.GetMessage(msg.InReply)
 				if cached.Content != nil {
-					if internal, ok := cached.Content.(*waProto.Message); ok {
-						quoted = internal
-					}
+					quoted = cached.Content.(*waProto.Message)
 				}
 
 				internal.ContextInfo = &waProto.ContextInfo{
