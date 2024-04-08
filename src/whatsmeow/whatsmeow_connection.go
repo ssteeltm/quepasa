@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
@@ -328,12 +329,20 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 					sender = proto.String(jid)
 				}
 
+				logentry := source.GetLogger()
+
 				// getting quoted message if available on cache
 				// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
 				var quoted *waProto.Message
 				cached, _ := source.Handlers.WAHandlers.GetMessage(msg.InReply)
 				if cached.Content != nil {
-					quoted = cached.Content.(*waProto.Message)
+					if internal, ok := cached.Content.(*waProto.Message); ok {
+						quoted = internal
+					} else {
+						logentry.Warnf("content has an invalid type (%s), on reply to msg id: %s", reflect.TypeOf(cached.Content), msg.InReply)
+					}
+				} else {
+					logentry.Warnf("message not cached, on reply to msg id: %s", msg.InReply)
 				}
 
 				internal.ContextInfo = &waProto.ContextInfo{
