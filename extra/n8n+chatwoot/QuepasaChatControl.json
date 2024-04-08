@@ -190,7 +190,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.2) Visual adjusts\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.3)\nbusca contato extras\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
         "height": 205.7265251035022,
         "width": 561.5346630524019
       },
@@ -216,10 +216,10 @@
     },
     {
       "parameters": {
-        "baseUrl": "={{ $json.body.extra.cwhost }}",
-        "accessToken": "={{ $json.body.extra.utoken }}",
+        "baseUrl": "={{ $json.extra.cwhost }}",
+        "accessToken": "={{ $json.extra.utoken }}",
         "resource": "contact",
-        "accountId": "={{ $json.body.extra.account }}",
+        "accountId": "={{ $json.extra.account }}",
         "operation": "contactSearch",
         "contactSearchQuery": "={{ $env['C8Q_QP_CONTACT'] ?? 'control@quepasa.io' }}"
       },
@@ -641,7 +641,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 15
   },
-  "versionId": "79690655-cac0-4563-ab34-480fe40933d5",
+  "versionId": "1b340844-8248-414d-a82f-2d417b72035e",
   "id": "1003",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

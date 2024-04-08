@@ -161,7 +161,7 @@ func HandleButtonsResponseMessage(log *log.Entry, out *whatsapp.WhatsappMessage,
 
 func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ImageMessage) {
 	log.Debug("Received an image message !")
-	out.Content = in
+	//out.Content = in
 	out.Type = whatsapp.ImageMessageType
 
 	// in case of caption passed
@@ -183,7 +183,7 @@ func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 
 func HandleStickerMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.StickerMessage) {
 	log.Debug("Received a image|sticker message !")
-	out.Content = in
+	//out.Content = in
 
 	if in.GetIsAnimated() {
 		out.Type = whatsapp.VideoMessageType
@@ -202,7 +202,7 @@ func HandleStickerMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pro
 
 func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.VideoMessage) {
 	log.Debug("Received a video message !")
-	out.Content = in
+	//out.Content = in
 	out.Type = whatsapp.VideoMessageType
 
 	// in case of caption passed
@@ -225,7 +225,7 @@ func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 
 func HandleDocumentMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.DocumentMessage) {
 	log.Debug("Received a document message !")
-	out.Content = in
+	//out.Content = in
 	out.Type = whatsapp.DocumentMessageType
 	out.Text = in.GetTitle()
 
@@ -247,7 +247,7 @@ func HandleDocumentMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 
 func HandleAudioMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.AudioMessage) {
 	log.Debug("Received an audio message !")
-	out.Content = in
+	//out.Content = in
 	out.Type = whatsapp.AudioMessageType
 
 	out.Attachment = &whatsapp.WhatsappAttachment{
@@ -265,7 +265,7 @@ func HandleAudioMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 
 func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.LocationMessage) {
 	log.Debug("Received a Location message !")
-	out.Content = in
+	//out.Content = in
 	out.Type = whatsapp.LocationMessageType
 
 	// in a near future, create a environment variable for that
@@ -296,7 +296,7 @@ func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 
 func HandleLiveLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.LiveLocationMessage) {
 	log.Debug("Received a Live Location message !")
-	out.Content = in
+	//out.Content = in
 	out.Type = whatsapp.LocationMessageType
 	out.Text = in.GetCaption()
 
@@ -332,7 +332,7 @@ func HandleLiveLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in
 
 func HandleContactMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ContactMessage) {
 	log.Debug("Received a Contact message !")
-	out.Content = in
+	//out.Content = in
 	out.Type = whatsapp.ContactMessageType
 
 	out.Text = in.GetDisplayName()
