@@ -35,13 +35,30 @@ func GetTypeString(myvar interface{}) string {
 
 func GetMimeTypeFromContent(content []byte, filename string) string {
 	mimeType := http.DetectContentType(content)
-	if mimeType == "application/octet-stream" && len(filename) > 0 {
+	if len(mimeType) > 0 && mimeType != "application/octet-stream" && mimeType != "application/zip" {
+		log.Tracef("utils - detected mime type from content: %s", mimeType)
+		return mimeType
+	}
+
+	if len(filename) > 0 {
 		extension := filepath.Ext(filename)
+
+		// checking for static manual mime maps
+		for key, value := range MIMEs {
+			if value == extension {
+				log.Tracef("utils - detected mime type from static maps: %s", key)
+				return key
+			}
+		}
+
 		newMimeType := mime.TypeByExtension(extension)
+		log.Tracef("utils - detected mime type from extension: %s, filename: %s, mime: %s", extension, filename, newMimeType)
+
 		if len(newMimeType) > 0 {
-			mimeType = newMimeType
+			return newMimeType
 		}
 	}
+
 	return mimeType
 }
 

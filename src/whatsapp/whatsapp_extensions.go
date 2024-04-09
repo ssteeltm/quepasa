@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var AllowedSuffix = map[string]bool{
@@ -112,7 +114,7 @@ func GetMessageType(Mimetype string) WhatsappMessageType {
 		return DocumentMessageType
 
 	default:
-		println("(" + Mimetype + ") mime: " + mimeOnly[0])
+		log.Debugf("whatsapp extensions full: (" + Mimetype + ") extract mime: " + mimeOnly[0])
 		return DocumentMessageType
 	}
 }

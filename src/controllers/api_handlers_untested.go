@@ -128,7 +128,7 @@ func SendAny(w http.ResponseWriter, r *http.Request) {
 		SendDocument(server, response, &request.QpSendRequest, w)
 	} else if len(request.Content) > 0 {
 		// base 64 content to byte array
-		err = request.GenerateEmbbedContent()
+		err = request.GenerateEmbedContent()
 		if err != nil {
 			metrics.MessageSendErrors.Inc()
 			response.ParseError(err)

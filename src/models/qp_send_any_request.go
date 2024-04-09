@@ -9,10 +9,12 @@ import (
 
 /*
 <summary>
+
 	Request to send any type of message
 	1º Attachment Url
 	2º Attachment Content Base64
 	3º Text Message
+
 </summary>
 */
 type QpSendAnyRequest struct {
@@ -21,7 +23,7 @@ type QpSendAnyRequest struct {
 	Content string `json:"content,omitempty"`
 }
 
-func (source *QpSendAnyRequest) GenerateEmbbedContent() (err error) {
+func (source *QpSendAnyRequest) GenerateEmbedContent() (err error) {
 	content, err := base64.StdEncoding.DecodeString(source.Content)
 	if err != nil {
 		return
