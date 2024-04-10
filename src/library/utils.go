@@ -36,6 +36,13 @@ func GetTypeString(myvar interface{}) string {
 // used by send attachment via url
 // 2024/04/10 changed priority by extension, then content.
 func GetMimeTypeFromContent(content []byte, filename string) string {
+
+	mimeType := http.DetectContentType(content)
+	if len(mimeType) > 0 && mimeType != "application/octet-stream" && mimeType != "application/zip" {
+		log.Tracef("utils - detected mime type from content: %s", mimeType)
+		return mimeType
+	}
+
 	if len(filename) > 0 {
 		extension := filepath.Ext(filename)
 
@@ -55,37 +62,21 @@ func GetMimeTypeFromContent(content []byte, filename string) string {
 		}
 	}
 
-	mimeType := http.DetectContentType(content)
-	if len(mimeType) > 0 && mimeType != "application/octet-stream" && mimeType != "application/zip" {
-		log.Tracef("utils - detected mime type from content: %s", mimeType)
-		return mimeType
-	}
-
-	return ""
-}
-
-func GenerateFileNameFromMimeType(mimeType string) string {
-
-	const layout = "20060201150405"
-	t := time.Now().UTC()
-	filename := "file-" + t.Format(layout)
-
-	// get file extension from mime type
-	extension, _ := mime.ExtensionsByType(mimeType)
-	if len(extension) > 0 {
-		filename = filename + extension[0]
-	}
-
-	return filename
+	return mimeType
 }
 
 // Get the first discovered extension from a given mime type (with dot = {.ext})
 func TryGetExtensionFromMimeType(mimeType string) (exten string, success bool) {
-	if exten, success = MIMEs[mimeType]; success {
+	normalized := strings.TrimSpace(mimeType)
+	if strings.Contains(normalized, ";") {
+		normalized = strings.Split(normalized, ";")[0]
+	}
+
+	if exten, success = MIMEs[normalized]; success {
 		return exten, true
 	}
 
-	extensions, err := mime.ExtensionsByType(mimeType)
+	extensions, err := mime.ExtensionsByType(normalized)
 	if err != nil {
 		log.Errorf("error getting internal mime for: %s, %s", mimeType, err.Error())
 		return exten, false
@@ -100,6 +91,21 @@ func TryGetExtensionFromMimeType(mimeType string) (exten string, success bool) {
 	} else {
 		return exten, false
 	}
+}
+
+func GenerateFileNameFromMimeType(mimeType string) string {
+
+	const layout = "20060201150405"
+	t := time.Now().UTC()
+	filename := "file-" + t.Format(layout)
+
+	// get file extension from mime type
+	extension, _ := TryGetExtensionFromMimeType(mimeType)
+	if len(extension) > 0 {
+		filename = filename + extension
+	}
+
+	return filename
 }
 
 // Usado também para identificar o número do bot

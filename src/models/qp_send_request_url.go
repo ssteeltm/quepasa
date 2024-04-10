@@ -4,6 +4,8 @@ import (
 	"io"
 	"net/http"
 	"path"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type QpSendRequestUrl struct {
@@ -21,6 +23,10 @@ func (source *QpSendRequestUrl) GenerateContent() (err error) {
 	content, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return
+	}
+
+	if resp.StatusCode != 200 {
+		log.Warnf("status code unexpected: %v, from qp_send_request_url", resp.StatusCode)
 	}
 
 	source.QpSendRequest.Content = content

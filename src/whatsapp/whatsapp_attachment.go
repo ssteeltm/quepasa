@@ -37,3 +37,17 @@ func (source *WhatsappAttachment) SetContent(content *[]byte) {
 func (source *WhatsappAttachment) HasContent() bool {
 	return nil != source.content
 }
+
+// used at receive.tmpl view
+func (source *WhatsappAttachment) IsValidSize() bool {
+	if source.FileLength > 500 {
+		return true
+	}
+
+	if nil != source.content {
+		if len(*source.content) > 500 {
+			return true
+		}
+	}
+	return false
+}

@@ -9,7 +9,7 @@
   <h2 class="title is-2">({{ .Count }}) Messages for {{ .Number }}</h2>
   {{ range .Messages }}
     <pre id="msg-{{ .Id }}">
-      On: {{ .Timestamp }} => ID: {{ .Id }} => From Me: {{ .FromMe }} => Edited: {{ .Edited }}{{ if .HasAttachment }} => Attachment: <a download target="_blank" title="{{ .Attachment.Mimetype }} {{ if .Attachment.FileName }}({{ .Attachment.FileName }}){{ end }}" href="{{ $DOWNLOADPREFIX }}{{ .Id }}">Download</a>{{ end }}  
+      On: {{ .Timestamp }} => ID: {{ .Id }} => From Me: {{ .FromMe }} => Edited: {{ .Edited }}{{ if .HasAttachment }} => Attachment: <a download target="_blank" style="color: {{ if .Attachment.IsValidSize }}blue{{ else }}red{{ end }};" title="{{ .Attachment.Mimetype }} {{ if .Attachment.FileName }}({{ .Attachment.FileName }}) {{ end }}:: {{ .Attachment.FileLength }} bytes" href="{{ $DOWNLOADPREFIX }}{{ .Id }}">Download</a>{{ end }}  
       Type: {{ .Type }} => Chat:  {{ .Chat }}{{ if .Participant }}
       Participant:  {{ .Participant }}{{ end }}{{ if .TrackId }}
       TrackId:  {{ .TrackId }}{{ end }}{{ if .InReply }}

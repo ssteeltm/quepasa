@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 	"time"
 
 	metrics "github.com/nocodeleaks/quepasa/metrics"
@@ -199,6 +200,7 @@ func SendText(w http.ResponseWriter, r *http.Request) {
 	if len(trackid) > 0 {
 		request.TrackId = trackid
 	}
+
 	Send(server, response, request, w, nil)
 }
 
@@ -252,6 +254,12 @@ func SendDocumentFromBinary(w http.ResponseWriter, r *http.Request) {
 	}
 
 	request.Content = content
+	request.Mimetype = r.Header.Get("Content-Type")
+
+	length, err := strconv.ParseUint(r.Header.Get("Content-Length"), 10, 64)
+	if err == nil {
+		request.FileLength = length
+	}
 
 	// Getting FileName parameter
 	filename := GetFileName(r)

@@ -5,6 +5,8 @@ import (
 	"io"
 	"net/http"
 	"path"
+
+	log "github.com/sirupsen/logrus"
 )
 
 /*
@@ -43,6 +45,10 @@ func (source *QpSendAnyRequest) GenerateUrlContent() (err error) {
 	content, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return
+	}
+
+	if resp.StatusCode != 200 {
+		log.Warnf("status code unexpected: %v", resp.StatusCode)
 	}
 
 	source.QpSendRequest.Content = content
