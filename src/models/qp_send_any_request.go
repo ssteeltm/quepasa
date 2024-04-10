@@ -6,8 +6,6 @@ import (
 	"io"
 	"net/http"
 	"path"
-
-	log "github.com/sirupsen/logrus"
 )
 
 /*
@@ -45,7 +43,9 @@ func (source *QpSendAnyRequest) GenerateUrlContent() (err error) {
 
 	if resp.StatusCode != 200 {
 		err = fmt.Errorf("error on generate content from QpSendAnyRequest, unexpected status code: %v", resp.StatusCode)
-		log.Error(err)
+
+		logentry := source.GetLogger()
+		logentry.Error(err)
 		return
 	}
 

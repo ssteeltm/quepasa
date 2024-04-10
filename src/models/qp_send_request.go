@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"path/filepath"
@@ -36,6 +37,16 @@ type QpSendRequest struct {
 	Mimetype string `json:"mime,omitempty"`
 
 	Content []byte
+}
+
+// get default log entry, never nil
+func (source *QpSendRequest) GetLogger() *log.Entry {
+	logentry := log.WithContext(context.Background())
+	if len(source.ChatId) > 0 {
+		logentry.WithField("chatid", source.ChatId)
+	}
+
+	return logentry
 }
 
 func (source *QpSendRequest) EnsureChatId(r *http.Request) (err error) {
