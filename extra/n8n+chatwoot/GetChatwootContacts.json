@@ -402,7 +402,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.8) Updates\n* extra defaults\n\n## Recommendations \n* Remember set timeout to 20 seconds",
+        "content": "## (1.0.9) Updates\n* possible chatwoot erros\n\n## Recommendations \n* Remember set timeout to 20 seconds",
         "height": 201.45401153644474,
         "width": 467.54452018877896
       },
@@ -488,7 +488,7 @@
             {
               "value1": "={{ $json.error ?? \"\" }}",
               "operation": "contains",
-              "value2": "could not be processed"
+              "value2": "process"
             }
           ],
           "number": [
@@ -1025,11 +1025,12 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "91cc15b3-3b79-40c6-a223-a48a87abdafd",
-  "id": "1002",
+  "versionId": "b41965bd-ce0f-43ad-b92b-a5ae462cb4dd",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
+  "id": "1002",
   "tags": [
     {
       "createdAt": "2022-10-13T15:26:19.857Z",

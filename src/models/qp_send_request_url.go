@@ -19,13 +19,13 @@ func (source *QpSendRequestUrl) GenerateContent() (err error) {
 	}
 	defer resp.Body.Close()
 
-	content, err := io.ReadAll(resp.Body)
-	if err != nil {
+	if resp.StatusCode != 200 {
+		err = fmt.Errorf("error on generate content from QpSendRequestUrl, unexpected status code: %v", resp.StatusCode)
 		return
 	}
 
-	if resp.StatusCode != 200 {
-		err = fmt.Errorf("error on generate content from url, unexpected status code: %v", resp.StatusCode)
+	content, err := io.ReadAll(resp.Body)
+	if err != nil {
 		return
 	}
 
