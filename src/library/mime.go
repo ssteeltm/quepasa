@@ -9,6 +9,7 @@ package library
 var MIMEs = map[string]string{
 	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":       ".xlsx",
 	"application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
-	"video/mp4":  ".mp4",
-	"image/webp": ".webp",
+	"application/zip": ".zip",
+	"video/mp4":       ".mp4",
+	"image/webp":      ".webp",
 }
