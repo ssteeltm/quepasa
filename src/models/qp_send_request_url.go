@@ -1,11 +1,10 @@
 package models
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"path"
-
-	log "github.com/sirupsen/logrus"
 )
 
 type QpSendRequestUrl struct {
@@ -26,7 +25,8 @@ func (source *QpSendRequestUrl) GenerateContent() (err error) {
 	}
 
 	if resp.StatusCode != 200 {
-		log.Warnf("status code unexpected: %v, from qp_send_request_url", resp.StatusCode)
+		err = fmt.Errorf("error on generate content from url, unexpected status code: %v", resp.StatusCode)
+		return
 	}
 
 	source.QpSendRequest.Content = content
