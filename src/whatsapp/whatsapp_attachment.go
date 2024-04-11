@@ -10,7 +10,7 @@ type WhatsappAttachment struct {
 
 	Mimetype string `json:"mime"`
 
-	// important to navigate throw content
+	// important to navigate throw content, declared file length
 	FileLength uint64 `json:"filelength"`
 
 	// document
@@ -50,12 +50,13 @@ func (source *WhatsappAttachment) IsValidSize() bool {
 	}
 
 	if source.content != nil {
-		if len(*source.content) > 500 {
+		length := len(*source.content)
+		if length > 500 {
 			return true
 		}
 
 		// there are many simple vcards with low bytes
-		if strings.HasPrefix(source.Mimetype, "text/x-vcard") && len(*source.content) > 70 {
+		if strings.Contains(source.Mimetype, "vcard") && length > 70 {
 			return true
 		}
 	}
