@@ -252,7 +252,8 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}"
+        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}",
+        "options": {}
       },
       "id": "98f4bde1-b1a1-488c-9207-98fc43adfdca",
       "name": "Quepasa Chat Control Workflow",
@@ -322,7 +323,8 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_QUEPASAINBOXCONTROL'] ?? 1001 }}"
+        "workflowId": "={{ $env['C8Q_QUEPASAINBOXCONTROL'] ?? 1001 }}",
+        "options": {}
       },
       "id": "4a67305e-7821-4436-b85e-e124708898b1",
       "name": "Throw To Quepasa Inbox Control Workflow",
@@ -394,8 +396,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -4060,
-        4800
+        -4180,
+        4720
       ]
     },
     {
@@ -412,8 +414,8 @@
     {
       "parameters": {
         "content": "## POSTING THROW QUEPASA\n",
-        "height": 573.6978415211975,
-        "width": 792.2861392210125
+        "height": 660.7751562097109,
+        "width": 1150.6588837494833
       },
       "id": "5b8c9486-938c-4aef-98e9-66361857db8c",
       "name": "Sticky Note",
@@ -421,7 +423,7 @@
       "typeVersion": 1,
       "position": [
         -4220,
-        4695.789159090442
+        4660
       ]
     },
     {
@@ -493,7 +495,8 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_CHATWOOTPROFILEUPDATE'] ?? 1004 }}"
+        "workflowId": "={{ $env['C8Q_CHATWOOTPROFILEUPDATE'] ?? 1004 }}",
+        "options": {}
       },
       "id": "8095499b-9b48-4048-8a7b-a46411c80537",
       "name": "Throw To Profile Update Workflow",
@@ -958,7 +961,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.21) Updates\n* Change OpenConversation to AToken\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.22) Updates\n* Delay for Active Storage\n* Change Execution type to V1\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 184.30667672289223,
         "width": 457.17616077915915
       },
@@ -1120,8 +1123,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        -3180,
-        5080
+        -2780,
+        5140
       ],
       "id": "9e3e5773-53eb-4421-a1ba-0610d12c5c0b"
     },
@@ -1141,40 +1144,14 @@
       "typeVersion": 1,
       "position": [
         -3580,
-        5060
+        5040
       ],
       "retryOnFail": true,
       "maxTries": 2,
       "waitBetweenTries": 2000,
-      "onError": "continueRegularOutput",
       "alwaysOutputData": false,
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
-        "baseUrl": "={{$json.extra.qphost}}",
-        "token": "={{$json.extra.qptoken}}",
-        "messageId": "={{ $json.extra.account }}-{{ $json.extra.inbox }}-{{ $json.payload.messageid ?? Math.random() }}",
-        "method": "sendurl",
-        "text": "={{$json.payload.content}}",
-        "chatId": "={{$json.payload.chatid}}",
-        "url": "={{$json.payload.attachment}}",
-        "trackId": "chatwoot",
-        "inReply": "={{$json.payload.inreply}}"
-      },
-      "id": "3f2dfb00-069c-4147-8ceb-98e80f81635b",
-      "name": "Quepasa Send Attach",
-      "type": "n8n-nodes-quepasa.quepasa",
-      "typeVersion": 1,
-      "position": [
-        -3580,
-        4860
-      ],
-      "retryOnFail": true,
-      "maxTries": 2,
-      "waitBetweenTries": 2000,
-      "onError": "continueRegularOutput",
-      "continueOnFail": true
+      "continueOnFail": true,
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -1187,25 +1164,9 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        -2980,
-        4920
+        -2280,
+        5000
       ]
-    },
-    {
-      "parameters": {
-        "respondWith": "json",
-        "options": {
-          "responseCode": "={{ $('Has Errors ?').item.json.message.slice('-3') }}"
-        }
-      },
-      "name": "Failled",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [
-        -2400,
-        4960
-      ],
-      "id": "f2d50481-e54e-4bec-a4fd-3a9e6466c846"
     },
     {
       "parameters": {
@@ -1218,8 +1179,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        -2220,
-        4820
+        -1600,
+        4920
       ],
       "id": "668c6424-ce01-4d73-91d5-8394db022701"
     },
@@ -1350,8 +1311,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        -3180,
-        4820
+        -2700,
+        4740
       ]
     },
     {
@@ -1376,8 +1337,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -3380,
-        4960
+        -2980,
+        5040
       ]
     },
     {
@@ -1395,8 +1356,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -2600,
-        4840
+        -1920,
+        4940
       ]
     },
     {
@@ -1422,8 +1383,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        -2400,
-        4820
+        -1760,
+        4920
       ]
     },
     {
@@ -1437,24 +1398,128 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        -2780,
-        4840
+        -2080,
+        4940
       ]
     },
     {
       "parameters": {
         "content": "## NOTIFY BACK CHATWOOT\n",
-        "height": 573.6978415211971,
-        "width": 1417.5960142903764
+        "height": 660.7751562097108,
+        "width": 1738.4843114140765
       },
       "id": "bee32407-8584-4c4c-8af8-266bc6f14765",
       "name": "Sticky Note4",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -3431.5813068216858,
-        4695.789159090442
+        -3080,
+        4660
       ]
+    },
+    {
+      "parameters": {
+        "baseUrl": "={{$json.extra.qphost}}",
+        "token": "={{$json.extra.qptoken}}",
+        "messageId": "={{ $json.extra.account }}-{{ $json.extra.inbox }}-{{ $json.payload.messageid ?? Math.random() }}",
+        "method": "sendurl",
+        "text": "={{$json.payload.content}}",
+        "chatId": "={{$json.payload.chatid}}",
+        "url": "={{$json.payload.attachment}}",
+        "trackId": "chatwoot",
+        "inReply": "={{$json.payload.inreply}}"
+      },
+      "id": "3f2dfb00-069c-4147-8ceb-98e80f81635b",
+      "name": "Quepasa Send Attach",
+      "type": "n8n-nodes-quepasa.quepasa",
+      "typeVersion": 1,
+      "position": [
+        -3220,
+        4900
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000,
+      "continueOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE messages SET status = 3 WHERE id = {{ +$json.payload.messageid.split('-').shift() }}; ",
+        "additionalFields": {}
+      },
+      "id": "03a3a58d-5596-423d-8c02-61eea1151c38",
+      "name": "Update Message Status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        -2480,
+        4740
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "55f06a94-99a7-4806-84ca-ddb3129fb5f7",
+      "name": "No Operation, do nothing2",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -2480,
+        4920
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "bd2b8cff-a0b8-48a4-83f6-475bfe680d42",
+              "leftValue": "={{ $json.payload.attachment }}",
+              "rightValue": "active_storage",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c732758d-cb8b-41ae-8294-397f267f8120",
+      "name": "If Remote Storage",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -3580,
+        4880
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "id": "5d6957b1-4113-4dea-b9b2-234d0e309da7",
+      "name": "Wait For Uploading",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -3400,
+        4800
+      ],
+      "webhookId": "4be09e3c-13a7-48f9-b649-d5942ef6e1e7"
     }
   ],
   "pinData": {},
@@ -2065,17 +2130,6 @@
         ]
       ]
     },
-    "Quepasa Send Attach": {
-      "main": [
-        [
-          {
-            "node": "Has Errors ?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get Info": {
       "main": [
         [
@@ -2140,7 +2194,7 @@
       "main": [
         [
           {
-            "node": "Quepasa Send Attach",
+            "node": "If Remote Storage",
             "type": "main",
             "index": 0
           }
@@ -2176,12 +2230,12 @@
       "main": [
         [
           {
-            "node": "Merge3",
+            "node": "No Operation, do nothing2",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Get Info",
+            "node": "Update Message Status",
             "type": "main",
             "index": 0
           }
@@ -2193,13 +2247,6 @@
         [
           {
             "node": "Success ?",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Failled",
             "type": "main",
             "index": 0
           }
@@ -2227,19 +2274,77 @@
           }
         ]
       ]
+    },
+    "Quepasa Send Attach": {
+      "main": [
+        [
+          {
+            "node": "Has Errors ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing2": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Remote Storage": {
+      "main": [
+        [
+          {
+            "node": "Wait For Uploading",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Quepasa Send Attach",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait For Uploading": {
+      "main": [
+        [
+          {
+            "node": "Quepasa Send Attach",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "saveManualExecutions": false,
     "callerPolicy": "workflowsFromSameOwner",
-    "executionTimeout": 50
+    "executionTimeout": 50,
+    "executionOrder": "v1"
   },
-  "versionId": "b166bcf2-294a-4a1e-a62a-74107d70733d",
-  "id": "1008",
+  "versionId": "38c224e1-7a2d-47bd-bac3-be1710127dc0",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
+  "id": "1008",
   "tags": [
     {
       "createdAt": "2022-10-13T15:26:11.519Z",
