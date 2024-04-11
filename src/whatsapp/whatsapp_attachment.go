@@ -1,5 +1,7 @@
 package whatsapp
 
+import "strings"
+
 type WhatsappAttachment struct {
 	content *[]byte `json:"-"`
 
@@ -53,7 +55,7 @@ func (source *WhatsappAttachment) IsValidSize() bool {
 		}
 
 		// there are many simple vcards with low bytes
-		if source.Mimetype == "text/x-vcard" && len(*source.content) > 70 {
+		if strings.HasPrefix(source.Mimetype, "text/x-vcard") && len(*source.content) > 70 {
 			return true
 		}
 	}
