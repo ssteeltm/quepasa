@@ -154,8 +154,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -280,
-        980
+        -1420,
+        1060
       ]
     },
     {
@@ -204,7 +204,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.14) Updates\n* prepend error msg\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "content": "## (1.0.15) Updates\n* issue at msg with attachment and empty content\n\n## Recommendations \n* Remember set timeout to 10 seconds",
         "height": 189.357048321488,
         "width": 489.8474320052134
       },
@@ -462,7 +462,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 1,
       "position": [
-        440,
+        -220,
         1060
       ]
     },
@@ -732,7 +732,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        240,
+        -420,
         960
       ],
       "retryOnFail": true,
@@ -745,8 +745,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        440,
-        860
+        -220,
+        880
       ]
     },
     {
@@ -879,8 +879,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -80,
-        880
+        -1220,
+        960
       ]
     },
     {
@@ -899,8 +899,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -480,
-        900
+        -1620,
+        980
       ]
     },
     {
@@ -1514,7 +1514,7 @@
       "main": [
         [
           {
-            "node": "If Not Empty Content ?",
+            "node": "Post Incomming Text Only ?",
             "type": "main",
             "index": 0
           }
@@ -1539,7 +1539,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "d8c1c3f1-0443-4587-9ed7-b67d704dbf49",
+  "versionId": "51b207b3-3ebb-4291-b0c7-b88ed0ef22b4",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
