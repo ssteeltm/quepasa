@@ -231,7 +231,7 @@ func HandleDocumentMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
 		CanDownload: true,
-		Mimetype:    in.GetMimetype() + "; wa-document",
+		Mimetype:    in.GetMimetype(),
 		FileLength:  in.GetFileLength(),
 
 		FileName:      in.GetFileName(),
