@@ -102,8 +102,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -840,
-        740
+        -1240,
+        780
       ]
     },
     {
@@ -114,28 +114,7 @@
       "typeVersion": 1,
       "position": [
         -1620,
-        760
-      ]
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "payload.content",
-              "value": "= ** Falha ao baixar anexo ! :: => {{$json[\"payload\"][\"content\"]}}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "b71393b4-a75d-45e5-ac16-168db47123cc",
-      "name": "(In) Prepend error on content",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [
-        -1040,
-        620
+        800
       ]
     },
     {
@@ -154,28 +133,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -1240,
-        700
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{$json.payload.content}}",
-              "operation": "isNotEmpty"
-            }
-          ]
-        }
-      },
-      "id": "c9b004f0-2d72-4fd1-90c7-9066eb51cffb",
-      "name": "If Not Empty Content ?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -160,
-        980
+        -1060,
+        780
       ]
     },
     {
@@ -195,8 +154,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        40,
-        1040
+        -280,
+        980
       ]
     },
     {
@@ -245,7 +204,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.13) Updates\n* vcard handle improvment extra\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "content": "## (1.0.14) Updates\n* prepend error msg\n\n## Recommendations \n* Remember set timeout to 10 seconds",
         "height": 189.357048321488,
         "width": 489.8474320052134
       },
@@ -382,50 +341,6 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "={{$json.extra.cwhost}}/api/v1/accounts/{{$json.extra.account}}/contacts",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "api_access_token",
-              "value": "={{ $json.extra.utoken }}"
-            }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "name",
-              "value": "={{ $json.vcard.fn }}"
-            },
-            {
-              "name": "phone_number",
-              "value": "=+{{ $json.vcard.phone }}"
-            },
-            {
-              "name": "identifier",
-              "value": "={{ $json.vcard.phone }}@s.whatsapp.net"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "a5520172-c12d-4a6f-9f3c-2cb72cc9a97b",
-      "name": "Try to Add Contact On Chatwoot",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        1900,
-        940
-      ],
-      "onError": "continueErrorOutput",
-      "alwaysOutputData": true,
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
         "requestMethod": "POST",
         "url": "={{$json.extra.cwhost}}/api/v1/accounts/{{$json.extra.account}}/conversations/{{$json.conversation.id}}/messages",
         "allowUnauthorizedCerts": true,
@@ -505,17 +420,6 @@
       ]
     },
     {
-      "parameters": {},
-      "id": "00b65302-ec5e-4e85-9bad-726222760ebc",
-      "name": "(In) Text Message Following With Attachment",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        -140,
-        740
-      ]
-    },
-    {
       "parameters": {
         "requestMethod": "POST",
         "url": "={{$json.extra.cwhost}}/api/v1/accounts/{{$json.extra.account}}/conversations/{{$json.conversation.id}}/messages",
@@ -559,7 +463,7 @@
       "typeVersion": 1,
       "position": [
         440,
-        1080
+        1060
       ]
     },
     {
@@ -923,6 +827,113 @@
         -2780,
         880
       ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$json.extra.cwhost}}/api/v1/accounts/{{$json.extra.account}}/contacts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $json.extra.utoken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $json.vcard.fn }}"
+            },
+            {
+              "name": "phone_number",
+              "value": "=+{{ $json.vcard.phone }}"
+            },
+            {
+              "name": "identifier",
+              "value": "={{ $json.vcard.phone }}@s.whatsapp.net"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a5520172-c12d-4a6f-9f3c-2cb72cc9a97b",
+      "name": "Try to Add Contact On Chatwoot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1900,
+        940
+      ],
+      "alwaysOutputData": true,
+      "continueOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "id": "66121feb-764c-447c-ab13-1be9e5bafd75",
+      "name": "No Operation, do nothing5",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.payload.content}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "c9b004f0-2d72-4fd1-90c7-9066eb51cffb",
+      "name": "If Not Empty Content ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        900
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "00b65302-ec5e-4e85-9bad-726222760ebc",
+      "name": "(In) Text Message Following With Attachment",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "payload.content",
+              "value": "= ** Falha ao baixar anexo ! :: => {{ $json[\"attachment\"][\"filename\"] }}\n------------------------\nerror: {{ $json.error }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b71393b4-a75d-45e5-ac16-168db47123cc",
+      "name": "(In) Prepend error on content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -860,
+        700
+      ]
     }
   ],
   "pinData": {},
@@ -960,7 +971,7 @@
       "main": [
         [
           {
-            "node": "(In) Error On Get Attach ?",
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -1000,7 +1011,7 @@
       "main": [
         [
           {
-            "node": "(In) Text Message Following With Attachment",
+            "node": "(In) Error On Get Attach ?",
             "type": "main",
             "index": 0
           }
@@ -1023,17 +1034,6 @@
         ]
       ]
     },
-    "(In) Prepend error on content": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "(In) Error On Get Attach ?": {
       "main": [
         [
@@ -1045,25 +1045,7 @@
         ],
         [
           {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If Not Empty Content ?": {
-      "main": [
-        [
-          {
-            "node": "Post Incomming Text Only ?",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Set Custom Content",
+            "node": "(In) Text Message Following With Attachment",
             "type": "main",
             "index": 0
           }
@@ -1074,7 +1056,7 @@
       "main": [
         [
           {
-            "node": "Post Incomming Text Only ?",
+            "node": "No Operation, do nothing5",
             "type": "main",
             "index": 0
           }
@@ -1143,17 +1125,6 @@
         ]
       ]
     },
-    "Try to Add Contact On Chatwoot": {
-      "main": [
-        [
-          {
-            "node": "If Insert Contact Error",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get Edited Message Id": {
       "main": [
         [
@@ -1177,17 +1148,6 @@
         [
           {
             "node": "No Operation, do nothing4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "(In) Text Message Following With Attachment": {
-      "main": [
-        [
-          {
-            "node": "Post Incomming Text Only ?",
             "type": "main",
             "index": 0
           }
@@ -1509,6 +1469,68 @@
           }
         ]
       ]
+    },
+    "Try to Add Contact On Chatwoot": {
+      "main": [
+        [
+          {
+            "node": "If Insert Contact Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing5": {
+      "main": [
+        [
+          {
+            "node": "Post Incomming Text Only ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Not Empty Content ?": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Custom Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "(In) Text Message Following With Attachment": {
+      "main": [
+        [
+          {
+            "node": "If Not Empty Content ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "(In) Prepend error on content": {
+      "main": [
+        [
+          {
+            "node": "(In) Text Message Following With Attachment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1517,11 +1539,12 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "f21d1c4e-9a27-43e4-a349-8df8edd0a569",
-  "id": "1006",
+  "versionId": "d8c1c3f1-0443-4587-9ed7-b67d704dbf49",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
+  "id": "1006",
   "tags": [
     {
       "createdAt": "2022-10-13T15:26:19.857Z",
