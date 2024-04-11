@@ -113,9 +113,10 @@ func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAt
 	contentExtension, _ := library.TryGetExtensionFromMimeType(contentMime)
 
 	attach = &whatsapp.WhatsappAttachment{
-		Mimetype:   source.Mimetype,
-		FileLength: source.FileLength,
-		FileName:   source.FileName,
+		CanDownload: false,
+		Mimetype:    source.Mimetype,
+		FileLength:  source.FileLength,
+		FileName:    source.FileName,
 	}
 
 	if len(attach.Mimetype) == 0 {

@@ -7,8 +7,9 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
-	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type QpDataUserSql struct {

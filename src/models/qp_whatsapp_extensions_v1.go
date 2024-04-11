@@ -7,7 +7,10 @@ import (
 )
 
 func ToWhatsappAttachment(source *QPAttachmentV1) (attach *whatsapp.WhatsappAttachment, err error) {
-	attach = &whatsapp.WhatsappAttachment{}
+	attach = &whatsapp.WhatsappAttachment{
+		CanDownload: false,
+	}
+
 	content, err := base64.StdEncoding.DecodeString(source.Base64)
 	if err != nil {
 		return

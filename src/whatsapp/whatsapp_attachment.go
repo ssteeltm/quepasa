@@ -3,6 +3,9 @@ package whatsapp
 type WhatsappAttachment struct {
 	content *[]byte `json:"-"`
 
+	// means that it can be downloaded from whatsapp servers
+	CanDownload bool `json:"-"`
+
 	Mimetype string `json:"mime"`
 
 	// important to navigate throw content
@@ -44,8 +47,13 @@ func (source *WhatsappAttachment) IsValidSize() bool {
 		return true
 	}
 
-	if nil != source.content {
+	if source.content != nil {
 		if len(*source.content) > 500 {
+			return true
+		}
+
+		// there are many simple vcards with low bytes
+		if source.Mimetype == "text/x-vcard" && len(*source.content) > 70 {
 			return true
 		}
 	}

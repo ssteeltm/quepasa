@@ -168,6 +168,7 @@ func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 
 	jpeg := GetStringFromBytes(in.JpegThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
+		CanDownload:   true,
 		Mimetype:      in.GetMimetype(),
 		FileLength:    in.GetFileLength(),
 		JpegThumbnail: jpeg,
@@ -191,8 +192,9 @@ func HandleStickerMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pro
 
 	jpeg := GetStringFromBytes(in.PngThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
-		Mimetype:   in.GetMimetype(),
-		FileLength: in.GetFileLength(),
+		CanDownload: true,
+		Mimetype:    in.GetMimetype(),
+		FileLength:  in.GetFileLength(),
 
 		JpegThumbnail: jpeg,
 	}
@@ -207,8 +209,9 @@ func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 
 	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
-		Mimetype:   in.GetMimetype(),
-		FileLength: in.GetFileLength(),
+		CanDownload: true,
+		Mimetype:    in.GetMimetype(),
+		FileLength:  in.GetFileLength(),
 
 		JpegThumbnail: jpeg,
 	}
@@ -227,8 +230,9 @@ func HandleDocumentMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 
 	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
-		Mimetype:   in.GetMimetype() + "; wa-document",
-		FileLength: in.GetFileLength(),
+		CanDownload: true,
+		Mimetype:    in.GetMimetype() + "; wa-document",
+		FileLength:  in.GetFileLength(),
 
 		FileName:      in.GetFileName(),
 		JpegThumbnail: jpeg,
@@ -246,9 +250,10 @@ func HandleAudioMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 	out.Type = whatsapp.AudioMessageType
 
 	out.Attachment = &whatsapp.WhatsappAttachment{
-		Mimetype:   in.GetMimetype(),
-		FileLength: in.GetFileLength(),
-		Seconds:    in.GetSeconds(),
+		CanDownload: true,
+		Mimetype:    in.GetMimetype(),
+		FileLength:  in.GetFileLength(),
+		Seconds:     in.GetSeconds(),
 	}
 
 	info := in.ContextInfo
@@ -276,6 +281,7 @@ func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
 
 	out.Attachment = &whatsapp.WhatsappAttachment{
+		CanDownload:   false,
 		Mimetype:      "text/x-uri; location",
 		Latitude:      in.GetDegreesLatitude(),
 		Longitude:     in.GetDegreesLongitude(),
@@ -310,6 +316,7 @@ func HandleLiveLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in
 	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
 
 	out.Attachment = &whatsapp.WhatsappAttachment{
+		CanDownload:   false,
 		Mimetype:      "text/x-uri; live location",
 		Latitude:      in.GetDegreesLatitude(),
 		Longitude:     in.GetDegreesLongitude(),
@@ -338,9 +345,10 @@ func HandleContactMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pro
 	length := uint64(len(content))
 
 	out.Attachment = &whatsapp.WhatsappAttachment{
-		Mimetype:   "text/x-vcard",
-		FileName:   filename,
-		FileLength: length,
+		CanDownload: false,
+		Mimetype:    "text/x-vcard",
+		FileName:    filename,
+		FileLength:  length,
 	}
 
 	out.Attachment.SetContent(&content)

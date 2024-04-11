@@ -215,7 +215,12 @@ func (conn *WhatsmeowConnection) Download(imsg whatsapp.IWhatsappMessage, cache 
 		return
 	}
 
-	if !att.HasContent() || !cache {
+	if !att.HasContent() && !att.CanDownload {
+		err = fmt.Errorf("message (%s) attachment with invalid content and not available to download", imsg.GetId())
+		return
+	}
+
+	if !att.HasContent() || (att.CanDownload && !cache) {
 		data, err := conn.DownloadData(imsg)
 		if err != nil {
 			return att, err
