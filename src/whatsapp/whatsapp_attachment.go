@@ -45,20 +45,22 @@ func (source *WhatsappAttachment) HasContent() bool {
 
 // used at receive.tmpl view
 func (source *WhatsappAttachment) IsValidSize() bool {
-	if source.FileLength > 500 {
+
+	var length int
+	if source.FileLength > 0 {
+		length = int(source.FileLength)
+	} else if source.content != nil {
+		length = len(*source.content)
+	}
+
+	if length > 500 {
 		return true
 	}
 
-	if source.content != nil {
-		length := len(*source.content)
-		if length > 500 {
-			return true
-		}
-
-		// there are many simple vcards with low bytes
-		if strings.Contains(source.Mimetype, "vcard") && length > 70 {
-			return true
-		}
+	// there are many simple vcards with low bytes
+	if strings.HasPrefix(source.Mimetype, "text/x-vcard") && length > 70 {
+		return true
 	}
+
 	return false
 }
