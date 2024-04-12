@@ -218,8 +218,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        14820,
-        -443.21073188545233
+        15040,
+        -440
       ]
     },
     {
@@ -243,7 +243,8 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_CHATWOOTTOQUEPASAGREETINGS'] ?? 1007 }}"
+        "workflowId": "={{ $env['C8Q_CHATWOOTTOQUEPASAGREETINGS'] ?? 1007 }}",
+        "options": {}
       },
       "id": "1f5c22d9-579c-4085-adf2-fe12dd8ced4e",
       "name": "Throw To Greetings Workflow",
@@ -270,7 +271,8 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}"
+        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}",
+        "options": {}
       },
       "id": "410d80fe-c240-4a37-8c63-03fb63533a9a",
       "name": "Throw To Quepasa Chat Control Workflow",
@@ -303,20 +305,8 @@
         "values": {
           "string": [
             {
-              "name": "cwhost",
-              "value": "={{$json[\"extra\"][\"cwhost\"]}}"
-            },
-            {
-              "name": "account",
-              "value": "={{$json[\"extra\"][\"account\"]}}"
-            },
-            {
-              "name": "inbox",
-              "value": "={{$json[\"extra\"][\"inbox\"]}}"
-            },
-            {
-              "name": "utoken",
-              "value": "={{$json[\"extra\"][\"utoken\"]}}"
+              "name": "extra",
+              "value": "={{$json.extra}}"
             },
             {
               "name": "chatid",
@@ -325,6 +315,12 @@
             {
               "name": "contactid",
               "value": "={{$json.chat.chatwoot.id}}"
+            }
+          ],
+          "boolean": [
+            {
+              "name": "singlethread",
+              "value": "={{ $json.extra.singlethread ?? $env[\"C8Q_SINGLETHREAD\"] }}"
             }
           ]
         },
@@ -459,7 +455,8 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_POSTTOCHATWOOT'] ?? 1006 }}"
+        "workflowId": "={{ $env['C8Q_POSTTOCHATWOOT'] ?? 1006 }}",
+        "options": {}
       },
       "id": "fbd49a9d-e7c0-4b16-afab-ad1b9545aae6",
       "name": "Execute Workflow Post To Chatwoot",
@@ -537,7 +534,8 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_POSTTOWEBCALLBACK'] ?? 1005 }}"
+        "workflowId": "={{ $env['C8Q_POSTTOWEBCALLBACK'] ?? 1005 }}",
+        "options": {}
       },
       "id": "318c82fb-4675-4720-a9e8-c427115aa840",
       "name": "Throw To WebCallBack Telephony Workflow",
@@ -691,7 +689,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "=SELECT \n display_id, \n status\nFROM conversations \nWHERE \n\taccount_id = '{{ $json.account }}' \n\tAND inbox_id = '{{ $json.inbox }}'\n\tAND contact_id = '{{ $json.contactid }}'\nORDER BY id DESC\nLIMIT 1",
+        "query": "=SELECT \n display_id, \n status\nFROM conversations \nWHERE \n\taccount_id = '{{ $json.extra.account }}' \n\tAND inbox_id = '{{ $json.extra.inbox }}'\n\tAND contact_id = '{{ $json.contactid }}'\nORDER BY id DESC\nLIMIT 1",
         "additionalFields": {}
       },
       "id": "15964d60-c9a2-49a1-b927-7a915f84c070",
@@ -731,7 +729,7 @@
         "conditions": {
           "boolean": [
             {
-              "value1": "={{ $env[\"C8Q_SINGLETHREAD\"] ?? false }}",
+              "value1": "={{ $json.singlethread }}",
               "value2": true
             }
           ]
@@ -827,7 +825,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.9) Updates\n* issue on revoke internal message\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.10) Updates\n* single thread\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
         "width": 398.97654103837476
       },
@@ -836,13 +834,14 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        6320,
+        6220,
         -580
       ]
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_GETCHATWOOTCONTACTS'] ?? 1002 }}"
+        "workflowId": "={{ $env['C8Q_GETCHATWOOTCONTACTS'] ?? 1002 }}",
+        "options": {}
       },
       "id": "4b96bb79-6987-4e69-96ef-b897f1a9f761",
       "name": "Throw Get Chatwoot Contacts Workflow",
@@ -1038,7 +1037,8 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}"
+        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}",
+        "options": {}
       },
       "id": "59427297-7da6-4b06-89a4-08647a762959",
       "name": "Throw To Quepasa Chat Control Workflow1",
@@ -2062,11 +2062,12 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "8c9dd4d7-cb1b-4d32-8955-2dfdec39d789",
-  "id": "1009",
+  "versionId": "c7da6a66-8baf-49d1-80a2-356568ac8004",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
+  "id": "1009",
   "tags": [
     {
       "createdAt": "2023-05-19T22:54:38.266Z",

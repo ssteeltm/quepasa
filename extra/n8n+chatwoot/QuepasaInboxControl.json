@@ -46,6 +46,10 @@
             {
               "key": "qptoken",
               "value": "={{$json.extra.qptoken}}"
+            },
+            {
+              "key": "singlethread",
+              "value": "={{ ($json.query.st ?? $json.query.singlethread) ? true : undefined }}"
             }
           ]
         }
@@ -779,7 +783,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.6) Updates\n* skipping automations\n\n## Recommendations \n* Remember set timeout to 15 seconds \n* string empty for switch\n* getting identifier from postgres",
+        "content": "## (1.0.7) Updates\n* single thread webhook parameter\n\n## Recommendations \n* Remember set timeout to 15 seconds \n* string empty for switch\n* getting identifier from postgres",
         "height": 221.8901373993275,
         "width": 444.914796845942
       },
@@ -2148,7 +2152,7 @@
     "executionTimeout": 15,
     "executionOrder": "v1"
   },
-  "versionId": "bffc49c5-536b-4b7a-9afc-3eb074a2aeb8",
+  "versionId": "027c541c-26dc-429a-8ef0-8e65b7e0b651",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

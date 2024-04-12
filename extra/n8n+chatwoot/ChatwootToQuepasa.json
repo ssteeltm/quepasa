@@ -1131,7 +1131,7 @@
     {
       "parameters": {
         "baseUrl": "={{$json.extra.qphost}}",
-        "token": "={{$json.extra.qptoken}}",
+        "token": "={{ $json.extra.qptoken ?? $json.extra.identifier }}",
         "messageId": "={{ $json.extra.account }}-{{ $json.extra.inbox }}-{{ $json.payload.messageid ?? Math.random() }}",
         "text": "={{$json.payload.content}}",
         "chatId": "={{$json.payload.chatid}}",
@@ -1156,7 +1156,7 @@
     {
       "parameters": {
         "baseUrl": "={{ $json.extra.qphost }}",
-        "token": "={{ $json.extra.identifier }}",
+        "token": "={{ $json.extra.qptoken ?? $json.extra.identifier }}",
         "resource": "information"
       },
       "id": "5fad6a7a-5606-4da9-bbc1-843e400cf018",
@@ -1420,7 +1420,7 @@
     {
       "parameters": {
         "baseUrl": "={{$json.extra.qphost}}",
-        "token": "={{$json.extra.qptoken}}",
+        "token": "={{ $json.extra.qptoken ?? $json.extra.identifier }}",
         "messageId": "={{ $json.extra.account }}-{{ $json.extra.inbox }}-{{ $json.payload.messageid ?? Math.random() }}",
         "method": "sendurl",
         "text": "={{$json.payload.content}}",
@@ -2339,7 +2339,7 @@
     "executionTimeout": 50,
     "executionOrder": "v1"
   },
-  "versionId": "38c224e1-7a2d-47bd-bac3-be1710127dc0",
+  "versionId": "aa43c015-76b0-44ca-a54b-c472d083cfc8",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

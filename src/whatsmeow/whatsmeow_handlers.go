@@ -375,6 +375,29 @@ func (handler *WhatsmeowHandlers) Follow(message *whatsapp.WhatsappMessage) {
 	} else {
 		handler.GetLogger().Warn("no internal handler registered")
 	}
+
+	// testing, mark read function
+	// go handler.MarkRead(message)
+}
+
+func (handler *WhatsmeowHandlers) MarkRead(message *whatsapp.WhatsappMessage) (err error) {
+	client := handler.Client
+	ids := []string{message.Id}
+	chatJID, err := types.ParseJID(message.Chat.Id)
+	if err != nil {
+		return
+	}
+
+	var senderJID types.JID
+	if message.Participant != nil {
+		senderJID, err = types.ParseJID(message.Participant.Id)
+		if err != nil {
+			return
+		}
+	}
+
+	err = client.MarkRead(ids, time.Now(), chatJID, senderJID)
+	return
 }
 
 //#region EVENT CALL
