@@ -71,3 +71,6 @@
 
 	# pat
 	> (boolean) Prepend Agent Title - default true - should include agent title before msg content ?
+	
+	# st | singlethread
+	> (boolean) Single Thread - default false - should use a single thread conversation and do not open a new ?
