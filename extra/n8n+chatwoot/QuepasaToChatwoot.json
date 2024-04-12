@@ -320,7 +320,7 @@
           "boolean": [
             {
               "name": "singlethread",
-              "value": "={{ $json.extra.singlethread ?? $env[\"C8Q_SINGLETHREAD\"] }}"
+              "value": "={{ $json.extra.singlethread ?? /^true$/i.test($env[\"C8Q_SINGLETHREAD\"]) ?? false }}"
             }
           ]
         },
@@ -2062,7 +2062,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "c7da6a66-8baf-49d1-80a2-356568ac8004",
+  "versionId": "29fc8b6b-336b-486b-a5f3-4a3b2dbfc6b3",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
