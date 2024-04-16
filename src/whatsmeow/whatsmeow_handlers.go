@@ -392,15 +392,14 @@ func (handler *WhatsmeowHandlers) Follow(message *whatsapp.WhatsappMessage) {
 		// following to internal handlers
 		go handler.WAHandlers.Message(message)
 
-		if handler.WhatsappOptionsExtended.ReadUpdate {
-			go handler.MarkRead(message, types.ReceiptTypeRead)
-		}
 	} else {
 		handler.GetLogger().Warn("no internal handler registered")
 	}
 
 	// testing, mark read function
-	// go handler.MarkRead(message)
+	if handler.WhatsappOptionsExtended.ReadUpdate && !message.FromBroadcast() {
+		go handler.MarkRead(message, types.ReceiptTypeRead)
+	}
 }
 
 func (handler *WhatsmeowHandlers) MarkRead(message *whatsapp.WhatsappMessage, receipt types.ReceiptType) (err error) {
@@ -415,15 +414,14 @@ func (handler *WhatsmeowHandlers) MarkRead(message *whatsapp.WhatsappMessage, re
 	}
 
 	var senderJID types.JID
-	/*
-		if message.Participant != nil {
-			senderJID, err = types.ParseJID(message.Participant.Id)
-			if err != nil {
-				logentry.Errorf("error on mark read, parsing sender jid: %s", err.Error())
-				return
-			}
+	if message.Participant != nil {
+		senderJID, err = types.ParseJID(message.Participant.Id)
+		if err != nil {
+			logentry.Errorf("error on mark read, parsing sender jid: %s", err.Error())
+			return
 		}
-	*/
+	}
+
 	readtime := time.Now()
 	err = client.MarkRead(ids, readtime, chatJID, senderJID, receipt)
 	if err != nil {
@@ -431,7 +429,7 @@ func (handler *WhatsmeowHandlers) MarkRead(message *whatsapp.WhatsappMessage, re
 		return
 	}
 
-	logentry.Infof("marked read chat id: %s, at: %v", message.Chat.Id, readtime)
+	logentry.Debugf("marked read chat id: %s, at: %v", message.Chat.Id, readtime)
 	return
 }
 
