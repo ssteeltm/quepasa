@@ -209,21 +209,6 @@
     },
     {
       "parameters": {
-        "content": "## Follow to Chatwoot",
-        "height": 262.50469912086913,
-        "width": 251.48817318430855
-      },
-      "id": "d4f8dea8-cac9-4dc2-98cd-bd88b0926ee8",
-      "name": "Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        15040,
-        -440
-      ]
-    },
-    {
-      "parameters": {
         "conditions": {
           "boolean": [
             {
@@ -279,8 +264,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        15940,
-        -683.2107318854523
+        15320,
+        -480
       ],
       "continueOnFail": true
     },
@@ -431,14 +416,6 @@
             {
               "name": "payload.content_type",
               "value": "text"
-            },
-            {
-              "name": "payload.event",
-              "value": "={{ $('Webhook Chatwoot').item.json.body.type }}"
-            },
-            {
-              "name": "payload.edited",
-              "value": "={{ $('Webhook Chatwoot').item.json.body.edited || false}}"
             }
           ]
         },
@@ -448,8 +425,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        15380,
-        -363.21073188545233
+        15520,
+        -240
       ],
       "id": "929eb1c5-5a57-4603-867f-860e15de3cdb"
     },
@@ -463,8 +440,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        15940,
-        -343.21073188545233
+        15720,
+        -240
       ],
       "alwaysOutputData": true,
       "continueOnFail": true
@@ -493,8 +470,15 @@
               "operation": "equal",
               "value2": 8
             }
+          ],
+          "string": [
+            {
+              "value1": "={{$json.type}}",
+              "value2": "call"
+            }
           ]
-        }
+        },
+        "combineOperation": "any"
       },
       "id": "3423bb24-fecd-401b-8436-8d16d8164cb5",
       "name": "If Call Request ?",
@@ -511,7 +495,7 @@
           "string": [
             {
               "name": "text",
-              "value": "## (Sistema) O Usuário requisitou uma chamada de voz !\n----------------------------------------------------"
+              "value": "=⚙ O usuário requisitou uma chamada de voz !\n____________________________________________________\n✉ {{ $json.message }}"
             }
           ],
           "boolean": [
@@ -528,8 +512,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        13300,
-        -383.21073188545233
+        13900,
+        -440
       ]
     },
     {
@@ -542,8 +526,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        13580,
-        -583.2107318854523
+        13480,
+        -520
       ],
       "executeOnce": true,
       "continueOnFail": true
@@ -666,12 +650,20 @@
             {
               "name": "payload.external_created_at",
               "value": "={{ new Date($json.timestamp).getTime() / 1000 }}"
+            },
+            {
+              "name": "payload.event",
+              "value": "={{ $json.type }}"
             }
           ],
           "boolean": [
             {
               "name": "payload.private",
               "value": "={{ $json.payload?.private ?? false }}"
+            },
+            {
+              "name": "payload.edited",
+              "value": "={{ $json.edited ?? false }}"
             }
           ]
         },
@@ -681,8 +673,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        15120,
-        -363.21073188545233
+        15320,
+        -240
       ],
       "id": "a5b6fc06-5c43-4269-b324-eead5bf58486"
     },
@@ -825,7 +817,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.10) Updates\n* single thread\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.11) Updates\n* call event 8 to \"call\" string\n* call request response text\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
         "width": 398.97654103837476
       },
@@ -858,12 +850,12 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{ $json.payload.content ?? '' }}",
+              "value1": "={{ $json.text ?? '' }}",
               "operation": "startsWith",
               "value2": "/invite"
             },
             {
-              "value1": "={{ $json.payload.content ?? '' }}",
+              "value1": "={{ $json.text ?? '' }}",
               "operation": "startsWith",
               "value2": "//"
             }
@@ -876,8 +868,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        15620,
-        -363.21073188545233
+        15040,
+        -360
       ]
     },
     {
@@ -907,7 +899,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        14580,
+        14800,
         -363.21073188545233
       ]
     },
@@ -1078,6 +1070,13 @@
               "value1": "={{ $json.body.type }}",
               "operation": "notEqual",
               "value2": 10
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $json.body.type }}",
+              "operation": "notEqual",
+              "value2": "revoke"
             }
           ]
         }
@@ -1313,6 +1312,32 @@
         6620,
         -360
       ]
+    },
+    {
+      "parameters": {},
+      "id": "afe9aa55-b0f3-4dbe-965a-33b3ee0f23e5",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        13280,
+        -420
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "5ceb702d-6ae2-4117-9355-634016438870",
+      "name": "Merge4",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        13680,
+        -440
+      ]
     }
   ],
   "pinData": {},
@@ -1515,7 +1540,7 @@
       "main": [
         [
           {
-            "node": "If Chat Command",
+            "node": "Execute Workflow Post To Chatwoot",
             "type": "main",
             "index": 0
           }
@@ -1526,7 +1551,7 @@
       "main": [
         [
           {
-            "node": "Set Text Content For Call Request",
+            "node": "No Operation, do nothing",
             "type": "main",
             "index": 0
           }
@@ -1534,22 +1559,6 @@
         [
           {
             "node": "If Not In Reply",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set Text Content For Call Request": {
-      "main": [
-        [
-          {
-            "node": "Throw To WebCallBack Telephony Workflow",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Follow to Chatwoot",
             "type": "main",
             "index": 0
           }
@@ -1770,7 +1779,7 @@
         ],
         [
           {
-            "node": "Execute Workflow Post To Chatwoot",
+            "node": "Chatwoot Message Payload",
             "type": "main",
             "index": 0
           }
@@ -1804,7 +1813,7 @@
       "main": [
         [
           {
-            "node": "Chatwoot Message Payload",
+            "node": "If Chat Command",
             "type": "main",
             "index": 0
           }
@@ -2053,6 +2062,55 @@
           }
         ]
       ]
+    },
+    "Throw To WebCallBack Telephony Workflow": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Text Content For Call Request": {
+      "main": [
+        [
+          {
+            "node": "Follow to Chatwoot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Throw To WebCallBack Telephony Workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Set Text Content For Call Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -2062,7 +2120,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "29fc8b6b-336b-486b-a5f3-4a3b2dbfc6b3",
+  "versionId": "2b1c9763-d54d-4b0a-b46c-564b79181fa9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

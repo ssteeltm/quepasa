@@ -132,19 +132,21 @@
 	
 	# GOOS		
 	> Operational System to Golang Extensions, "linux" | "windows", empty is default "linux".
-	
-	# DEBUGREQUESTS
-	> Create a log for every request, default false or empty.
-	
-	# DEBUGJSONMESSAGES
-	> Shows log from whatsmeow, default false or empty.
-	
+		
 	# REMOVEDIGIT9
 	> Remove digit 9 from phones bigger than DDD 30, default false or empty.
+	
+	# GROUPS
+	
+	# BROADCASTS
 	
 	# READRECEIPTS
 	> Trigger webhooks for read receipts events, default false or empty.
 
+	# CALLS
+	
+	# READUPDATE
+	
 	# SYNOPSISLENGTH
 	> Length for synopsis msg at replies or reactions, default 50 or empty.
 
