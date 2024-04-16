@@ -28,7 +28,7 @@ func (source *QPWebhookHandler) HandleWebHook(payload *whatsapp.WhatsappMessage)
 
 	logger := source.GetLogger()
 	if payload.Type == whatsapp.DiscardMessageType|whatsapp.UnknownMessageType {
-		logger.Debugf("ignoring unknown message type on webhook request: %v", reflect.TypeOf(&payload))
+		logger.Debugf("ignoring discard|unknown message type on webhook request: %v", reflect.TypeOf(&payload))
 		return
 	}
 

@@ -58,7 +58,8 @@ func (source *WhatsappAttachment) IsValidSize() bool {
 	}
 
 	// there are many simple vcards with low bytes
-	if strings.HasPrefix(source.Mimetype, "text/x-vcard") && length > 70 {
+	// vcard | plain | etc
+	if strings.HasPrefix(source.Mimetype, "text/") && length > 50 {
 		return true
 	}
 

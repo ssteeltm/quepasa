@@ -353,7 +353,7 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 	// discard and return
 	if message.Type == whatsapp.DiscardMessageType {
 		JsonMsg := ToJson(evt)
-		log.Debug("debugging and ignoring an discard message :: " + JsonMsg)
+		log.Debugf("debugging and ignoring an discard message (%v) :: %s", reflect.TypeOf(evt), JsonMsg)
 		return
 	}
 

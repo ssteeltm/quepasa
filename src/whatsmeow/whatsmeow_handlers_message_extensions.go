@@ -98,7 +98,7 @@ func HandleProtocolMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 			return
 		}
 
-		out.Text = string(b)
+		out.Text = "protocol message :: " + string(b)
 		return
 	}
 }

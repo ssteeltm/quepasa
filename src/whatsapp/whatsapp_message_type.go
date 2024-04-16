@@ -1,5 +1,7 @@
 package whatsapp
 
+import "encoding/json"
+
 type WhatsappMessageType uint
 
 const (
@@ -46,4 +48,8 @@ func (Type WhatsappMessageType) String() string {
 	}
 
 	return "unknown"
+}
+
+func (s WhatsappMessageType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(s.String())
 }
