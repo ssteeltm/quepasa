@@ -34,18 +34,19 @@ func RespondNotReady(w http.ResponseWriter, err error) {
 }
 
 func RespondServerError(server *models.QpWhatsappServer, w http.ResponseWriter, err error) {
-	if strings.Contains(err.Error(), "invalid websocket") {
+	RespondErrorCode(w, err, http.StatusInternalServerError)
+	if server == nil {
+		return
+	}
 
-		// Desconexão forçado é algum evento iniciado pelo whatsapp
-		log.Errorf("(%s) Desconexão forçada por motivo de websocket inválido ou sem resposta", server.Token)
+	logentry := server.GetLogger()
+	if strings.Contains(err.Error(), "invalid websocket") {
+		logentry.Error("forced disconnected by any reason of invalid websocket or no response")
 		go server.Restart()
 
 	} else {
-		if models.ENV.DEBUGRequests() {
-			log.Errorf("(%s) !Request Server error: %s", server.Token, err)
-		}
+		logentry.Errorf("request server error: %s", err.Error())
 	}
-	RespondErrorCode(w, err, http.StatusInternalServerError)
 }
 
 func RespondErrorCode(w http.ResponseWriter, err error, code int) {

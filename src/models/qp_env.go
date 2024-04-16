@@ -25,16 +25,15 @@ const (
 
 	ENV_SIGNING_SECRET = "SIGNING_SECRET" // token for hash singing cookies
 
-	ENV_WEBSOCKETSSL        = "WEBSOCKETSSL"      // use ssl for websocket qrcode
-	ENV_ENVIRONMENT         = "APP_ENV"           // development | production
-	ENV_MIGRATIONS          = "MIGRATIONS"        // enable migrations
-	ENV_TITLE               = "APP_TITLE"         // application title for whatsapp id
-	ENV_DEBUG_REQUESTS      = "DEBUGREQUESTS"     // debug api and form requests
-	ENV_DEBUG_JSON_MESSAGES = "DEBUGJSONMESSAGES" // debug json messages
+	ENV_WEBSOCKETSSL        = "WEBSOCKETSSL" // use ssl for websocket qrcode
+	ENV_ENVIRONMENT         = "APP_ENV"      // development | production
+	ENV_MIGRATIONS          = "MIGRATIONS"   // enable migrations
+	ENV_TITLE               = "APP_TITLE"    // application title for whatsapp id
 	ENV_REMOVEDIGIT9        = "REMOVEDIGIT9"
 	ENV_SYNOPSISLENGTH      = "SYNOPSISLENGTH"
 	ENV_CONVERT_WAVE_TO_OGG = "CONVERT_WAVE_TO_OGG"
 
+	ENV_READUPDATE      = "READUPDATE"
 	ENV_READRECEIPTS    = "READRECEIPTS"
 	ENV_CALLS           = "CALLS"
 	ENV_GROUPS          = "GROUPS"
@@ -100,30 +99,6 @@ func (*Environment) MigrationPath() string {
 func (*Environment) AppTitle() string {
 	result, _ := GetEnvStr(ENV_TITLE)
 	return result
-}
-
-func (*Environment) DEBUGRequests() bool {
-
-	if ENV.IsDevelopment() {
-		environment, err := GetEnvBool(ENV_DEBUG_REQUESTS, proto.Bool(true))
-		if err == nil {
-			return *environment
-		}
-	}
-
-	return false
-}
-
-func (*Environment) DEBUGJsonMessages() bool {
-
-	if ENV.IsDevelopment() {
-		environment, err := GetEnvBool(ENV_DEBUG_JSON_MESSAGES, proto.Bool(true))
-		if err == nil {
-			return *environment
-		}
-	}
-
-	return false
 }
 
 var ErrEnvVarEmpty = errors.New("getenv: environment variable empty")
@@ -196,6 +171,11 @@ func (*Environment) ReadReceipts() whatsapp.WhatsappBooleanExtended {
 func (*Environment) Calls() whatsapp.WhatsappBooleanExtended {
 	v := os.Getenv(ENV_CALLS)
 	return ParseWhatsappBoolean(v)
+}
+
+func (*Environment) ReadUpdate() bool {
+	value, _ := GetEnvBool(ENV_READUPDATE, proto.Bool(false))
+	return *value
 }
 
 // Force Default Log Level

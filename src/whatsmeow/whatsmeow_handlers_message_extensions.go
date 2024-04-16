@@ -13,48 +13,45 @@ import (
 )
 
 func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMessage, in *proto.Message) {
-	logger := handler.GetLogger()
+	logentry := handler.GetLogger()
+	logentry.Tracef("handling knowing message: %v", in)
 
-	logger.Tracef("handling knowing message: %v", in)
-	if in.ImageMessage != nil {
-		HandleImageMessage(logger, out, in.ImageMessage)
-	} else if in.StickerMessage != nil {
-		HandleStickerMessage(logger, out, in.StickerMessage)
-	} else if in.DocumentMessage != nil {
-		HandleDocumentMessage(logger, out, in.DocumentMessage)
-	} else if in.AudioMessage != nil {
-		HandleAudioMessage(logger, out, in.AudioMessage)
-	} else if in.VideoMessage != nil {
-		HandleVideoMessage(logger, out, in.VideoMessage)
-	} else if in.ExtendedTextMessage != nil {
-		HandleExtendedTextMessage(logger, out, in.ExtendedTextMessage)
-	} else if in.ButtonsResponseMessage != nil {
-		HandleButtonsResponseMessage(logger, out, in.ButtonsResponseMessage)
-	} else if in.LocationMessage != nil {
-		HandleLocationMessage(logger, out, in.LocationMessage)
-	} else if in.LiveLocationMessage != nil {
-		HandleLiveLocationMessage(logger, out, in.LiveLocationMessage)
-	} else if in.ContactMessage != nil {
-		HandleContactMessage(logger, out, in.ContactMessage)
-	} else if in.ReactionMessage != nil {
-		HandleReactionMessage(logger, out, in.ReactionMessage)
-	} else if in.EditedMessage != nil {
-		HandleEditTextMessage(logger, out, in.EditedMessage)
-	} else if in.ProtocolMessage != nil {
-		HandleProtocolMessage(logger, out, in.ProtocolMessage)
-	} else if in.SenderKeyDistributionMessage != nil {
+	switch {
+	case in.ImageMessage != nil:
+		HandleImageMessage(logentry, out, in.ImageMessage)
+	case in.StickerMessage != nil:
+		HandleStickerMessage(logentry, out, in.StickerMessage)
+	case in.DocumentMessage != nil:
+		HandleDocumentMessage(logentry, out, in.DocumentMessage)
+	case in.AudioMessage != nil:
+		HandleAudioMessage(logentry, out, in.AudioMessage)
+	case in.VideoMessage != nil:
+		HandleVideoMessage(logentry, out, in.VideoMessage)
+	case in.ExtendedTextMessage != nil:
+		HandleExtendedTextMessage(logentry, out, in.ExtendedTextMessage)
+	case in.ButtonsResponseMessage != nil:
+		HandleButtonsResponseMessage(logentry, out, in.ButtonsResponseMessage)
+	case in.LocationMessage != nil:
+		HandleLocationMessage(logentry, out, in.LocationMessage)
+	case in.LiveLocationMessage != nil:
+		HandleLiveLocationMessage(logentry, out, in.LiveLocationMessage)
+	case in.ContactMessage != nil:
+		HandleContactMessage(logentry, out, in.ContactMessage)
+	case in.ReactionMessage != nil:
+		HandleReactionMessage(logentry, out, in.ReactionMessage)
+	case in.EditedMessage != nil:
+		HandleEditTextMessage(logentry, out, in.EditedMessage)
+	case in.ProtocolMessage != nil:
+		HandleProtocolMessage(logentry, out, in.ProtocolMessage)
+	case in.SenderKeyDistributionMessage != nil:
 		out.Type = whatsapp.DiscardMessageType
-		b, err := json.Marshal(in)
-		if err != nil {
-			log.Error(err)
-			return
-		}
-
-		out.Text = string(b)
-	} else if len(in.GetConversation()) > 0 {
-		HandleTextMessage(logger, out, in)
-	} else {
-		logger.Warnf("message not handled: %v", in)
+	case in.StickerSyncRmrMessage != nil:
+		out.Type = whatsapp.DiscardMessageType
+	case len(in.GetConversation()) > 0:
+		HandleTextMessage(logentry, out, in)
+	default:
+		out.Type = whatsapp.UnknownMessageType
+		logentry.Warnf("message not handled: %v", in)
 	}
 }
 
@@ -74,8 +71,8 @@ func HandleEditTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 	out.Text = in.String()
 }
 
-func HandleProtocolMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ProtocolMessage) {
-	log.Trace("Received a protocol message !")
+func HandleProtocolMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ProtocolMessage) {
+	logentry.Trace("Received a protocol message !")
 
 	switch v := in.GetType(); {
 	case v == proto.ProtocolMessage_MESSAGE_EDIT:
@@ -91,14 +88,14 @@ func HandleProtocolMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 		return
 
 	default:
-		out.Type = whatsapp.DiscardMessageType
+		out.Type = whatsapp.UnknownMessageType
 		b, err := json.Marshal(in)
 		if err != nil {
-			log.Error(err)
+			logentry.Error(err)
 			return
 		}
 
-		out.Text = "protocol message :: " + string(b)
+		out.Text = "ProtocolMessage :: " + string(b)
 		return
 	}
 }

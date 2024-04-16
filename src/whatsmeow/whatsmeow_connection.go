@@ -311,6 +311,7 @@ func isASCII(s string) bool {
 
 // Default SEND method using WhatsappMessage Interface
 func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.IWhatsappSendResponse, error) {
+	logentry := source.GetLogger()
 
 	var err error
 	messageText := msg.GetText()
@@ -333,8 +334,6 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 					jid := fmt.Sprintf("%s@%s", storeid.User, storeid.Server)
 					sender = proto.String(jid)
 				}
-
-				logentry := source.GetLogger()
 
 				// getting quoted message if available on cache
 				// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
@@ -376,7 +375,7 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 
 	jid, err := types.ParseJID(formattedDestination)
 	if err != nil {
-		source.GetLogger().Infof("send error on get jid: %s", err)
+		logentry.Infof("send error on get jid: %s", err)
 		return msg, err
 	}
 
@@ -391,12 +390,12 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 
 	resp, err := source.Client.SendMessage(context.Background(), jid, newMessage, extra)
 	if err != nil {
-		source.GetLogger().Errorf("send error: %s", err)
+		logentry.Errorf("send error: %s", err)
 		return msg, err
 	}
 	msg.Timestamp = resp.Timestamp
 
-	source.GetLogger().Infof("send: %s, on: %s", msg.Id, msg.Timestamp)
+	logentry.Infof("sent: %s, on: %s", msg.Id, msg.Timestamp)
 	return msg, err
 }
 

@@ -15,6 +15,9 @@ type WhatsappOptionsExtended struct {
 	// should handle calls
 	Calls WhatsappBooleanExtended `json:"calls,omitempty"`
 
+	// should send markread requests
+	ReadUpdate bool `json:"readupdate"`
+
 	// nil for no sync, 0 for all, X for specific days
 	HistorySync *uint32 `json:"historysync,omitempty"`
 
@@ -27,6 +30,7 @@ func (source WhatsappOptionsExtended) IsDefault() bool {
 		source.Broadcasts.Equals(UnSetBooleanType) &&
 		source.ReadReceipts.Equals(UnSetBooleanType) &&
 		source.Calls.Equals(UnSetBooleanType) &&
+		!source.ReadUpdate &&
 		source.HistorySync == nil &&
 		len(source.LogLevel) == 0
 }

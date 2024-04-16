@@ -301,17 +301,18 @@ func (source *WhatsmeowHandlers) OnHistorySyncEvent(evt events.HistorySync) {
 
 // Aqui se processar um evento de recebimento de uma mensagem genérica
 func (handler *WhatsmeowHandlers) Message(evt events.Message) {
-	logger := handler.GetLogger()
-	logger.Trace("event message received")
+	logentry := handler.GetLogger()
+	logentry.Trace("event message received")
+
 	if evt.Message == nil {
 		if evt.SourceWebMsg != nil {
 			// probably from recover history sync
-			logger.Info("web message cant be full decrypted, ignoring")
+			logentry.Info("web message cant be full decrypted, ignoring")
 			return
 		}
 
 		jsonstring, _ := json.Marshal(evt)
-		logger.Errorf("nil message on receiving whatsmeow events | try use rawMessage ! json: %s", string(jsonstring))
+		logentry.Errorf("nil message on receiving whatsmeow events | try use rawMessage ! json: %s", string(jsonstring))
 		return
 	}
 
@@ -353,14 +354,14 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 	// discard and return
 	if message.Type == whatsapp.DiscardMessageType {
 		JsonMsg := ToJson(evt)
-		log.Debugf("debugging and ignoring an discard message (%v) :: %s", reflect.TypeOf(evt), JsonMsg)
+		logentry.Debugf("debugging and ignoring an discard message: %s", JsonMsg)
 		return
 	}
 
 	// unknown and continue
 	if message.Type == whatsapp.UnknownMessageType {
 		JsonMsg := ToJson(evt)
-		log.Info("debugging an unknown message :: " + JsonMsg)
+		logentry.Infof("debugging an unknown message :: %s", JsonMsg)
 	}
 
 	handler.Follow(message)
@@ -390,6 +391,10 @@ func (handler *WhatsmeowHandlers) Follow(message *whatsapp.WhatsappMessage) {
 
 		// following to internal handlers
 		go handler.WAHandlers.Message(message)
+
+		if handler.WhatsappOptionsExtended.ReadUpdate {
+			go handler.MarkRead(message, types.ReceiptTypeRead)
+		}
 	} else {
 		handler.GetLogger().Warn("no internal handler registered")
 	}
@@ -398,23 +403,35 @@ func (handler *WhatsmeowHandlers) Follow(message *whatsapp.WhatsappMessage) {
 	// go handler.MarkRead(message)
 }
 
-func (handler *WhatsmeowHandlers) MarkRead(message *whatsapp.WhatsappMessage) (err error) {
+func (handler *WhatsmeowHandlers) MarkRead(message *whatsapp.WhatsappMessage, receipt types.ReceiptType) (err error) {
+	logentry := handler.GetLogger()
+
 	client := handler.Client
 	ids := []string{message.Id}
 	chatJID, err := types.ParseJID(message.Chat.Id)
 	if err != nil {
+		logentry.Errorf("error on mark read, parsing chat jid: %s", err.Error())
 		return
 	}
 
 	var senderJID types.JID
-	if message.Participant != nil {
-		senderJID, err = types.ParseJID(message.Participant.Id)
-		if err != nil {
-			return
+	/*
+		if message.Participant != nil {
+			senderJID, err = types.ParseJID(message.Participant.Id)
+			if err != nil {
+				logentry.Errorf("error on mark read, parsing sender jid: %s", err.Error())
+				return
+			}
 		}
+	*/
+	readtime := time.Now()
+	err = client.MarkRead(ids, readtime, chatJID, senderJID, receipt)
+	if err != nil {
+		logentry.Errorf("error on mark read: %s", err.Error())
+		return
 	}
 
-	err = client.MarkRead(ids, time.Now(), chatJID, senderJID)
+	logentry.Infof("marked read chat id: %s, at: %v", message.Chat.Id, readtime)
 	return
 }
 

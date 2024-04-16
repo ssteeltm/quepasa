@@ -19,7 +19,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-func QPWebServerStart() {
+func QPWebServerStart() error {
 	r := newRouter()
 	webAPIPort := os.Getenv(models.ENV_WEBAPIPORT)
 	webAPIHost := os.Getenv(models.ENV_WEBAPIHOST)
@@ -40,6 +40,8 @@ func QPWebServerStart() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	return err
 }
 
 func NormalizePathsToLower(next http.Handler) http.Handler {

@@ -88,7 +88,7 @@ func (source *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
 	}
 
 	logger := source.GetLogger()
-	logger.Tracef("msg recebida/(enviada por outro meio) em models: %s", msg.Id)
+	logger.Debugf("appending to cache, received|sended from another app, id: %s, chatid: %s", msg.Id, msg.Chat.Id)
 	source.appendMsgToCache(msg)
 }
 
