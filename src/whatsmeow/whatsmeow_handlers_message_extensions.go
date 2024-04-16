@@ -58,16 +58,6 @@ func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMes
 	}
 }
 
-func HandleUnknownMessage(log *log.Entry, in interface{}) {
-	log.Info("Received an unknown message !")
-	b, err := json.Marshal(in)
-	if err != nil {
-		log.Error(err)
-		return
-	}
-	log.Debug(string(b))
-}
-
 //#region HANDLING TEXT MESSAGES
 
 func HandleTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.Message) {

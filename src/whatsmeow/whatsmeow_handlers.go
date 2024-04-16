@@ -349,11 +349,29 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 
 	// Process diferent message types
 	HandleKnowingMessages(handler, message, evt.Message)
+
+	// discard and return
+	if message.Type == whatsapp.DiscardMessageType {
+		JsonMsg := ToJson(evt)
+		log.Debug("debugging and ignoring an discard message :: " + JsonMsg)
+		return
+	}
+
+	// unknown and continue
 	if message.Type == whatsapp.UnknownMessageType {
-		HandleUnknownMessage(logger, evt)
+		JsonMsg := ToJson(evt)
+		log.Info("debugging an unknown message :: " + JsonMsg)
 	}
 
 	handler.Follow(message)
+}
+
+func ToJson(in interface{}) string {
+	bytes, err := json.Marshal(in)
+	if err == nil {
+		return string(bytes)
+	}
+	return ""
 }
 
 //#endregion
