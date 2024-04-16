@@ -961,7 +961,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.22) Updates\n* Delay for Active Storage\n* Change Execution type to V1\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.23) Updates\n* message id to text\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 184.30667672289223,
         "width": 457.17616077915915
       },
@@ -971,7 +971,7 @@
       "typeVersion": 1,
       "position": [
         -9140,
-        4618.153207281396
+        4620
       ]
     },
     {
@@ -1446,7 +1446,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "=UPDATE messages SET status = 3 WHERE id = {{ +$json.payload.messageid.split('-').shift() }}; ",
+        "query": "=UPDATE messages SET status = 3 WHERE id = {{ +$json.payload.messageid.toString().split('-').shift() }}; ",
         "additionalFields": {}
       },
       "id": "03a3a58d-5596-423d-8c02-61eea1151c38",
@@ -2339,7 +2339,7 @@
     "executionTimeout": 50,
     "executionOrder": "v1"
   },
-  "versionId": "aa43c015-76b0-44ca-a54b-c472d083cfc8",
+  "versionId": "30ed2c96-3e85-437a-b4f7-5aef1178fe50",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
