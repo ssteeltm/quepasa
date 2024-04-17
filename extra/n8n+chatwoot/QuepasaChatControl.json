@@ -190,7 +190,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.3)\nbusca contato extras\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.4)\n* issue on \"busca contato\"\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
         "height": 205.7265251035022,
         "width": 561.5346630524019
       },
@@ -228,20 +228,20 @@
       "type": "n8n-nodes-chatwoot.chatwoot",
       "typeVersion": 1,
       "position": [
-        5960,
-        920
+        5620,
+        1020
       ]
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"cwhost\"] }}/api/v1/accounts/{{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"account\"] }}/conversations",
+        "url": "={{ $json.extra.cwhost }}/api/v1/accounts/{{ $json.extra.account }}/conversations",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "api_access_token",
-              "value": "={{ $('When Called By Another Workflow').item.json.body.extra.utoken }}"
+              "value": "={{ $json.extra.utoken }}"
             }
           ]
         },
@@ -250,7 +250,7 @@
           "parameters": [
             {
               "name": "=inbox_id",
-              "value": "={{ $('When Called By Another Workflow').item.json.body.extra.inbox }}"
+              "value": "={{ $json.extra.inbox }}"
             },
             {
               "name": "contact_id",
@@ -262,15 +262,17 @@
             }
           ]
         },
-        "options": {}
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
       },
       "id": "402a2eb7-4d67-4677-a219-b27e2a4a1bb0",
       "name": "New Conversation",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        6160,
-        920
+        6000,
+        1040
       ]
     },
     {
@@ -296,8 +298,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        6360,
-        920
+        6380,
+        1060
       ]
     },
     {
@@ -323,8 +325,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        6560,
-        920
+        6780,
+        1000
       ]
     },
     {
@@ -343,13 +345,14 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        5740,
-        940
+        5420,
+        960
       ]
     },
     {
       "parameters": {
-        "workflowId": "waRNOrsXSutLuYvW"
+        "workflowId": "waRNOrsXSutLuYvW",
+        "options": {}
       },
       "id": "2c666574-834d-40cf-a1da-f7ffb94cfec7",
       "name": "Execute Workflow",
@@ -425,6 +428,51 @@
       "position": [
         5920,
         300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "d447dd9b-2937-4dce-a90c-6e5a144dc9c0",
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        5820,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "08615345-f58e-443d-ac44-7f68837df894",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        6180,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "b9eb416e-53e4-46e0-901e-7bb92abb1321",
+      "name": "Merge3",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        6580,
+        1000
       ]
     }
   ],
@@ -554,9 +602,9 @@
       "main": [
         [
           {
-            "node": "New Conversation",
+            "node": "Merge1",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -565,9 +613,9 @@
       "main": [
         [
           {
-            "node": "Open Conversation",
+            "node": "Merge2",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -576,9 +624,9 @@
       "main": [
         [
           {
-            "node": "Send Disconnect Message",
+            "node": "Merge3",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -586,6 +634,11 @@
     "Is Logout?": {
       "main": [
         [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
           {
             "node": "Busca Contato",
             "type": "main",
@@ -633,6 +686,49 @@
           }
         ]
       ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "New Conversation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Open Conversation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Send Disconnect Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -641,11 +737,12 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 15
   },
-  "versionId": "1b340844-8248-414d-a82f-2d417b72035e",
-  "id": "1003",
+  "versionId": "4cab1a30-5448-4e6d-9832-0a869cc3fd13",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
+  "id": "1003",
   "tags": [
     {
       "createdAt": "2023-05-19T22:54:38.266Z",

@@ -22,6 +22,8 @@ func InformationController(w http.ResponseWriter, r *http.Request) {
 		InformationPatchRequest(w, r)
 	case http.MethodGet:
 		InformationGetRequest(w, r)
+	case http.MethodDelete:
+		InformationDeleteRequest(w, r)
 	default:
 		err := fmt.Errorf("invalid http method: %s", r.Method)
 		RespondErrorCode(w, err, http.StatusMethodNotAllowed)
@@ -168,4 +170,25 @@ func InformationPatchRequest(w http.ResponseWriter, r *http.Request) {
 		response.PatchSuccess(server, "no update required")
 		RespondSuccess(w, response)
 	}
+}
+
+func InformationDeleteRequest(w http.ResponseWriter, r *http.Request) {
+	response := &models.QpResponse{}
+
+	server, err := GetServer(r)
+	if err != nil {
+		response.ParseError(err)
+		RespondInterface(w, response)
+		return
+	}
+
+	err = server.Delete()
+	if err != nil {
+		response.ParseError(err)
+		RespondInterface(w, response)
+		return
+	}
+
+	response.ParseSuccess("server deleted")
+	RespondSuccess(w, response)
 }
