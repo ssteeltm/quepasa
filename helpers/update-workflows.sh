@@ -1,11 +1,11 @@
 #!/bin/bash
 
 DBUSER=n8nuser
-DBPASS=dfdsj23j42345
+DBPASS=
 DBHOST=localhost
 DBNAME=n8n_production
 
-psql postgresql://$DBUSER:$DBPASS@$DBHOST/$DBNAME -c "SELECT id FROM public.user LIMIT 1" -tA
+#psql postgresql://$DBUSER:$DBPASS@$DBHOST/$DBNAME -c "SELECT id FROM public.user LIMIT 1" -tA 2>/dev/null
 
 cd /root/.n8n
 if [ -z $1 ]; then 
