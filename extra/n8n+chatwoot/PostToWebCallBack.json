@@ -14,7 +14,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.0) Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.1) \n* forwarding error message\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
         "width": 395
       },
       "id": "307f281c-cc6c-44ef-aec1-9eca91b677b1",
@@ -33,7 +33,7 @@
           "string": [
             {
               "name": "payload.content",
-              "value": "=error at place a call for that inbox, make sure you have configured with:\nsend a msg to Inbox Control Contact {{ $env[\"C8Q_QP_CONTACT\"] ?? \"control@quepasa.io\" }}\n\n/webcallback {destination}\n\nwhere {destination} => +552140627711 like E164 format telephony number.\nmust start with an +"
+              "value": "=error on place a call for that inbox:\n* {{ $json.error.message }}\n\nmake sure you have configured with:\nsend a msg to Inbox Control Contact {{ $env[\"C8Q_QP_CONTACT\"] ?? \"control@quepasa.io\" }}\n\n/webcallback {destination}\n\nwhere {destination} => +552140627711 like E164 format telephony number.\nmust start with an +"
             },
             {
               "name": "payload.message_type",
@@ -65,22 +65,23 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        1860,
-        460
+        1880,
+        560
       ],
       "id": "bf012488-d27a-4f25-abfe-89805133563f"
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_POSTTOCHATWOOT'] }}"
+        "workflowId": "={{ $env['C8Q_POSTTOCHATWOOT'] }}",
+        "options": {}
       },
       "id": "09e8ef4a-b67b-48a8-99ee-034f6e048dea",
       "name": "Execute Workflow Post To Chatwoot",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        2040,
-        460
+        2080,
+        560
       ],
       "alwaysOutputData": true,
       "continueOnFail": true
@@ -101,8 +102,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1480,
-        380
+        1680,
+        480
       ]
     },
     {
@@ -116,8 +117,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        1680,
-        460
+        1500,
+        480
       ]
     },
     {
@@ -169,12 +170,6 @@
               "value": "WhatsApp"
             }
           ],
-          "boolean": [
-            {
-              "name": "identified",
-              "value": true
-            }
-          ],
           "number": [
             {
               "name": "delay",
@@ -191,6 +186,48 @@
       "position": [
         1120,
         380
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "extra",
+              "value": "={{$json.extra}}"
+            },
+            {
+              "name": "chat.id",
+              "value": "={{ $json.chat.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Chatwoot Message Payload For Success",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        400
+      ],
+      "id": "873900a3-5409-4151-b348-f4f34a2d0597"
+    },
+    {
+      "parameters": {
+        "baseUrl": "={{$json.extra.qphost}}",
+        "token": "={{ $json.extra.qptoken ?? $json.extra.identifier }}",
+        "text": "Por favor aguarde, estamos retornando sua chamada por telefone.",
+        "chatId": "={{$json.chat.id}}"
+      },
+      "id": "da39cfe8-6370-496e-b83c-58a8a9db1866",
+      "name": "Quepasa",
+      "type": "n8n-nodes-quepasa.quepasa",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        400
       ]
     }
   ],
@@ -220,10 +257,16 @@
     },
     "IF": {
       "main": [
-        [],
         [
           {
-            "node": "Merge",
+            "node": "Chatwoot Message Payload For Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Chatwoot Message Payload",
             "type": "main",
             "index": 0
           }
@@ -234,7 +277,7 @@
       "main": [
         [
           {
-            "node": "Chatwoot Message Payload",
+            "node": "IF",
             "type": "main",
             "index": 0
           }
@@ -245,14 +288,14 @@
       "main": [
         [
           {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          },
-          {
             "node": "Set Parameters",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
           }
         ]
       ]
@@ -261,7 +304,7 @@
       "main": [
         [
           {
-            "node": "IF",
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -278,6 +321,17 @@
           }
         ]
       ]
+    },
+    "Chatwoot Message Payload For Success": {
+      "main": [
+        [
+          {
+            "node": "Quepasa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -286,20 +340,11 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 15
   },
-  "versionId": "595b809f-8ead-49b3-8a97-faa03ace684c",
-  "id": "1005",
+  "versionId": "72690a5b-d819-4a66-a212-c411e2742525",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
-  "tags": [    
-    {
-      "name": "QUEPASA"
-    },
-    {
-      "name": "CHATWOOT"
-    },
-    {
-      "name": "NOCODELEAKS"
-    }
-  ]
+  "id": "1005",
+  "tags": []
 }

@@ -495,7 +495,7 @@
           "string": [
             {
               "name": "text",
-              "value": "=⚙ O usuário requisitou uma chamada de voz !\n____________________________________________________\n✉ {{ $json.message }}"
+              "value": "=⚙ O usuário requisitou uma chamada de voz !\n____________________________________________________\n✉ {{ $json.status ?? $json.message }}"
             }
           ],
           "boolean": [
@@ -817,7 +817,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.11) Updates\n* call event 8 to \"call\" string\n* call request response text\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.12) Updates\n* callback message to status\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
         "width": 398.97654103837476
       },
@@ -2120,7 +2120,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "2b1c9763-d54d-4b0a-b46c-564b79181fa9",
+  "versionId": "e43ebf3f-74d0-42c6-808c-e7dd0f742688",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
