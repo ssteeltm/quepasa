@@ -9,7 +9,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 1,
       "position": [
-        200,
+        420,
         -140
       ],
       "id": "3a3b243a-0c36-4e09-a537-10dbf2e4fa09"
@@ -31,7 +31,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        0,
+        220,
         -80
       ],
       "id": "4154595b-68b1-4ee9-9016-eea0254110f1"
@@ -52,7 +52,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -240,
+        -20,
         -60
       ]
     },
@@ -87,7 +87,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        460,
+        680,
         -140
       ],
       "id": "930b0f7c-f500-462b-8646-7608f9a25a10",
@@ -110,7 +110,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -1160,
+        -940,
         -420
       ]
     },
@@ -123,7 +123,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        -960,
+        -740,
         -220
       ]
     },
@@ -169,7 +169,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        -160,
+        60,
         -660
       ],
       "id": "cbc90db4-0d08-4a7c-a1a0-3d1f88c9b2c2",
@@ -194,7 +194,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -640,
+        -420,
         -160
       ]
     },
@@ -208,7 +208,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        980,
+        1200,
         -320
       ]
     },
@@ -229,7 +229,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -640,
+        -420,
         -640
       ]
     },
@@ -250,32 +250,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -400,
+        -180,
         -540
       ],
       "notesInFlow": true,
       "notes": "Used to sincronize old versions with Quepasa Id"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "=SELECT account_id as account, identifier FROM contacts WHERE id = '{{ $json.contactid }}'",
-        "additionalFields": {}
-      },
-      "id": "468c2332-5975-4bd0-a33a-6d84b0d8618e",
-      "name": "Postgres",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 1,
-      "position": [
-        -1860,
-        -340
-      ],
-      "credentials": {
-        "postgres": {
-          "id": "1",
-          "name": "Postgres account"
-        }
-      }
     },
     {
       "parameters": {
@@ -288,7 +267,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -1660,
+        -1640,
         -400
       ]
     },
@@ -310,7 +289,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        -440,
+        -220,
         -60
       ],
       "id": "dbb97023-2a8a-4d39-8888-badf86c77c72",
@@ -319,8 +298,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.0) Recommendations \n* Remember set timeout to 20 seconds ",
-        "height": 194.5475077160475,
+        "content": "## (1.0.1) Recommendations \n* change postgres node version\n\n\n\n* Remember set timeout to 20 seconds ",
+        "height": 161.4940393151249,
         "width": 505.65878958512553
       },
       "id": "f785ae9e-3d29-46ca-8367-eb46bf8071a4",
@@ -329,8 +308,29 @@
       "typeVersion": 1,
       "position": [
         -2260,
-        -1020.0826873385008
+        -980
       ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT account_id as account, identifier FROM contacts WHERE id = '{{ $json.contactid }}'",
+        "options": {}
+      },
+      "id": "28309d71-70af-496e-9e27-65811075d26b",
+      "name": "Get Contact Info",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.3,
+      "position": [
+        -1840,
+        -320
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -400,7 +400,7 @@
             "index": 0
           },
           {
-            "node": "Postgres",
+            "node": "Get Contact Info",
             "type": "main",
             "index": 0
           }
@@ -474,17 +474,6 @@
         ]
       ]
     },
-    "Postgres": {
-      "main": [
-        [
-          {
-            "node": "Merge1",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
     "Merge1": {
       "main": [
         [
@@ -506,28 +495,31 @@
           }
         ]
       ]
+    },
+    "Get Contact Info": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "saveManualExecutions": false,
     "callerPolicy": "workflowsFromSameOwner",
-    "executionTimeout": 20
+    "executionTimeout": 20,
+    "executionOrder": "v1"
   },
-  "versionId": "94d9867c-e06a-4201-ac1d-cce0dc127b47",
-  "id": "1004",
+  "versionId": "c812f754-bf93-4ce9-bf9a-283359089723",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
-  "tags": [    
-    {
-      "name": "QUEPASA"
-    },
-    {
-      "name": "CHATWOOT"
-    },
-    {
-      "name": "NOCODELEAKS"
-    }
-  ]
+  "id": "1004",
+  "tags": []
 }

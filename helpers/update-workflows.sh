@@ -1,5 +1,12 @@
 #!/bin/bash
 
+DBUSER=n8nuser
+DBPASS=dfdsj23j42345
+DBHOST=localhost
+DBNAME=n8n_production
+
+psql postgresql://$DBUSER:$DBPASS@$DBHOST/$DBNAME -c "SELECT id FROM public.user LIMIT 1" -tA
+
 cd /root/.n8n
 if [ -z $1 ]; then 
 	if !(/usr/bin/n8n import:workflow --input=/opt/quepasa-source/extra/n8n+chatwoot/ --separate); then
