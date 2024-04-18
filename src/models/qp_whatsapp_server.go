@@ -622,6 +622,7 @@ func (source *QpWhatsappServer) ToggleDevel() (handle bool, err error) {
 
 //endregion
 
+// delete this whatsapp server and underlaying connection
 func (server *QpWhatsappServer) Delete() (err error) {
 	if server.connection != nil {
 		err = server.connection.Delete()

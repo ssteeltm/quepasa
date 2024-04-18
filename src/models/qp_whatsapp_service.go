@@ -251,6 +251,7 @@ func (service *QPWhatsappService) GetOrCreateServer(user string, wid string) (re
 	return
 }
 
+// delete whatsapp server and remove from cache
 func (service *QPWhatsappService) Delete(server *QpWhatsappServer) (err error) {
 	err = server.Delete()
 	if err != nil {

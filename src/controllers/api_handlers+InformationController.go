@@ -182,7 +182,7 @@ func InformationDeleteRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = server.Delete()
+	err = models.WhatsappService.Delete(server)
 	if err != nil {
 		response.ParseError(err)
 		RespondInterface(w, response)
