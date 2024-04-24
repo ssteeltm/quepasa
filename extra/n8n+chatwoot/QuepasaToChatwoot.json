@@ -3,27 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{$json.conversation.status}}",
-              "operation": "notEqual",
-              "value2": "open"
-            }
-          ]
-        }
-      },
-      "name": "Open ?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        11900,
-        -263.21073188545233
-      ],
-      "id": "7a5b8b0d-7386-4e52-95b0-5806180d3521"
-    },
-    {
-      "parameters": {
         "requestMethod": "POST",
         "url": "={{$json[\"extra\"][\"cwhost\"]}}/api/v1/accounts/{{$json[\"extra\"][\"account\"]}}/conversations",
         "allowUnauthorizedCerts": true,
@@ -57,8 +36,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        11200,
-        -483.21073188545233
+        11120,
+        -440
       ],
       "id": "f298b95a-045a-437e-a369-38a671315924",
       "retryOnFail": true,
@@ -85,8 +64,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        11440,
-        -483.21073188545233
+        11360,
+        -440
       ],
       "id": "fc98c588-e5f5-41d7-bf7b-faaba57ec8ca"
     },
@@ -118,7 +97,7 @@
       "typeVersion": 2,
       "position": [
         12160,
-        -483.21073188545233
+        -460
       ],
       "id": "5adac819-e66b-4a2a-b4c9-5e6a3e9234b6"
     },
@@ -342,8 +321,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        10960,
-        -483.21073188545233
+        10900,
+        -440
       ]
     },
     {
@@ -357,8 +336,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        11700,
-        -323.21073188545233
+        11580,
+        -320
       ]
     },
     {
@@ -368,8 +347,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        12740,
-        -243.21073188545233
+        12800,
+        -240
       ]
     },
     {
@@ -383,8 +362,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        12500,
-        -303.21073188545233
+        12540,
+        -380
       ]
     },
     {
@@ -405,7 +384,7 @@
       "typeVersion": 1,
       "position": [
         12340,
-        -483.21073188545233
+        -480
       ],
       "id": "35e494cc-41a3-4d0c-97aa-b77cc2f37768"
     },
@@ -457,7 +436,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        12680,
+        12960,
         -360
       ]
     },
@@ -817,7 +796,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.12) Updates\n* callback message to status\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.13) Updates\n* extra parameter soc\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
         "width": 398.97654103837476
       },
@@ -1338,33 +1317,88 @@
         13680,
         -440
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "f0bf29cd-f9a3-4ad3-b4a7-bfd3ce4b255c",
+              "leftValue": "={{$json.conversation.status}}",
+              "rightValue": "=open",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d78705fc-13ea-4df9-a36b-735b1a199be4",
+      "name": "Conversation Is Not Open ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        11780,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "915f6870-811a-493e-b1c8-2631f16463c3",
+              "leftValue": "={{ $json.extra.soc }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "680dd644-57ca-4729-8d80-a24c830584f8",
+              "leftValue": "={{ $json.extra.soc }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "ignoreCase": true,
+          "looseTypeValidation": true
+        }
+      },
+      "id": "8661f392-7862-4389-a2ba-5c14c931d30e",
+      "name": "Should Open Conversation ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        11980,
+        -360
+      ]
     }
   ],
   "pinData": {},
   "connections": {
-    "Open ?": {
-      "main": [
-        [
-          {
-            "node": "Open a Conversation",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge1",
-            "type": "main",
-            "index": 1
-          }
-        ],
-        [
-          {
-            "node": "NoOp - Opening Conversation",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Create a Conversation": {
       "main": [
         [
@@ -1496,7 +1530,7 @@
       "main": [
         [
           {
-            "node": "Open ?",
+            "node": "Conversation Is Not Open ?",
             "type": "main",
             "index": 0
           }
@@ -1665,7 +1699,7 @@
         ],
         [
           {
-            "node": "Open ?",
+            "node": "Conversation Is Not Open ?",
             "type": "main",
             "index": 0
           }
@@ -2111,6 +2145,47 @@
           }
         ]
       ]
+    },
+    "Conversation Is Not Open ?": {
+      "main": [
+        [
+          {
+            "node": "Should Open Conversation ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "NoOp - Opening Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Open Conversation ?": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Open a Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "NoOp - Opening Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -2120,7 +2195,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "e43ebf3f-74d0-42c6-808c-e7dd0f742688",
+  "versionId": "2c97dfdb-5f5b-4452-a1dd-16bfa452169c",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

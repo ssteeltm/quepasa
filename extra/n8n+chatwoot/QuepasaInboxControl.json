@@ -50,6 +50,10 @@
             {
               "key": "singlethread",
               "value": "={{ ($json.query.st ?? $json.query.singlethread) ? true : undefined }}"
+            },
+            {
+              "key": "soc",
+              "value": "={{ $json.query.soc }}"
             }
           ]
         }
@@ -783,7 +787,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.8) Updates\n* not from automations, issue with numbers\n\n## Recommendations \n* Remember set timeout to 15 seconds \n* string empty for switch\n* getting identifier from postgres",
+        "content": "## (1.0.9) Updates\n* added soc extra variable\n\n## Recommendations \n* Remember set timeout to 15 seconds \n* string empty for switch\n* getting identifier from postgres",
         "height": 221.8901373993275,
         "width": 444.914796845942
       },
@@ -2154,7 +2158,7 @@
     "executionTimeout": 15,
     "executionOrder": "v1"
   },
-  "versionId": "7ce95c02-434f-495c-bbe2-319b2bdc8ab8",
+  "versionId": "2ef06703-1314-4190-a946-40afb43f0d4d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
