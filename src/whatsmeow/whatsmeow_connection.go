@@ -393,9 +393,16 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 		logentry.Errorf("send error: %s", err)
 		return msg, err
 	}
+
+	// updating timestamp
 	msg.Timestamp = resp.Timestamp
 
-	logentry.Infof("sent: %s, on: %s", msg.Id, msg.Timestamp)
+	if msg.Id != resp.ID {
+		logentry.Warnf("send success but msg id: %s, differs from response id: %s, on: %s", msg.Id, resp.ID, msg.Timestamp)
+	} else {
+		logentry.Infof("send success, msg id: %s, on: %s", msg.Id, msg.Timestamp)
+	}
+
 	return msg, err
 }
 

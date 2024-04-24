@@ -1351,7 +1351,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{$json.extra.cwhost}}/api/v1/accounts/{{$json.extra.account}}/conversations/{{json.payload.conversationid}}/messages ",
+        "url": "={{$json.extra.cwhost}}/api/v1/accounts/{{$json.extra.account}}/conversations/{{$json.payload.conversationid}}/messages ",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -2327,7 +2327,7 @@
     "executionTimeout": 50,
     "executionOrder": "v1"
   },
-  "versionId": "6c678e23-9903-416a-8813-2dc3f344c780",
+  "versionId": "5655e30a-e501-42ce-9c44-3e18e77414e4",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
