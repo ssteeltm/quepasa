@@ -33,6 +33,7 @@ src/service
 # database files
 src/*.db
 src/*.sqlite
+src/*.sqlite-journal
 
 # production or testing directory
 src/.dist/
