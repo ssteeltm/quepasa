@@ -21,7 +21,10 @@ import (
 )
 
 type WhatsmeowHandlers struct {
+	// particular whatsapp options for this handler
 	*whatsapp.WhatsappOptions
+
+	// default whatsmeow service global options
 	WhatsmeowOptions
 
 	Client     *whatsmeow.Client
@@ -43,9 +46,9 @@ func (source *WhatsmeowHandlers) GetLogger() *log.Entry {
 	return log.WithContext(context.Background())
 }
 
-func (handler *WhatsmeowHandlers) GetServiceOptions() (options whatsapp.WhatsappOptionsExtended) {
-	if handler != nil {
-		return handler.WhatsappOptionsExtended
+func (source *WhatsmeowHandlers) GetServiceOptions() (options whatsapp.WhatsappOptionsExtended) {
+	if source != nil {
+		return source.WhatsappOptionsExtended
 	}
 
 	return
@@ -76,10 +79,13 @@ func (source *WhatsmeowHandlers) HandleReadReceipts() bool {
 		return false
 	}
 
-	defaultvalue := source.ReadReceipts
+	var defaultValue whatsapp.WhatsappBoolean
+	if source.WhatsappOptions != nil {
+		defaultValue = source.WhatsappOptions.ReadReceipts
+	}
 
-	options := source.GetServiceOptions()
-	return options.HandleReadReceipts(defaultvalue)
+	serviceOptions := source.GetServiceOptions()
+	return serviceOptions.HandleReadReceipts(defaultValue)
 }
 
 func (source *WhatsmeowHandlers) HandleCalls() bool {
