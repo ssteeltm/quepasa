@@ -10,6 +10,7 @@ var MIMEs = map[string]string{
 	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":       ".xlsx",
 	"application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
 	"application/zip": ".zip",
+	"audio/wave":      ".wav",
 	"image/jpeg":      ".jpeg",
 	"image/webp":      ".webp",
 	"text/xml":        ".xml",

@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	metrics "github.com/nocodeleaks/quepasa/metrics"
@@ -417,13 +418,28 @@ func Send(server *models.QpWhatsappServer, response *models.QpSendResponse, requ
 
 	if attach != nil {
 		waMsg.Attachment = attach
-		waMsg.Type = whatsapp.GetMessageType(attach.Mimetype)
+
+		// adjusting msg type from filename
+		if strings.HasPrefix(attach.FileName, models.QpInvalidFilePrefix) {
+			waMsg.Type = whatsapp.DocumentMessageType
+		} else {
+			waMsg.Type = whatsapp.GetMessageType(attach.Mimetype)
+		}
 
 		logger := server.GetLogger()
 		logger.Debugf("send attachment of type: %v, mime: %s, length: %v, filename: %s", waMsg.Type, attach.Mimetype, attach.FileLength, attach.FileName)
 	} else {
-		// test for poll
+		// test for poll, already set from ToWhatsappMessage
 		waMsg.Type = whatsapp.TextMessageType
+	}
+
+	if waMsg.Type == whatsapp.UnknownMessageType {
+		// correct msg type for texts contents
+		if len(waMsg.Text) > 0 {
+			waMsg.Type = whatsapp.TextMessageType
+		}
+
+		// *** implement an error here if not found any knowing type
 	}
 
 	// Checking for ready state

@@ -110,8 +110,6 @@ func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAt
 		requestExtension, _ = library.TryGetExtensionFromMimeType(source.Mimetype)
 	}
 
-	contentExtension, _ := library.TryGetExtensionFromMimeType(contentMime)
-
 	attach = &whatsapp.WhatsappAttachment{
 		CanDownload: false,
 		Mimetype:    source.Mimetype,
@@ -123,12 +121,17 @@ func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAt
 		attach.Mimetype = contentMime
 	}
 
-	// validating mime information
-	if requestExtension != contentExtension {
-		// invalid attachment
-		log.Warnf("invalid mime for attachment, request extension: %s != content extension: %s :: content mime: %s, revalidating for security", requestExtension, contentExtension, contentMime)
-		attach.Mimetype = contentMime
-		attach.FileName = "invalid-" + library.GenerateFileNameFromMimeType(contentMime)
+	contentExtension, _ := library.TryGetExtensionFromMimeType(contentMime)
+	if len(contentExtension) == 0 {
+		log.Warnf("content extension not found, content mime: %s, request extension: %s, ", contentMime, requestExtension)
+	} else {
+		// validating mime information
+		if requestExtension != contentExtension {
+			// invalid attachment
+			log.Warnf("invalid mime for attachment, request extension: %s != content extension: %s :: content mime: %s, revalidating for security", requestExtension, contentExtension, contentMime)
+			attach.Mimetype = contentMime
+			attach.FileName = QpInvalidFilePrefix + library.GenerateFileNameFromMimeType(contentMime)
+		}
 	}
 
 	// validating content length

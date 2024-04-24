@@ -67,11 +67,19 @@ func GetMimeTypeFromContent(content []byte, filename string) string {
 
 // Get the first discovered extension from a given mime type (with dot = {.ext})
 func TryGetExtensionFromMimeType(mimeType string) (exten string, success bool) {
-	normalized := strings.TrimSpace(mimeType)
+
+	// lowering
+	normalized := strings.ToLower(mimeType)
+
+	// removing everything after ;
 	if strings.Contains(normalized, ";") {
 		normalized = strings.Split(normalized, ";")[0]
 	}
 
+	// removing white spaces
+	normalized = strings.TrimSpace(normalized)
+
+	// looking for at static mappings
 	if exten, success = MIMEs[normalized]; success {
 		return exten, true
 	}

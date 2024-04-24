@@ -6,3 +6,6 @@ import log "github.com/sirupsen/logrus"
 const QpVersion = "3.24.416.1807"
 
 const QpLogLevel = log.InfoLevel
+
+// invalid file prefix
+const QpInvalidFilePrefix = "invalid-"
