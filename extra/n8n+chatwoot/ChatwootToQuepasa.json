@@ -786,6 +786,10 @@
         "values": {
           "string": [
             {
+              "name": "extra",
+              "value": "={{ $json.extra }}"
+            },
+            {
               "name": "payload.chatid",
               "value": "={{ $json.body.meta.sender.identifier }}"
             },
@@ -794,24 +798,14 @@
               "value": "={{ $json.body.id }}-eval"
             },
             {
-              "name": "extra.qphost",
-              "value": "={{ $json.extra.qphost }}"
-            },
-            {
-              "name": "extra.qptoken",
-              "value": "={{ $json.extra.qptoken }}"
-            },
-            {
-              "name": "extra.account",
-              "value": "={{ $json.extra.account }}"
-            },
-            {
-              "name": "extra.inbox",
-              "value": "={{ $json.extra.inbox }}"
-            },
-            {
               "name": "payload.content",
               "value": "=*{{ $json[\"body\"][\"meta\"][\"sender\"][\"name\"] }}* seu atendimento de Ticket de nº *{{ $json.body.id }}* foi finalizado ! Caso tenha alguma dúvida só enviar uma nova mensagem !\n\nAproveite e avalie nosso atendimento. Sua opinião é muito importante para nós e nos ajudará a identificar áreas de melhorias a fim de continuar oferecendo um serviço de qualidade. 😎\n\nAvalie meu atendimento !\n{{ ($json.extra.cwpublic ?? $env[\"C8Q_CW_PUBLIC_URL\"] ?? $json.extra.cwhost).trimEnd('/') }}/survey/responses/{{ $json.uuid }}"
+            }
+          ],
+          "number": [
+            {
+              "name": "payload.conversationid",
+              "value": "={{ $json.body.id }}"
             }
           ]
         },
@@ -832,20 +826,8 @@
         "values": {
           "string": [
             {
-              "name": "extra.qphost",
-              "value": "={{ $json.extra.qphost }}"
-            },
-            {
-              "name": "extra.qptoken",
-              "value": "={{ $json.extra.qptoken }}"
-            },
-            {
-              "name": "extra.account",
-              "value": "={{ $json.extra.account }}"
-            },
-            {
-              "name": "extra.inbox",
-              "value": "={{ $json.extra.inbox }}"
+              "name": "extra",
+              "value": "={{ $json.extra }}"
             },
             {
               "name": "payload.chatid",
@@ -858,6 +840,12 @@
             {
               "name": "payload.content",
               "value": "-----------------------------------------------------\nSeu atendimento foi marcado como *concluído* !\nQualquer mensagem ou reação após este anúncio, irá iniciar uma *nova* conversa.\n-----------------------------------------------------"
+            }
+          ],
+          "number": [
+            {
+              "name": "payload.conversationid",
+              "value": "={{ $json.body.id }}"
             }
           ]
         },
@@ -961,7 +949,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.23) Updates\n* message id to text\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.24) Updates\n* missing extra and cahtwoot conversation id for resolved flow\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 184.30667672289223,
         "width": 457.17616077915915
       },
@@ -2339,7 +2327,7 @@
     "executionTimeout": 50,
     "executionOrder": "v1"
   },
-  "versionId": "30ed2c96-3e85-437a-b4f7-5aef1178fe50",
+  "versionId": "6c678e23-9903-416a-8813-2dc3f344c780",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
