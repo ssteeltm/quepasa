@@ -11,8 +11,11 @@ var MIMEs = map[string]string{
 	"application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
 	"application/zip": ".zip",
 	"audio/wave":      ".wav",
+	"audio/wav":       ".wav",
+	"audio/x-wav":     ".wav",
 	"image/jpeg":      ".jpeg",
 	"image/webp":      ".webp",
 	"text/xml":        ".xml",
+	"text/plain":      ".txt",
 	"video/mp4":       ".mp4",
 }

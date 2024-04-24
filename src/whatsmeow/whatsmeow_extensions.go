@@ -52,6 +52,11 @@ func ToWhatsmeowMessage(source whatsapp.IWhatsappMessage) (msg *waProto.Message,
 func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg whatsapp.WhatsappMessage, media whatsmeow.MediaType) (msg *waProto.Message) {
 	attach := waMsg.Attachment
 
+	var seconds *uint32
+	if attach.Seconds > 0 {
+		seconds = proto.Uint32(attach.Seconds)
+	}
+
 	switch media {
 	case whatsmeow.MediaImage:
 		internal := &waProto.ImageMessage{
@@ -68,6 +73,12 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 		msg = &waProto.Message{ImageMessage: internal}
 		return
 	case whatsmeow.MediaAudio:
+
+		var ptt *bool
+		if ShouldUsePtt(attach.Mimetype) {
+			ptt = proto.Bool(true)
+		}
+
 		internal := &waProto.AudioMessage{
 			Url:           proto.String(response.URL),
 			DirectPath:    proto.String(response.DirectPath),
@@ -75,9 +86,9 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			FileEncSha256: response.FileEncSHA256,
 			FileSha256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
-			Seconds:       proto.Uint32(attach.Seconds),
+			Seconds:       seconds,
 			Mimetype:      proto.String(attach.Mimetype),
-			Ptt:           proto.Bool(ShouldUsePtt(attach.Mimetype)),
+			Ptt:           ptt,
 		}
 		msg = &waProto.Message{AudioMessage: internal}
 		return
@@ -89,7 +100,7 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			FileEncSha256: response.FileEncSHA256,
 			FileSha256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
-			Seconds:       proto.Uint32(attach.Seconds),
+			Seconds:       seconds,
 			Mimetype:      proto.String(attach.Mimetype),
 			Caption:       proto.String(waMsg.Text),
 		}
@@ -119,7 +130,7 @@ func ShouldUsePtt(Mimetype string) bool {
 }
 
 func GetStringFromBytes(bytes []byte) string {
-	if bytes != nil && len(bytes) > 0 {
+	if len(bytes) > 0 {
 		return base64.StdEncoding.EncodeToString(bytes)
 	}
 	return ""

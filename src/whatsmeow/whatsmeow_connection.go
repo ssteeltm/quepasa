@@ -314,6 +314,24 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 	logentry := source.GetLogger()
 
 	var err error
+
+	// Formatting destination accordingly
+	formattedDestination, _ := whatsapp.FormatEndpoint(msg.GetChatId())
+
+	// avoid common issue with incorrect non ascii chat id
+	if !isASCII(formattedDestination) {
+		err = fmt.Errorf("not an ASCII formatted chat id")
+		return msg, err
+	}
+
+	// validating jid before remote commands as upload or send
+	jid, err := types.ParseJID(formattedDestination)
+	if err != nil {
+		logentry.Infof("send error on get jid: %s", err)
+		return msg, err
+	}
+
+	// request message text
 	messageText := msg.GetText()
 
 	var newMessage *waProto.Message
@@ -364,21 +382,6 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 		}
 	}
 
-	// Formatting destination accordingly
-	formattedDestination, _ := whatsapp.FormatEndpoint(msg.GetChatId())
-
-	// Avoid common issue with incorrect non ascii chat id
-	if !isASCII(formattedDestination) {
-		err = fmt.Errorf("not an ASCII formatted chat id")
-		return msg, err
-	}
-
-	jid, err := types.ParseJID(formattedDestination)
-	if err != nil {
-		logentry.Infof("send error on get jid: %s", err)
-		return msg, err
-	}
-
 	// Generating a new unique MessageID
 	if len(msg.Id) == 0 {
 		msg.Id = source.Client.GenerateMessageID()
@@ -398,9 +401,9 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 	msg.Timestamp = resp.Timestamp
 
 	if msg.Id != resp.ID {
-		logentry.Warnf("send success but msg id: %s, differs from response id: %s, on: %s", msg.Id, resp.ID, msg.Timestamp)
+		logentry.Warnf("send success but msg id: %s, differs from response id: %s, type: %v, on: %s", msg.Id, resp.ID, msg.Type, msg.Timestamp)
 	} else {
-		logentry.Infof("send success, msg id: %s, on: %s", msg.Id, msg.Timestamp)
+		logentry.Infof("send success, msg id: %s, type: %v, on: %s", msg.Id, msg.Type, msg.Timestamp)
 	}
 
 	return msg, err

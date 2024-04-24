@@ -104,13 +104,14 @@ func GetMessageType(Mimetype string) WhatsappMessageType {
 	case
 		"audio/ogg", "application/ogg", "audio/oga", "audio/ogx",
 		"audio/x-mpeg-3", "audio/mpeg3", "audio/mpeg",
-		"audio/mp4", "audio/wav", "audio/wave", "audio/x-wav":
+		"audio/mp4":
 		return AudioMessageType
 	case "video/mp4":
 		return VideoMessageType
 
 	// dont needed, just set to near following
-	case "text/xml", "application/pdf":
+	case "text/xml", "application/pdf",
+		"audio/wav", "audio/wave", "audio/x-wav": // waves file wont be accepted as audio anymore
 		return DocumentMessageType
 
 	default:

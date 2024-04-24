@@ -152,7 +152,7 @@ func ExtractPhoneIfValid(source string) (phone string, err error) {
 		response = strings.Split(response, "@")[0]
 	}
 
-	r, _ := regexp.Compile("^[1-9]\\d{6,14}$")
+	r, _ := regexp.Compile(`^[1-9]\d{6,14}$`)
 	if r.MatchString(response) {
 		phone = "+" + response
 	} else {
@@ -166,7 +166,7 @@ func RemoveDigit9IfElegible(source string) (response string, err error) {
 	if len(source) == 14 {
 
 		// mobile phones with 9 digit
-		r, _ := regexp.Compile("\\+55([4-9][1-9]|[3-9][1-9])9\\d{8}$")
+		r, _ := regexp.Compile(`\+55([4-9][1-9]|[3-9][1-9])9\d{8}$`)
 		if r.MatchString(source) {
 			prefix := source[0:5]
 			response = prefix + source[6:14]
