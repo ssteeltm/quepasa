@@ -190,7 +190,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.4)\n* issue on \"busca contato\"\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.5)\n* posting failure message back to chatwoot\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
         "height": 205.7265251035022,
         "width": 561.5346630524019
       },
@@ -278,13 +278,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"cwhost\"] }}/api/v1/accounts/{{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"account\"] }}/conversations/{{ $json.id }}/toggle_status",
+        "url": "={{ $json.extra.cwhost }}/api/v1/accounts/{{ $json.extra.account }}/conversations/{{ $json.id }}/toggle_status",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "api_access_token",
-              "value": "={{ $('When Called By Another Workflow').item.json.body.extra.utoken }}"
+              "value": "={{ $json.extra.utoken }}"
             }
           ]
         },
@@ -305,19 +305,19 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"cwhost\"] }}/api/v1/accounts/{{ $('When Called By Another Workflow').item.json[\"body\"][\"extra\"][\"account\"] }}/conversations/{{ $json.payload.conversation_id }}/messages ",
+        "url": "={{ $json.extra.cwhost }}/api/v1/accounts/{{ $json.extra.account }}/conversations/{{ $json.payload.conversation_id }}/messages ",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "api_access_token",
-              "value": "={{ $('When Called By Another Workflow').item.json.body.extra.utoken }}"
+              "value": "={{ $json.extra.utoken }}"
             }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n \"private\": false,\n  \"content\": \"❌ Este número está desconectado do whatsapp e não pode mais receber nem enviar mensagens!\\n Digite /qrcode para conectar\\n{{ $('When Called By Another Workflow').item.json.body.text }}\",\n \"message_type\": 2,\n \"content_type\": \"text\"\n}",
+        "jsonBody": "={\n \"private\": false,\n  \"content\": \"❌ Este número está desconectado do whatsapp e não pode mais receber nem enviar mensagens!\\n Digite /qrcode para conectar\\n{{ $json.body.text }}\",\n \"message_type\": 2,\n \"content_type\": \"text\"\n}",
         "options": {}
       },
       "id": "8a21a225-e2fb-470a-be6e-4c11c42893ad",
@@ -737,7 +737,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 15
   },
-  "versionId": "4cab1a30-5448-4e6d-9832-0a869cc3fd13",
+  "versionId": "fcaf34cc-b8f6-47ca-847e-5da98db4ebe6",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
