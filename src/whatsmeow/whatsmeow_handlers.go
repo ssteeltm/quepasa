@@ -61,8 +61,13 @@ func (source *WhatsmeowHandlers) HandleBroadcasts() bool {
 		return false
 	}
 
-	options := source.GetServiceOptions()
-	return options.HandleBroadcasts(source.Broadcasts)
+	var defaultValue whatsapp.WhatsappBoolean
+	if source.WhatsappOptions != nil {
+		defaultValue = source.WhatsappOptions.Broadcasts
+	}
+
+	serviceOptions := source.GetServiceOptions()
+	return serviceOptions.HandleBroadcasts(defaultValue)
 }
 
 func (source *WhatsmeowHandlers) HandleGroups() bool {
@@ -70,8 +75,13 @@ func (source *WhatsmeowHandlers) HandleGroups() bool {
 		return false
 	}
 
-	options := source.GetServiceOptions()
-	return options.HandleGroups(source.Groups)
+	var defaultValue whatsapp.WhatsappBoolean
+	if source.WhatsappOptions != nil {
+		defaultValue = source.WhatsappOptions.Groups
+	}
+
+	serviceOptions := source.GetServiceOptions()
+	return serviceOptions.HandleGroups(defaultValue)
 }
 
 func (source *WhatsmeowHandlers) HandleReadReceipts() bool {
@@ -93,8 +103,13 @@ func (source *WhatsmeowHandlers) HandleCalls() bool {
 		return false
 	}
 
-	options := source.GetServiceOptions()
-	return options.HandleCalls(source.Calls)
+	var defaultValue whatsapp.WhatsappBoolean
+	if source.WhatsappOptions != nil {
+		defaultValue = source.WhatsappOptions.Calls
+	}
+
+	serviceOptions := source.GetServiceOptions()
+	return serviceOptions.HandleCalls(defaultValue)
 }
 
 //#endregion
