@@ -783,7 +783,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.7) Updates\n* single thread webhook parameter\n\n## Recommendations \n* Remember set timeout to 15 seconds \n* string empty for switch\n* getting identifier from postgres",
+        "content": "## (1.0.8) Updates\n* not from automations, issue with numbers\n\n## Recommendations \n* Remember set timeout to 15 seconds \n* string empty for switch\n* getting identifier from postgres",
         "height": 221.8901373993275,
         "width": 444.914796845942
       },
@@ -1403,23 +1403,25 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "loose"
           },
           "conditions": [
             {
               "id": "8bbf374d-0fc2-4f4c-afc4-8ebdd1551e6d",
-              "leftValue": "={{ $json.body.content_attributes.automation_rule_id }}",
+              "leftValue": "={{ $json.body?.content_attributes?.automation_rule_id }}",
               "rightValue": "=",
               "operator": {
-                "type": "string",
-                "operation": "empty",
+                "type": "number",
+                "operation": "notExists",
                 "singleValue": true
               }
             }
           ],
           "combinator": "and"
         },
-        "options": {}
+        "options": {
+          "looseTypeValidation": true
+        }
       },
       "id": "d74cc54b-165d-4df5-b91a-ab9418c39947",
       "name": "If Not From Automations",
@@ -2152,7 +2154,7 @@
     "executionTimeout": 15,
     "executionOrder": "v1"
   },
-  "versionId": "027c541c-26dc-429a-8ef0-8e65b7e0b651",
+  "versionId": "7ce95c02-434f-495c-bbe2-319b2bdc8ab8",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
