@@ -76,8 +76,10 @@ func (source *WhatsmeowHandlers) HandleReadReceipts() bool {
 		return false
 	}
 
+	defaultvalue := source.ReadReceipts
+
 	options := source.GetServiceOptions()
-	return options.HandleReadReceipts(source.ReadReceipts)
+	return options.HandleReadReceipts(defaultvalue)
 }
 
 func (source *WhatsmeowHandlers) HandleCalls() bool {

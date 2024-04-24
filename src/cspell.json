@@ -151,6 +151,7 @@
         "autoreconnect",
         "chatid",
         "dbloglevel",
+        "defaultvalue",
         "elerr",
         "enableautoreconnect",
         "exten",
