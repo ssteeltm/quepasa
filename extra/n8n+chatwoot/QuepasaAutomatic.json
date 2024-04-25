@@ -12,8 +12,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        700,
-        660
+        720,
+        700
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -35,8 +35,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        700,
-        460
+        1100,
+        540
       ],
       "alwaysOutputData": false,
       "notesInFlow": false,
@@ -59,8 +59,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        460,
-        460
+        480,
+        520
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -82,8 +82,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        460,
-        660
+        480,
+        700
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -153,8 +153,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
       "position": [
-        100,
-        1100
+        -180,
+        1280
       ]
     },
     {
@@ -251,16 +251,16 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.2) Recommendations \n* Added skip agent title attribute\n",
-        "width": 395
+        "content": "## (1.0.3) Recommendations \n* added remove quepasa inbox on api inbox deleted\n",
+        "width": 425.48157586978226
       },
       "id": "d7872589-290c-4614-868f-fabe6b64ca52",
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -240,
-        800
+        -820,
+        560
       ]
     },
     {
@@ -288,28 +288,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        160,
-        560
-      ]
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "minutes",
-              "minutesInterval": 1
-            }
-          ]
-        }
-      },
-      "id": "4dfd2f99-9053-42f1-8c6e-8e0426fb843a",
-      "name": "Schedule By 1 Minute",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1,
-      "position": [
-        -60,
-        560
+        -680,
+        780
       ]
     },
     {
@@ -357,6 +337,202 @@
         }
       },
       "notes": "Sucesso"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "={{ $json }}",
+        "options": {}
+      },
+      "id": "2f9b163a-3e1b-411f-aaed-d66e0222538c",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        920,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "08fabf93-0038-48cb-abf2-013a924db497",
+              "leftValue": "={{ Object.prototype.toString.call($json) === '[object Array]' }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0b23bf08-9404-45b7-87ce-985370f7fd04",
+      "name": "If Array",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        720,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "tableName": {
+          "__rl": true,
+          "value": "accounts",
+          "mode": "list",
+          "cachedResultName": "accounts"
+        },
+        "additionalFields": {}
+      },
+      "id": "135e04e0-3b91-4a61-adf8-95c20aacc1e5",
+      "name": "Postgres Trigger",
+      "type": "n8n-nodes-base.postgresTrigger",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        1120
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "70d1c661-c6f0-4d3a-9177-7df81270a4ab",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        120,
+        1200
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "tableName": {
+          "__rl": true,
+          "value": "channel_api",
+          "mode": "list",
+          "cachedResultName": "channel_api"
+        },
+        "firesOn": "DELETE",
+        "additionalFields": {}
+      },
+      "id": "5cec24ef-8743-448d-849f-c39b1aaa72e6",
+      "name": "When API Inbox Deleted",
+      "type": "n8n-nodes-base.postgresTrigger",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        1840
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "={{ $json.extra.qphost }}/info",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-QUEPASA-TOKEN",
+              "value": "={{ $json.payload.identifier }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8eeea2fb-68e5-4747-8b83-3acbba86d38f",
+      "name": "Delete Quepasa Inbox If Exists",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        720,
+        1860
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "={{ $env['C8Q_CHATWOOTEXTRA'] ?? \"iiEsUj7ybtzEZAFj\" }}",
+        "options": {}
+      },
+      "id": "b50096a3-336b-4ff2-88ab-ed6454990737",
+      "name": "Execute ChatWootExtra Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        320,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "5cad8397-87fb-409d-a17c-9892ff861682",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        1860
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9890dc5d-f10d-41fd-9d0f-35db8d2c6cb2",
+              "name": "event",
+              "value": "api_inbox_delete",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "10d3f831-10d7-40f4-884f-27b2ff569958",
+      "name": "Set Event Name",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        120,
+        1840
+      ]
     }
   ],
   "pinData": {},
@@ -365,7 +541,7 @@
       "main": [
         [
           {
-            "node": "Cria Automação",
+            "node": "If Array",
             "type": "main",
             "index": 0
           }
@@ -398,22 +574,7 @@
       "main": [
         [
           {
-            "node": "Missing Greetings For Contact",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Missing Evaluation For Contact",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Missing Evaluation For Conversation",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Missing Agent Title For Contact",
+            "node": "No Operation, do nothing",
             "type": "main",
             "index": 0
           }
@@ -442,33 +603,6 @@
         ]
       ]
     },
-    "execdata": {
-      "main": [
-        [
-          {
-            "node": "Missing Automations",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Missing Quepasa Contact",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Schedule By 1 Minute": {
-      "main": [
-        [
-          {
-            "node": "execdata",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Missing Agent Title For Contact": {
       "main": [
         [
@@ -479,15 +613,141 @@
           }
         ]
       ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Cria Automação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Array": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cria Automação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Missing Evaluation For Conversation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Missing Evaluation For Contact",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Missing Greetings For Contact",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Missing Agent Title For Contact",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Missing Quepasa Contact",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Missing Automations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Trigger": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When API Inbox Deleted": {
+      "main": [
+        [
+          {
+            "node": "Set Event Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute ChatWootExtra Workflow": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Delete Quepasa Inbox If Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Event Name": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute ChatWootExtra Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {},
-  "versionId": "9e0e203f-ea5c-4c2b-a41e-0c1528fc5e85",
-  "id": "1011",
+  "versionId": "83a4cc17-d327-452a-9723-2659aea33921",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
+  "id": "1011",
   "tags": [
     {
       "createdAt": "2022-10-13T15:26:11.519Z",

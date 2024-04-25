@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## (1.0.0) Updates\n* First version\n",
+        "content": "## (1.0.1) Updates\n* including calls from inbox delete event\n",
         "height": 160.8587546061882,
         "width": 505.65878958512553
       },
@@ -12,8 +12,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        780,
-        93.60606577135772
+        760,
+        60
       ]
     },
     {
@@ -32,7 +32,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1200,
+        1420,
         280
       ]
     },
@@ -47,7 +47,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        1400,
+        1620,
         160
       ],
       "credentials": {
@@ -75,7 +75,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        1560,
+        1780,
         160
       ]
     },
@@ -90,7 +90,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        2140,
+        2360,
         200
       ],
       "alwaysOutputData": false,
@@ -125,7 +125,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        2500,
+        2720,
         200
       ]
     },
@@ -140,7 +140,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        2700,
+        2920,
         280
       ]
     },
@@ -155,7 +155,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        1740,
+        1960,
         240
       ]
     },
@@ -170,7 +170,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        2320,
+        2540,
         200
       ],
       "alwaysOutputData": false,
@@ -192,7 +192,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        2900,
+        3120,
         180
       ],
       "alwaysOutputData": true,
@@ -214,7 +214,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        3300,
+        3520,
         180
       ],
       "alwaysOutputData": true,
@@ -243,7 +243,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        3480,
+        3700,
         180
       ]
     },
@@ -258,7 +258,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        3680,
+        3900,
         260
       ]
     },
@@ -273,7 +273,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 1,
       "position": [
-        3880,
+        4100,
         180
       ],
       "alwaysOutputData": true,
@@ -295,7 +295,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        4260,
+        4480,
         240
       ]
     },
@@ -306,7 +306,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1940,
+        2160,
         300
       ]
     },
@@ -317,7 +317,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        3100,
+        3320,
         280
       ]
     },
@@ -328,8 +328,8 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        880,
-        280
+        780,
+        260
       ]
     },
     {
@@ -366,6 +366,10 @@
             {
               "name": "extra.qpuser",
               "value": "={{ $env[\"C8Q_QP_DEFAULT_USER\"] ?? \"default@quepasa.io\" }}"
+            },
+            {
+              "name": "event",
+              "value": "={{ $json.event }}"
             }
           ]
         },
@@ -376,8 +380,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        1040,
-        280
+        980,
+        260
       ]
     },
     {
@@ -404,8 +408,42 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        4060,
+        4280,
         180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "58f981c1-0ab5-4a8b-a1ca-8e9e5db64ace",
+              "leftValue": "={{ $json.event }}",
+              "rightValue": "api_inbox_delete",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {
+          "looseTypeValidation": true
+        }
+      },
+      "id": "ed4d1ec4-aa3a-406c-b2c0-c7c0debc43eb",
+      "name": "From Inbox Delete ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1180,
+        260
       ]
     }
   ],
@@ -612,7 +650,7 @@
       "main": [
         [
           {
-            "node": "If Missing Account",
+            "node": "From Inbox Delete ?",
             "type": "main",
             "index": 0
           }
@@ -629,6 +667,18 @@
           }
         ]
       ]
+    },
+    "From Inbox Delete ?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If Missing Account",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -637,11 +687,12 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 60
   },
-  "versionId": "99cf21a4-b4a1-4253-93ff-42b8321e562d",
-  "id": "iiEsUj7ybtzEZAFj",
+  "versionId": "3d1edc85-8d87-4b88-b279-f8c1499c817f",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
+  "id": "iiEsUj7ybtzEZAFj",
   "tags": [
     {
       "createdAt": "2022-10-13T15:26:19.857Z",

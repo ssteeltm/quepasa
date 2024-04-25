@@ -223,19 +223,6 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_CHATWOOTEXTRA'] ?? \"iiEsUj7ybtzEZAFj\" }}"
-      },
-      "id": "2324fb52-8471-4169-99c8-2ca91e6b7412",
-      "name": "Execute Workflow",
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1,
-      "position": [
-        1120,
-        440
-      ]
-    },
-    {
-      "parameters": {
         "url": "={{ $json.extra.qphost }}/scan",
         "sendHeaders": true,
         "headerParameters": {
@@ -738,6 +725,20 @@
         5680,
         460
       ]
+    },
+    {
+      "parameters": {
+        "workflowId": "={{ $env['C8Q_CHATWOOTEXTRA'] ?? \"iiEsUj7ybtzEZAFj\" }}",
+        "options": {}
+      },
+      "id": "2324fb52-8471-4169-99c8-2ca91e6b7412",
+      "name": "Execute ChatWootExtra Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        440
+      ]
     }
   ],
   "pinData": {},
@@ -809,20 +810,9 @@
             "index": 0
           },
           {
-            "node": "Execute Workflow",
+            "node": "Execute ChatWootExtra Workflow",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute Workflow": {
-      "main": [
-        [
-          {
-            "node": "Merge1",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
@@ -1135,6 +1125,17 @@
           }
         ]
       ]
+    },
+    "Execute ChatWootExtra Workflow": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -1144,10 +1145,11 @@
     "executionTimeout": 60,
     "executionOrder": "v1"
   },
-  "versionId": "ba26e975-1781-4ccc-8f19-15fb1a2a1749",
-  "id": "1010",
+  "versionId": "7aaf05ab-5607-4ca1-ae6f-ff576d9c238c",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
+  "id": "1010",
   "tags": []
 }
