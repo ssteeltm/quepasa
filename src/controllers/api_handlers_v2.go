@@ -218,7 +218,7 @@ func SendDocumentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	waMsg.Attachment = attach
-	waMsg.Type = whatsapp.GetMessageType(attach.Mimetype)
+	waMsg.Type = whatsapp.GetMessageType(attach)
 
 	sendResponse, err := server.SendMessage(waMsg)
 	if err != nil {

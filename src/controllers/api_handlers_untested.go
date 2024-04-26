@@ -423,7 +423,7 @@ func Send(server *models.QpWhatsappServer, response *models.QpSendResponse, requ
 		if strings.HasPrefix(attach.FileName, models.QpInvalidFilePrefix) {
 			waMsg.Type = whatsapp.DocumentMessageType
 		} else {
-			waMsg.Type = whatsapp.GetMessageType(attach.Mimetype)
+			waMsg.Type = whatsapp.GetMessageType(attach)
 		}
 
 		logger := server.GetLogger()

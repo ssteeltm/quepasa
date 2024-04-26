@@ -33,9 +33,18 @@ func GetTypeString(myvar interface{}) string {
 	}
 }
 
+func GetMimeTypeFromContent(content []byte) string {
+	mimeType := http.DetectContentType(content)
+	if len(mimeType) > 0 && mimeType != "application/octet-stream" && mimeType != "application/zip" {
+		log.Tracef("utils - detected mime type from content: %s", mimeType)
+		return mimeType
+	}
+	return ""
+}
+
 // used by send attachment via url
 // 2024/04/10 changed priority by extension, then content.
-func GetMimeTypeFromContent(content []byte, filename string) string {
+func GetMimeTypeFromContentAndExtension(content []byte, filename string) string {
 
 	mimeType := http.DetectContentType(content)
 	if len(mimeType) > 0 && mimeType != "application/octet-stream" && mimeType != "application/zip" {

@@ -101,14 +101,7 @@ func (source *QpSendRequest) ToWhatsappMessage() (msg *whatsapp.WhatsappMessage,
 }
 
 func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAttachment, err error) {
-	contentMime := library.GetMimeTypeFromContent(source.Content, source.FileName)
-
-	var requestExtension string
-	if len(source.FileName) > 0 {
-		requestExtension = filepath.Ext(source.FileName)
-	} else if len(source.Mimetype) > 0 {
-		requestExtension, _ = library.TryGetExtensionFromMimeType(source.Mimetype)
-	}
+	logentry := source.GetLogger()
 
 	attach = &whatsapp.WhatsappAttachment{
 		CanDownload: false,
@@ -117,44 +110,87 @@ func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAt
 		FileName:    source.FileName,
 	}
 
-	if len(attach.Mimetype) == 0 {
-		attach.Mimetype = contentMime
+	// validating content length
+	contentLength := uint64(len(source.Content))
+	if attach.FileLength > 0 && attach.FileLength != contentLength {
+		logentry.Warnf("invalid attachment length, request length: %v != content length: %v, revalidating for security", attach.FileLength, contentLength)
+		attach.FileLength = contentLength
 	}
 
-	contentExtension, _ := library.TryGetExtensionFromMimeType(contentMime)
-	if len(contentExtension) == 0 {
-		log.Warnf("content extension not found, content mime: %s, request extension: %s, ", contentMime, requestExtension)
-	} else {
-		// validating mime information
-		if requestExtension != contentExtension {
-			// invalid attachment
-			log.Warnf("invalid mime for attachment, request extension: %s != content extension: %s :: content mime: %s, revalidating for security", requestExtension, contentExtension, contentMime)
-			attach.Mimetype = contentMime
-			attach.FileName = QpInvalidFilePrefix + library.GenerateFileNameFromMimeType(contentMime)
+	// end source use and set content
+	attach.SetContent(&source.Content)
+
+	SecureAndCustomizeAttach(attach, logentry)
+	return
+}
+
+func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log.Entry) {
+	if attach == nil {
+		return
+	}
+
+	var contentMime string
+	content := attach.GetContent()
+	if content != nil {
+		contentMime = library.GetMimeTypeFromContent(*content)
+		logentry.Debugf("send request, detected mime type from content: %s", contentMime)
+	}
+
+	var requestExtension string
+	if len(attach.FileName) > 0 {
+		requestExtension = filepath.Ext(attach.FileName)
+		logentry.Debugf("send request, detected extension from filename: %s", requestExtension)
+
+	} else if len(attach.Mimetype) > 0 {
+		requestExtension, _ = library.TryGetExtensionFromMimeType(attach.Mimetype)
+		logentry.Debugf("send request, detected extension from mime type: %s", requestExtension)
+	}
+
+	if len(attach.Mimetype) == 0 {
+		attach.Mimetype = contentMime
+		logentry.Debugf("send request, updating mime type from content: %s", contentMime)
+	}
+
+	if len(contentMime) > 0 {
+		contentExtension, success := library.TryGetExtensionFromMimeType(contentMime)
+		if success {
+			logentry.Debugf("send request, content extension: %s", contentExtension)
+
+			// validating mime information
+			if requestExtension != contentExtension {
+				// invalid attachment
+				logentry.Warnf("send request, invalid mime for attachment, request extension: %s != content extension: %s :: content mime: %s, revalidating for security", requestExtension, contentExtension, contentMime)
+				attach.Mimetype = contentMime
+				attach.FileName = QpInvalidFilePrefix + library.GenerateFileNameFromMimeType(contentMime)
+			}
 		}
 	}
 
-	// validating content length
-	contentLength := uint64(len(source.Content))
-	if source.FileLength > 0 && source.FileLength != contentLength {
-		log.Warnf("invalid attachment length, request length: %v != content length: %v, revalidating for security", source.FileLength, contentLength)
-		attach.FileLength = uint64(len(source.Content))
+	// set compatible audios to be sent as ptt
+	ForceCompatiblePTT := ENV.ShouldConvertWaveToOgg()
+	if ForceCompatiblePTT && !attach.IsValidPTT() && IsCompatibleWithPTT(attach.Mimetype) {
+		logentry.Infof("send request, setting that it should be sent as ptt, regards its incompatible mime type: %s", attach.Mimetype)
+		attach.SetPTTCompatible(true)
 	}
-
-	// adjusting codec for ptt audio messages
-	// inserting a trick for change from wave to ogg ... insecure
-	convertFromWav := ENV.ShouldConvertWaveToOgg() && strings.Contains(attach.Mimetype, "wav")
-	if (strings.Contains(attach.Mimetype, "ogg") || convertFromWav) && !strings.Contains(attach.Mimetype, "opus") {
-		attach.Mimetype = "audio/ogg; codecs=opus"
-	}
-
-	log.Debugf("detected mime type: %s, filename: %s", attach.Mimetype, attach.FileName)
 
 	// Defining a filename if not found before
 	if len(attach.FileName) == 0 {
 		attach.FileName = library.GenerateFileNameFromMimeType(attach.Mimetype)
+		logentry.Debugf("send request, empty file name, generating a new one based on mime type: %s, file name: %s", attach.Mimetype, attach.FileName)
 	}
 
-	attach.SetContent(&source.Content)
-	return
+	logentry.Debugf("send request, resolved mime type: %s, filename: %s", attach.Mimetype, attach.FileName)
+}
+
+func IsCompatibleWithPTT(mime string) bool {
+	// switch for basic mime type, ignoring suffix
+	mimeOnly := strings.Split(mime, ";")[0]
+
+	for _, item := range whatsapp.WhatsappMIMEAudioPTTCompatible {
+		if item == mimeOnly {
+			return true
+		}
+	}
+
+	return false
 }

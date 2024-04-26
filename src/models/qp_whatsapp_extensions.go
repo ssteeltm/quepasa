@@ -225,7 +225,7 @@ func ToWhatsappMessage(destination string, text string, attach *whatsapp.Whatsap
 
 	if attach != nil {
 		msg.Attachment = attach
-		msg.Type = whatsapp.GetMessageType(attach.Mimetype)
+		msg.Type = whatsapp.GetMessageType(attach)
 	}
 	return
 

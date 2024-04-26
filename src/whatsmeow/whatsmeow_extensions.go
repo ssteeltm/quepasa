@@ -32,9 +32,9 @@ func GetMediaTypeFromWAMsgType(msgType whatsapp.WhatsappMessageType) whatsmeow.M
 	}
 }
 
-// Traz o MediaType para download do whatsapp
+// recovers MediaType for whatsapp download
 func GetMediaTypeFromString(Mimetype string) whatsmeow.MediaType {
-	msgType := whatsapp.GetMessageType(Mimetype)
+	msgType := whatsapp.GetMessageTypeFromMIME(Mimetype)
 	return GetMediaTypeFromWAMsgType(msgType)
 }
 
@@ -57,6 +57,11 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 		seconds = proto.Uint32(attach.Seconds)
 	}
 
+	var mimetype *string
+	if len(attach.Mimetype) > 0 {
+		mimetype = proto.String(attach.Mimetype)
+	}
+
 	switch media {
 	case whatsmeow.MediaImage:
 		internal := &waProto.ImageMessage{
@@ -67,7 +72,7 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			FileSha256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
 
-			Mimetype: proto.String(attach.Mimetype),
+			Mimetype: mimetype,
 			Caption:  proto.String(waMsg.Text),
 		}
 		msg = &waProto.Message{ImageMessage: internal}
@@ -75,8 +80,11 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 	case whatsmeow.MediaAudio:
 
 		var ptt *bool
-		if ShouldUsePtt(attach.Mimetype) {
+		if attach.IsValidPTT() {
 			ptt = proto.Bool(true)
+		} else if attach.IsPTTCompatible() { // trick to send audio as ptt, !gambiarra!
+			ptt = proto.Bool(true)
+			mimetype = proto.String(whatsapp.WhatsappPTTMime)
 		}
 
 		internal := &waProto.AudioMessage{
@@ -87,7 +95,7 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			FileSha256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
 			Seconds:       seconds,
-			Mimetype:      proto.String(attach.Mimetype),
+			Mimetype:      mimetype,
 			Ptt:           ptt,
 		}
 		msg = &waProto.Message{AudioMessage: internal}
@@ -101,7 +109,7 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			FileSha256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
 			Seconds:       seconds,
-			Mimetype:      proto.String(attach.Mimetype),
+			Mimetype:      mimetype,
 			Caption:       proto.String(waMsg.Text),
 		}
 		msg = &waProto.Message{VideoMessage: internal}
@@ -115,18 +123,13 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			FileSha256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
 
-			Mimetype: proto.String(attach.Mimetype),
+			Mimetype: mimetype,
 			FileName: proto.String(attach.FileName),
 			Caption:  proto.String(waMsg.Text),
 		}
 		msg = &waProto.Message{DocumentMessage: internal}
 		return
 	}
-}
-
-// Use that to set if the message should be sent as PTT audio
-func ShouldUsePtt(Mimetype string) bool {
-	return strings.Contains(Mimetype, "ogg") && strings.Contains(Mimetype, "opus")
 }
 
 func GetStringFromBytes(bytes []byte) string {

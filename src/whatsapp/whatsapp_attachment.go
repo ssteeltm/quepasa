@@ -1,6 +1,8 @@
 package whatsapp
 
-import "strings"
+import (
+	"strings"
+)
 
 type WhatsappAttachment struct {
 	content *[]byte `json:"-"`
@@ -21,6 +23,9 @@ type WhatsappAttachment struct {
 
 	// audio
 	Seconds uint32 `json:"seconds,omitempty"`
+
+	// audio, used for define that this attach should be sent as ptt compatible, regards its incompatible mime type
+	ptt bool `json:"-"`
 
 	// location msgs
 	Latitude  float64 `json:"latitude,omitempty"`
@@ -61,6 +66,27 @@ func (source *WhatsappAttachment) IsValidSize() bool {
 	// vcard | plain | etc
 	if strings.HasPrefix(source.Mimetype, "text/") && length > 50 {
 		return true
+	}
+
+	return false
+}
+
+func (source *WhatsappAttachment) SetPTTCompatible(value bool) {
+	source.ptt = value
+}
+
+func (source *WhatsappAttachment) IsPTTCompatible() bool {
+	return source.ptt
+}
+
+func (source *WhatsappAttachment) IsValidPTT() bool {
+	// switch for basic mime type, ignoring suffix
+	mimeOnly := strings.Split(source.Mimetype, ";")[0]
+
+	for _, item := range WhatsappMIMEAudioPTTStandards {
+		if item == mimeOnly {
+			return true
+		}
 	}
 
 	return false

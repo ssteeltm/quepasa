@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"html/template"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 
@@ -10,6 +10,7 @@ import (
 
 	. "github.com/nocodeleaks/quepasa/metrics"
 	. "github.com/nocodeleaks/quepasa/models"
+	models "github.com/nocodeleaks/quepasa/models"
 	. "github.com/nocodeleaks/quepasa/whatsapp"
 )
 
@@ -52,7 +53,8 @@ func controllerHttpPost(w http.ResponseWriter, r *http.Request) {
 		data.Server = server.QpServer
 	}
 
-	attachment, err := uploadFile(w, r)
+	logentry := server.GetLogger()
+	attachment, err := GetAttachFromUploadedFile(r, logentry)
 	if err != nil {
 		data.ErrorMessage = err.Error()
 		renderSendForm(w, data)
@@ -83,8 +85,8 @@ func controllerHttpPost(w http.ResponseWriter, r *http.Request) {
 	renderSendForm(w, data)
 }
 
-func uploadFile(w http.ResponseWriter, r *http.Request) (attach *WhatsappAttachment, err error) {
-	log.Trace("form post, checking for file")
+func GetAttachFromUploadedFile(r *http.Request, logentry *log.Entry) (attach *WhatsappAttachment, err error) {
+	logentry.Trace("form post, checking for file")
 
 	// Parse our multipart form, 10 << 20 specifies a maximum
 	// upload of 10 MB files.
@@ -106,7 +108,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) (attach *WhatsappAttachm
 	}
 	defer file.Close()
 
-	content, err := ioutil.ReadAll(file)
+	content, err := io.ReadAll(file)
 	if err != nil {
 		return
 	}
@@ -116,6 +118,9 @@ func uploadFile(w http.ResponseWriter, r *http.Request) (attach *WhatsappAttachm
 	attach.Mimetype = reader.Header.Get("content-type")
 	attach.FileLength = uint64(reader.Size)
 	attach.FileName = reader.Filename
+
+	models.SecureAndCustomizeAttach(attach, logentry)
+
 	return
 }
 
