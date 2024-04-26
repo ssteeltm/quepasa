@@ -153,8 +153,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
       "position": [
-        -180,
-        1280
+        -260,
+        1100
       ]
     },
     {
@@ -251,7 +251,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.3) Recommendations \n* added remove quepasa inbox on api inbox deleted\n",
+        "content": "## (1.0.4) Recommendations \n* exec data position\n",
         "width": 425.48157586978226
       },
       "id": "d7872589-290c-4614-868f-fabe6b64ca52",
@@ -259,8 +259,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -820,
-        560
+        -800,
+        840
       ]
     },
     {
@@ -288,8 +288,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        -680,
-        780
+        -40,
+        1000
       ]
     },
     {
@@ -405,8 +405,8 @@
       "type": "n8n-nodes-base.postgresTrigger",
       "typeVersion": 1,
       "position": [
-        -180,
-        1120
+        -260,
+        900
       ],
       "credentials": {
         "postgres": {
@@ -422,8 +422,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        120,
-        1200
+        140,
+        1000
       ]
     },
     {
@@ -574,7 +574,7 @@
       "main": [
         [
           {
-            "node": "No Operation, do nothing",
+            "node": "execdata",
             "type": "main",
             "index": 0
           }
@@ -683,7 +683,7 @@
       "main": [
         [
           {
-            "node": "No Operation, do nothing",
+            "node": "execdata",
             "type": "main",
             "index": 0
           }
@@ -738,11 +738,22 @@
           }
         ]
       ]
+    },
+    "execdata": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {},
-  "versionId": "83a4cc17-d327-452a-9723-2659aea33921",
+  "versionId": "379e9bde-df63-45fd-957d-f218d06048c3",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
