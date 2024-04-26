@@ -112,7 +112,7 @@ func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAt
 
 	// validating content length
 	contentLength := uint64(len(source.Content))
-	if attach.FileLength > 0 && attach.FileLength != contentLength {
+	if attach.FileLength != contentLength {
 		logentry.Warnf("invalid attachment length, request length: %v != content length: %v, revalidating for security", attach.FileLength, contentLength)
 		attach.FileLength = contentLength
 	}
@@ -146,12 +146,13 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 		logentry.Debugf("send request, detected extension from mime type: %s", requestExtension)
 	}
 
-	if len(attach.Mimetype) == 0 {
-		attach.Mimetype = contentMime
-		logentry.Debugf("send request, updating mime type from content: %s", contentMime)
-	}
-
 	if len(contentMime) > 0 {
+
+		if len(attach.Mimetype) == 0 {
+			attach.Mimetype = contentMime
+			logentry.Debugf("send request, updating empty mime type from content: %s", contentMime)
+		}
+
 		contentExtension, success := library.TryGetExtensionFromMimeType(contentMime)
 		if success {
 			logentry.Debugf("send request, content extension: %s", contentExtension)
@@ -167,7 +168,7 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 	}
 
 	// set compatible audios to be sent as ptt
-	ForceCompatiblePTT := ENV.ShouldConvertWaveToOgg()
+	ForceCompatiblePTT := ENV.UseCompatibleMIMEsAsAudio()
 	if ForceCompatiblePTT && !attach.IsValidPTT() && !attach.IsValidAudio() && IsCompatibleWithPTT(attach.Mimetype) {
 		logentry.Infof("send request, setting that it should be sent as ptt, regards its incompatible mime type: %s", attach.Mimetype)
 		attach.SetPTTCompatible(true)

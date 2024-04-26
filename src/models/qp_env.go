@@ -50,8 +50,13 @@ type Environment struct{}
 
 var ENV Environment
 
-func (*Environment) ShouldConvertWaveToOgg() bool {
-	environment, _ := GetEnvBool(ENV_CONVERT_WAVE_TO_OGG, proto.Bool(true))
+func (*Environment) UseCompatibleMIMEsAsAudio() bool {
+	environment, err := GetEnvBool(ENV_CONVERT_WAVE_TO_OGG, proto.Bool(true))
+	if err != nil {
+		return *environment
+	}
+
+	environment, err = GetEnvBool(ENV_COMPATIBLE_MIME_AS_AUDIO, proto.Bool(true))
 	return *environment
 }
 

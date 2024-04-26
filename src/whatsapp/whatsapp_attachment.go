@@ -80,6 +80,10 @@ func (source *WhatsappAttachment) IsPTTCompatible() bool {
 }
 
 func (source *WhatsappAttachment) IsValidAudio() bool {
+	if source.IsValidPTT() {
+		return true
+	}
+
 	// switch for basic mime type, ignoring suffix
 	mimeOnly := strings.Split(source.Mimetype, ";")[0]
 
