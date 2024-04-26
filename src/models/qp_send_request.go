@@ -168,7 +168,7 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 
 	// set compatible audios to be sent as ptt
 	ForceCompatiblePTT := ENV.ShouldConvertWaveToOgg()
-	if ForceCompatiblePTT && !attach.IsValidPTT() && IsCompatibleWithPTT(attach.Mimetype) {
+	if ForceCompatiblePTT && !attach.IsValidPTT() && !attach.IsValidAudio() && IsCompatibleWithPTT(attach.Mimetype) {
 		logentry.Infof("send request, setting that it should be sent as ptt, regards its incompatible mime type: %s", attach.Mimetype)
 		attach.SetPTTCompatible(true)
 	}

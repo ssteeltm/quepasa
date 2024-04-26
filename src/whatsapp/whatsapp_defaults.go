@@ -14,11 +14,8 @@ var WhatsappWebAppSystem string
 // Mime type for PTT Audio messages (default)
 const WhatsappPTTMime = "audio/ogg; codecs=opus"
 
-// Mime types for PTT Audio messages
-var WhatsappMIMEAudioPTTStandards = [...]string{WhatsappPTTMime}
-
 // Mime types that if converted will work as usual
-var WhatsappMIMEAudioPTTCompatible = [...]string{"audio/ogg", "application/ogg", "video/ogg", "audio/wav", "audio/wave", "audio/x-wav"}
+var WhatsappMIMEAudioPTTCompatible = [...]string{"audio/ogg", "video/ogg", "audio/wav", "audio/wave", "audio/x-wav"}
 
 // Mime types for audio messages, tested 1º
 var WhatsappMIMEAudio = [...]string{"application/ogg", "audio/oga", "audio/ogx", "audio/x-mpeg-3", "audio/mpeg3", "audio/mpeg", "audio/mp4"}

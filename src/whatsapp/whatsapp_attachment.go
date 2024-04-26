@@ -79,15 +79,19 @@ func (source *WhatsappAttachment) IsPTTCompatible() bool {
 	return source.ptt
 }
 
-func (source *WhatsappAttachment) IsValidPTT() bool {
+func (source *WhatsappAttachment) IsValidAudio() bool {
 	// switch for basic mime type, ignoring suffix
 	mimeOnly := strings.Split(source.Mimetype, ";")[0]
 
-	for _, item := range WhatsappMIMEAudioPTTStandards {
+	for _, item := range WhatsappMIMEAudio {
 		if item == mimeOnly {
 			return true
 		}
 	}
 
 	return false
+}
+
+func (source *WhatsappAttachment) IsValidPTT() bool {
+	return source.Mimetype == WhatsappPTTMime
 }
