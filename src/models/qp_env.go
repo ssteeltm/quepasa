@@ -25,13 +25,14 @@ const (
 
 	ENV_SIGNING_SECRET = "SIGNING_SECRET" // token for hash singing cookies
 
-	ENV_WEBSOCKETSSL        = "WEBSOCKETSSL" // use ssl for websocket qrcode
-	ENV_ENVIRONMENT         = "APP_ENV"      // development | production
-	ENV_MIGRATIONS          = "MIGRATIONS"   // enable migrations
-	ENV_TITLE               = "APP_TITLE"    // application title for whatsapp id
-	ENV_REMOVEDIGIT9        = "REMOVEDIGIT9"
-	ENV_SYNOPSISLENGTH      = "SYNOPSISLENGTH"
-	ENV_CONVERT_WAVE_TO_OGG = "CONVERT_WAVE_TO_OGG"
+	ENV_WEBSOCKETSSL             = "WEBSOCKETSSL" // use ssl for websocket qrcode
+	ENV_ENVIRONMENT              = "APP_ENV"      // development | production
+	ENV_MIGRATIONS               = "MIGRATIONS"   // enable migrations
+	ENV_TITLE                    = "APP_TITLE"    // application title for whatsapp id
+	ENV_REMOVEDIGIT9             = "REMOVEDIGIT9"
+	ENV_SYNOPSISLENGTH           = "SYNOPSISLENGTH"
+	ENV_CONVERT_WAVE_TO_OGG      = "CONVERT_WAVE_TO_OGG"
+	ENV_COMPATIBLE_MIME_AS_AUDIO = "COMPATIBLE_MIME_AS_AUDIO"
 
 	ENV_READUPDATE      = "READUPDATE"
 	ENV_READRECEIPTS    = "READRECEIPTS"
