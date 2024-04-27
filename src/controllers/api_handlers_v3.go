@@ -35,7 +35,7 @@ func RegisterAPIV3Controllers(r chi.Router) {
 	// deprecated, discard/remove on next version
 	r.Post(ControllerPrefixV3+"/senddocument", SendDocumentAPIHandlerV2)
 
-	r.Post(ControllerPrefixV3+"/sendurl", SendDocumentFromUrl)
+	r.Post(ControllerPrefixV3+"/sendurl", SendAnyFromUrl)
 	r.Post(ControllerPrefixV3+"/sendbinary/{chatid}/{filename}/{text}", SendDocumentFromBinary)
 	r.Post(ControllerPrefixV3+"/sendbinary/{chatid}/{filename}", SendDocumentFromBinary)
 	r.Post(ControllerPrefixV3+"/sendbinary/{chatid}", SendDocumentFromBinary)
