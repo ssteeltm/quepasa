@@ -356,7 +356,7 @@ func SendDocumentFromEncoded(w http.ResponseWriter, r *http.Request) {
 
 </summary>
 */
-func SendDocumentFromUrl(w http.ResponseWriter, r *http.Request) {
+func SendAnyFromUrl(w http.ResponseWriter, r *http.Request) {
 	response := &models.QpSendResponse{}
 
 	server, err := GetServer(r)

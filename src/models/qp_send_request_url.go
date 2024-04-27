@@ -34,6 +34,12 @@ func (source *QpSendRequestUrl) GenerateContent() (err error) {
 
 	source.QpSendRequest.Content = content
 
+	if resp.ContentLength > -1 {
+		source.QpSendRequest.FileLength = uint64(resp.ContentLength)
+	}
+
+	source.QpSendRequest.Mimetype = resp.Header.Get("Content-Type")
+
 	// setting filename if empty
 	if len(source.QpSendRequest.FileName) == 0 {
 		source.QpSendRequest.FileName = path.Base(source.Url)
