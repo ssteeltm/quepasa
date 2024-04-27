@@ -96,6 +96,10 @@ func GetMessageType(attach *WhatsappAttachment) WhatsappMessageType {
 		return AudioMessageType
 	}
 
+	if strings.HasPrefix(attach.FileName, InvalidFilePrefix) {
+		return DocumentMessageType
+	}
+
 	return GetMessageTypeFromMIME(attach.Mimetype)
 }
 

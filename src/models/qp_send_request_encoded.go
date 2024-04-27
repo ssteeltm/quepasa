@@ -16,5 +16,6 @@ func (source *QpSendRequestEncoded) GenerateContent() (err error) {
 	}
 
 	source.QpSendRequest.Content = content
+	source.QpSendRequest.FileLength = uint64(len(content))
 	return
 }

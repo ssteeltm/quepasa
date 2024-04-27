@@ -31,3 +31,6 @@ var WhatsappMIMEDocument = [...]string{
 	"text/xml", "application/pdf",
 	"application/ogg", "audio/ogg", "audio/wav", "audio/wave", "audio/x-wav", // not accepted anymore as audio msgs, but still compatible for convert to ptt
 }
+
+// global invalid file prefix
+const InvalidFilePrefix = "invalid-"

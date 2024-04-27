@@ -101,6 +101,11 @@ func (source *QpSendRequest) ToWhatsappMessage() (msg *whatsapp.WhatsappMessage,
 }
 
 func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAttachment, err error) {
+	contentLength := len(source.Content)
+	if contentLength == 0 {
+		return
+	}
+
 	logentry := source.GetLogger()
 
 	attach = &whatsapp.WhatsappAttachment{
@@ -111,10 +116,10 @@ func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAt
 	}
 
 	// validating content length
-	contentLength := uint64(len(source.Content))
-	if attach.FileLength != contentLength {
+	uIntContentLength := uint64(contentLength)
+	if attach.FileLength != uIntContentLength {
 		logentry.Warnf("invalid attachment length, request length: %v != content length: %v, revalidating for security", attach.FileLength, contentLength)
-		attach.FileLength = contentLength
+		attach.FileLength = uIntContentLength
 	}
 
 	// end source use and set content
@@ -162,14 +167,14 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 				// invalid attachment
 				logentry.Warnf("send request, invalid mime for attachment, request extension: %s != content extension: %s :: content mime: %s, revalidating for security", requestExtension, contentExtension, contentMime)
 				attach.Mimetype = contentMime
-				attach.FileName = QpInvalidFilePrefix + library.GenerateFileNameFromMimeType(contentMime)
+				attach.FileName = whatsapp.InvalidFilePrefix + library.GenerateFileNameFromMimeType(contentMime)
 			}
 		}
 	}
 
 	// set compatible audios to be sent as ptt
 	ForceCompatiblePTT := ENV.UseCompatibleMIMEsAsAudio()
-	if ForceCompatiblePTT && !attach.IsValidPTT() && !attach.IsValidAudio() && IsCompatibleWithPTT(attach.Mimetype) {
+	if ForceCompatiblePTT && !attach.IsValidAudio() && IsCompatibleWithPTT(attach.Mimetype) {
 		logentry.Infof("send request, setting that it should be sent as ptt, regards its incompatible mime type: %s", attach.Mimetype)
 		attach.SetPTTCompatible(true)
 	}

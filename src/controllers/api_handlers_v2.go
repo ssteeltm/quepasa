@@ -186,31 +186,33 @@ func SendDocumentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Declare a new Person struct.
-	var request models.QPSendDocumentRequestV2
+	var requestV2 models.QPSendDocumentRequestV2
 
 	// Try to decode the request body into the struct. If there is an error,
 	// respond to the client with the error message and a 400 status code.
-	err = json.NewDecoder(r.Body).Decode(&request)
+	err = json.NewDecoder(r.Body).Decode(&requestV2)
 	if err != nil {
 		metrics.MessageSendErrors.Inc()
 		RespondServerError(server, w, err)
 		return
 	}
 
-	if request.Attachment == (models.QPAttachmentV1{}) {
+	if requestV2.Attachment == (models.QPAttachmentV1{}) {
 		metrics.MessageSendErrors.Inc()
 		RespondServerError(server, w, fmt.Errorf("attachment not found"))
 		return
 	}
 
-	trackid := GetTrackId(r)
-	waMsg, err := whatsapp.ToMessage(request.Recipient, request.Message, trackid)
+	request := requestV2.ToQpSendRequest()
+	request.TrackId = GetTrackId(r)
+
+	waMsg, err := request.ToWhatsappMessage()
 	if err != nil {
 		metrics.MessageSendErrors.Inc()
 		return
 	}
 
-	attach, err := models.ToWhatsappAttachment(&request.Attachment)
+	attach, err := request.ToWhatsappAttachment()
 	if err != nil {
 		metrics.MessageSendErrors.Inc()
 		RespondServerError(server, w, err)
@@ -295,7 +297,7 @@ func AttachmentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 
 func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 
-	// setting default reponse type as json
+	// setting default response type as json
 	w.Header().Set("Content-Type", "application/json")
 
 	response := &models.QpWebhookResponse{}

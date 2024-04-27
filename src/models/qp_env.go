@@ -56,7 +56,7 @@ func (*Environment) UseCompatibleMIMEsAsAudio() bool {
 		return *environment
 	}
 
-	environment, err = GetEnvBool(ENV_COMPATIBLE_MIME_AS_AUDIO, proto.Bool(true))
+	environment, _ = GetEnvBool(ENV_COMPATIBLE_MIME_AS_AUDIO, proto.Bool(true))
 	return *environment
 }
 

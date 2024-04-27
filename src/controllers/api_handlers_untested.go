@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	metrics "github.com/nocodeleaks/quepasa/metrics"
@@ -127,7 +126,7 @@ func SendAny(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		SendDocument(server, response, &request.QpSendRequest, w)
+		SendAttachment(server, response, &request.QpSendRequest, w)
 	} else if len(request.Content) > 0 {
 		// base 64 content to byte array
 		err = request.GenerateEmbedContent()
@@ -138,7 +137,7 @@ func SendAny(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		SendDocument(server, response, &request.QpSendRequest, w)
+		SendAttachment(server, response, &request.QpSendRequest, w)
 	} else {
 		// text msg
 
@@ -279,7 +278,7 @@ func SendDocumentFromBinary(w http.ResponseWriter, r *http.Request) {
 		request.TrackId = trackid
 	}
 
-	SendDocument(server, response, request, w)
+	SendAttachment(server, response, request, w)
 }
 
 /*
@@ -341,7 +340,8 @@ func SendDocumentFromEncoded(w http.ResponseWriter, r *http.Request) {
 	if len(trackid) > 0 {
 		request.TrackId = trackid
 	}
-	SendDocument(server, response, &request.QpSendRequest, w)
+
+	SendAttachment(server, response, &request.QpSendRequest, w)
 }
 
 /*
@@ -404,7 +404,7 @@ func SendAnyFromUrl(w http.ResponseWriter, r *http.Request) {
 		request.TrackId = trackid
 	}
 
-	SendDocument(server, response, &request.QpSendRequest, w)
+	SendAttachment(server, response, &request.QpSendRequest, w)
 }
 
 func Send(server *models.QpWhatsappServer, response *models.QpSendResponse, request *models.QpSendRequest, w http.ResponseWriter, attach *whatsapp.WhatsappAttachment) {
@@ -418,16 +418,10 @@ func Send(server *models.QpWhatsappServer, response *models.QpSendResponse, requ
 
 	if attach != nil {
 		waMsg.Attachment = attach
+		waMsg.Type = whatsapp.GetMessageType(attach)
 
-		// adjusting msg type from filename
-		if strings.HasPrefix(attach.FileName, models.QpInvalidFilePrefix) {
-			waMsg.Type = whatsapp.DocumentMessageType
-		} else {
-			waMsg.Type = whatsapp.GetMessageType(attach)
-		}
-
-		logger := server.GetLogger()
-		logger.Debugf("send attachment of type: %v, mime: %s, length: %v, filename: %s", waMsg.Type, attach.Mimetype, attach.FileLength, attach.FileName)
+		logentry := server.GetLogger()
+		logentry.Debugf("send attachment of type: %v, mime: %s, length: %v, filename: %s", waMsg.Type, attach.Mimetype, attach.FileLength, attach.FileName)
 	} else {
 		// test for poll, already set from ToWhatsappMessage
 		waMsg.Type = whatsapp.TextMessageType
@@ -472,7 +466,7 @@ func Send(server *models.QpWhatsappServer, response *models.QpSendResponse, requ
 	RespondInterface(w, response)
 }
 
-func SendDocument(server *models.QpWhatsappServer, response *models.QpSendResponse, request *models.QpSendRequest, w http.ResponseWriter) {
+func SendAttachment(server *models.QpWhatsappServer, response *models.QpSendResponse, request *models.QpSendRequest, w http.ResponseWriter) {
 	attach, err := request.ToWhatsappAttachment()
 	if err != nil {
 		metrics.MessageSendErrors.Inc()
