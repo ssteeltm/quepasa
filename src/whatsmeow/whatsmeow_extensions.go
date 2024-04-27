@@ -15,7 +15,8 @@ import (
 )
 
 func GetMediaTypeFromAttachment(source *whatsapp.WhatsappAttachment) whatsmeow.MediaType {
-	return GetMediaTypeFromString(source.Mimetype)
+	msgType := whatsapp.GetMessageType(source)
+	return GetMediaTypeFromWAMsgType(msgType)
 }
 
 // Traz o MediaType para download do whatsapp
@@ -30,12 +31,6 @@ func GetMediaTypeFromWAMsgType(msgType whatsapp.WhatsappMessageType) whatsmeow.M
 	default:
 		return whatsmeow.MediaDocument
 	}
-}
-
-// recovers MediaType for whatsapp download
-func GetMediaTypeFromString(Mimetype string) whatsmeow.MediaType {
-	msgType := whatsapp.GetMessageTypeFromMIME(Mimetype)
-	return GetMediaTypeFromWAMsgType(msgType)
 }
 
 func ToWhatsmeowMessage(source whatsapp.IWhatsappMessage) (msg *waProto.Message, err error) {
