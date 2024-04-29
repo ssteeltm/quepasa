@@ -522,7 +522,12 @@ func (server *QpWhatsappServer) Toggle() (err error) {
 }
 
 func (server *QpWhatsappServer) IsDevelopmentGlobal() bool {
-	return ENV.IsDevelopment()
+	switch ENV.LogLevel() {
+	case "debug", "trace":
+		return true
+	default:
+		return false
+	}
 }
 
 /*

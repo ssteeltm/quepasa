@@ -26,7 +26,6 @@ const (
 	ENV_SIGNING_SECRET = "SIGNING_SECRET" // token for hash singing cookies
 
 	ENV_WEBSOCKETSSL             = "WEBSOCKETSSL" // use ssl for websocket qrcode
-	ENV_ENVIRONMENT              = "APP_ENV"      // development | production
 	ENV_MIGRATIONS               = "MIGRATIONS"   // enable migrations
 	ENV_TITLE                    = "APP_TITLE"    // application title for whatsapp id
 	ENV_REMOVEDIGIT9             = "REMOVEDIGIT9"
@@ -58,15 +57,6 @@ func (*Environment) UseCompatibleMIMEsAsAudio() bool {
 
 	environment, _ = GetEnvBool(ENV_COMPATIBLE_MIME_AS_AUDIO, proto.Bool(true))
 	return *environment
-}
-
-func (*Environment) IsDevelopment() bool {
-	environment, _ := GetEnvStr(ENV_ENVIRONMENT)
-	if strings.ToLower(environment) == "development" {
-		return true
-	} else {
-		return false
-	}
 }
 
 // WEBSOCKETSSL => default false
@@ -184,9 +174,10 @@ func (*Environment) ReadUpdate() bool {
 	return *value
 }
 
-// Force Default Log Level
+// Force Default Log Level (lower)
 func (*Environment) LogLevel() string {
 	result, _ := GetEnvStr(ENV_LOGLEVEL)
+	result = strings.ToLower(result)
 	return result
 }
 
