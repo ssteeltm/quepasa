@@ -41,6 +41,7 @@ const (
 	ENV_HISTORYSYNCDAYS = "HISTORYSYNCDAYS"
 
 	ENV_LOGLEVEL            = "LOGLEVEL"
+	ENV_HTTPLOGS            = "HTTPLOGS"
 	ENV_WHATSMEOWLOGLEVEL   = "WHATSMEOW_LOGLEVEL"
 	ENV_WHATSMEOWDBLOGLEVEL = "WHATSMEOW_DBLOGLEVEL"
 )
@@ -174,11 +175,18 @@ func (*Environment) ReadUpdate() bool {
 	return *value
 }
 
+//#region LOGS
+
 // Force Default Log Level (lower)
 func (*Environment) LogLevel() string {
 	result, _ := GetEnvStr(ENV_LOGLEVEL)
 	result = strings.ToLower(result)
 	return result
+}
+
+func (*Environment) HttpLogs() bool {
+	value, _ := GetEnvBool(ENV_HTTPLOGS, proto.Bool(false))
+	return *value
 }
 
 // Force Default Whatsmeow Log Level
@@ -192,6 +200,8 @@ func (*Environment) WhatsmeowDBLogLevel() string {
 	result, _ := GetEnvStr(ENV_WHATSMEOWDBLOGLEVEL)
 	return result
 }
+
+//#endregion
 
 // Get history sync days, environment whatsapp service global option
 func (*Environment) HistorySync() *uint32 {

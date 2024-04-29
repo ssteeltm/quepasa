@@ -113,42 +113,49 @@
 ### Environment Variables
 
 	# WEBAPIHOST
-	> http server bind host (HOST:PORT) default empty.
+	> http server bind host (HOST:PORT). (default empty)	
 	
 	# WEBAPIPORT
-	> http server bind port (HOST:PORT) default 31000.
+	> http server bind port (HOST:PORT). (default 31000)
 	
 	# WEBSOCKETSSL
-	> Should websocket for qrcode reads use ssl, default false.	
-	
-	# APP_ENV
-	> Environment name, only knows "development", any other will be not development, implies on logs only, default empty.	
-	
+	> Should websocket for qrcode reads use ssl. (default false)	
+		
 	# APP_TITLE
-	> Suffix for quepasa name on whatsapp devices list like (QuePasa Sufficit), default empty.	
+	> Suffix for quepasa name on whatsapp devices list like (QuePasa Sufficit). (default empty)	
 	
-	# CONVERT_WAVE_TO_OGG
-	> Should convert sending wave files to OGG codec and use as PTT, default true or empty.	
+	# COMPATIBLE_MIME_AS_AUDIO
+	> Should convert sending audio files to OGG codec and use as PTT. (default true)	
 	
 	# GOOS		
-	> Operational System to Golang Extensions, "linux" | "windows", empty is default "linux".
+	> Operational System to Golang Extensions, "linux" | "windows". (default "linux")
 		
 	# REMOVEDIGIT9
-	> Remove digit 9 from phones bigger than DDD 30, default false or empty.
+	> Remove digit 9 from phones bigger than DDD 30. (default false)
 	
 	# GROUPS
 	
 	# BROADCASTS
 	
 	# READRECEIPTS
-	> Trigger webhooks for read receipts events, default false or empty.
+	> Trigger webhooks for read receipts events. (default false)
 
 	# CALLS
 	
 	# READUPDATE
+	> Mark chat read when send any msg. (default true)
 	
 	# SYNOPSISLENGTH
-	> Length for synopsis msg at replies or reactions, default 50 or empty.
+	> Length for synopsis msg at replies or reactions, (default 50)
+		
+	# LOGLEVEL
+	
+	# HTTPLOGS
+	> Log http requests. (default false)
+	
+	# WHATSMEOW_LOGLEVEL
+	
+	# WHATSMEOW_DBLOGLEVEL
 
 	 
 ### License

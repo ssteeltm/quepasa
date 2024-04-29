@@ -10,7 +10,6 @@ import (
 	models "github.com/nocodeleaks/quepasa/models"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
-	"google.golang.org/protobuf/proto"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -62,8 +61,7 @@ func newRouter() chi.Router {
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
 
-	shouldLog, _ := models.GetEnvBool("HTTPLOGS", proto.Bool(false))
-	if *shouldLog {
+	if models.ENV.HttpLogs() {
 		r.Use(middleware.Logger)
 	}
 

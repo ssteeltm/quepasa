@@ -133,6 +133,7 @@
         "Debugln",
         "ENV_WEBAPIPORT",
         "HISTORYSYNCDAYS",
+        "HTTPLOGS",
         "Infof",
         "READRECEIPTS",
         "READUPDATE",
