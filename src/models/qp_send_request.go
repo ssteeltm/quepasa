@@ -163,9 +163,9 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 			logentry.Debugf("send request, content extension: %s", contentExtension)
 
 			// validating mime information
-			if requestExtension != contentExtension {
+			if !IsValidExtensionFor(requestExtension, contentExtension) {
 				// invalid attachment
-				logentry.Warnf("send request, invalid mime for attachment, request extension: %s != content extension: %s :: content mime: %s, revalidating for security", requestExtension, contentExtension, contentMime)
+				logentry.Warnf("send request, invalid extension for attachment, request extension: %s != content extension: %s :: content mime: %s, revalidating for security", requestExtension, contentExtension, contentMime)
 				attach.Mimetype = contentMime
 				attach.FileName = whatsapp.InvalidFilePrefix + library.GenerateFileNameFromMimeType(contentMime)
 			}
@@ -186,6 +186,15 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 	}
 
 	logentry.Debugf("send request, resolved mime type: %s, filename: %s", attach.Mimetype, attach.FileName)
+}
+
+// used for correct old windows 3 characters extensions
+func IsValidExtensionFor(request string, content string) bool {
+	if request == ".jpg" && content == ".jpeg" {
+		return true
+	}
+
+	return request == content
 }
 
 func IsCompatibleWithPTT(mime string) bool {

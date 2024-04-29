@@ -77,7 +77,7 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 		var ptt *bool
 		if attach.IsValidPTT() {
 			ptt = proto.Bool(true)
-		} else if attach.IsPTTCompatible() { // trick to send audio as ptt, !gambiarra!
+		} else if attach.IsPTTCompatible() { // trick to send audio as ptt, "technical resource"
 			ptt = proto.Bool(true)
 			mimetype = proto.String(whatsapp.WhatsappPTTMime)
 		}
