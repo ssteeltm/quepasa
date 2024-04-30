@@ -194,6 +194,10 @@ func IsValidExtensionFor(request string, content string) bool {
 		return true
 	}
 
+	if request == ".csv" && content == ".txt" {
+		return true
+	}
+
 	return request == content
 }
 
