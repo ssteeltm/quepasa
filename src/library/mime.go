@@ -16,6 +16,7 @@ var MIMEs = map[string]string{
 	"audio/x-wav":     ".wav",
 	"image/jpeg":      ".jpeg",
 	"image/webp":      ".webp",
+	"text/csv":        ".csv",
 	"text/xml":        ".xml",
 	"text/plain":      ".txt",
 	"video/mp4":       ".mp4",
