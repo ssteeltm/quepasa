@@ -35,7 +35,7 @@ func (source WhatsappBooleanExtended) String() string {
 
 func (source WhatsappBooleanExtended) Equals(v WhatsappBoolean) bool {
 	switch source {
-	case ForcedFalseBooleanType | ForcedTrueBooleanType:
+	case ForcedFalseBooleanType, ForcedTrueBooleanType:
 		return false
 	default:
 		return WhatsappBoolean(source) == v

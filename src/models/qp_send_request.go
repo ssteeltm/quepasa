@@ -191,11 +191,12 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 // used for correct old windows 3 characters extensions
 func IsValidExtensionFor(request string, content string) bool {
 	switch {
-	case request == ".jpg" && content == ".jpeg":
-	case request == ".csv" && content == ".txt":
-	case request == ".json" && content == ".txt":
-	case request == ".sql" && content == ".txt":
-	case request == ".svg" && content == ".txt":
+	case
+		request == ".jpg" && content == ".jpeg",
+		request == ".csv" && content == ".txt",
+		request == ".json" && content == ".txt",
+		request == ".sql" && content == ".txt",
+		request == ".svg" && content == ".txt":
 		return true
 	}
 
