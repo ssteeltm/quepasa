@@ -153,7 +153,7 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 
 	if len(contentMime) > 0 {
 
-		if contentMime == "text/xml" && requestExtension == ".svg" {
+		if strings.HasPrefix(contentMime, "text/xml") && requestExtension == ".svg" {
 			contentMime = "image/svg+xml"
 		}
 
