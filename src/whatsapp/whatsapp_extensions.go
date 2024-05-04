@@ -104,15 +104,15 @@ func GetMessageType(attach *WhatsappAttachment) WhatsappMessageType {
 }
 
 // Returns message type by attachment mime information
-func GetMessageTypeFromMIME(Mimetype string) WhatsappMessageType {
+func GetMessageTypeFromMIME(mime string) WhatsappMessageType {
 
 	// should force to send as document ?
-	if strings.Contains(Mimetype, "wa-document") {
+	if strings.Contains(mime, "wa-document") {
 		return DocumentMessageType
 	}
 
 	// switch for basic mime type, ignoring suffix
-	mimeOnly := strings.Split(Mimetype, ";")[0]
+	mimeOnly := strings.Split(mime, ";")[0]
 
 	for _, item := range WhatsappMIMEAudio {
 		if item == mimeOnly {
@@ -138,6 +138,6 @@ func GetMessageTypeFromMIME(Mimetype string) WhatsappMessageType {
 		}
 	}
 
-	log.Debugf("whatsapp extensions default, full mime: (" + Mimetype + ") extract mime: " + mimeOnly)
+	log.Debugf("whatsapp extensions default, full mime: (" + mime + ") extract mime: " + mimeOnly)
 	return DocumentMessageType
 }

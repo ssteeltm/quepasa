@@ -153,6 +153,10 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 
 	if len(contentMime) > 0 {
 
+		if contentMime == "text/xml" && requestExtension == ".svg" {
+			contentMime = "image/svg+xml"
+		}
+
 		if len(attach.Mimetype) == 0 {
 			attach.Mimetype = contentMime
 			logentry.Debugf("send request, updating empty mime type from content: %s", contentMime)
@@ -188,15 +192,14 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 	logentry.Debugf("send request, resolved mime type: %s, filename: %s", attach.Mimetype, attach.FileName)
 }
 
-// used for correct old windows 3 characters extensions
 func IsValidExtensionFor(request string, content string) bool {
 	switch {
 	case
-		request == ".jpg" && content == ".jpeg",
+		request == ".jpg" && content == ".jpeg", // used for correct old windows 3 characters extensions
 		request == ".csv" && content == ".txt",
 		request == ".json" && content == ".txt",
 		request == ".sql" && content == ".txt",
-		request == ".svg" && content == ".txt":
+		request == ".svg" && content == ".xml":
 		return true
 	}
 
