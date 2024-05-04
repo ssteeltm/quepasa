@@ -157,7 +157,7 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 			contentMime = "image/svg+xml"
 		}
 
-		if len(attach.Mimetype) == 0 {
+		if IsUnsetOrGenericMIME(attach.Mimetype) {
 			attach.Mimetype = contentMime
 			logentry.Debugf("send request, updating empty mime type from content: %s", contentMime)
 		}
@@ -204,6 +204,18 @@ func IsValidExtensionFor(request string, content string) bool {
 	}
 
 	return request == content
+}
+
+func IsUnsetOrGenericMIME(mime string) bool {
+	if len(mime) == 0 {
+		return true
+	}
+
+	if mime == "application/octet-stream" {
+		return true
+	}
+
+	return false
 }
 
 func IsCompatibleWithPTT(mime string) bool {
