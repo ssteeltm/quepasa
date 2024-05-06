@@ -213,7 +213,9 @@ func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 func HandleDocumentMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.DocumentMessage) {
 	log.Debug("Received a document message !")
 	out.Type = whatsapp.DocumentMessageType
-	out.Text = in.GetTitle()
+
+	// in case of caption passed
+	out.Text = in.GetCaption()
 
 	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
@@ -284,6 +286,8 @@ func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 func HandleLiveLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.LiveLocationMessage) {
 	log.Debug("Received a Live Location message !")
 	out.Type = whatsapp.LocationMessageType
+
+	// in case of caption passed
 	out.Text = in.GetCaption()
 
 	// in a near future, create a environment variable for that
