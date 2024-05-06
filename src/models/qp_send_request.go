@@ -199,6 +199,7 @@ func IsValidExtensionFor(request string, content string) bool {
 		request == ".csv" && content == ".txt",
 		request == ".json" && content == ".txt",
 		request == ".sql" && content == ".txt",
+		request == ".ovpn" && content == ".txt",
 		request == ".svg" && content == ".xml":
 		return true
 	}
