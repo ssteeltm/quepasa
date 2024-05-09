@@ -14,9 +14,6 @@ import (
 
 func InformationController(w http.ResponseWriter, r *http.Request) {
 
-	// setting default response type as json
-	w.Header().Set("Content-Type", "application/json")
-
 	switch r.Method {
 	case http.MethodPatch:
 		InformationPatchRequest(w, r)
