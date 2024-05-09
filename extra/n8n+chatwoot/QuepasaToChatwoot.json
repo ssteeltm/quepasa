@@ -796,7 +796,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.13) Updates\n* extra parameter soc\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.14) Updates\n* custom content for revoked msgs\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
         "width": 398.97654103837476
       },
@@ -1124,7 +1124,7 @@
         "allowUnauthorizedCerts": true,
         "jsonParameters": true,
         "options": {},
-        "bodyParametersJson": "={\n   \"private\": false,\n   \"content\": \"❌ Essa mensagem foi apagada !\",\n   \"message_type\": 2,\n   \"content_attributes\": {      \n      \"in_reply_to\": {{ +$json.revoked.id }},\n      \"in_reply_to_external_id\": \"{{ $json.body.id }}\"\n   },\n   \"content_type\": \"text\"\n}",
+        "bodyParametersJson": "={\n   \"private\": false,\n   \"content\": \"{{ $env['C8Q_MSGFOR_REVOKED'] ?? '\\u274C Essa mensagem foi apagada !!!' }}\",\n   \"message_type\": 2,\n   \"content_attributes\": {      \n      \"in_reply_to\": {{ +$json.revoked.id }},\n      \"in_reply_to_external_id\": \"{{ $json.body.id }}\"\n   },\n   \"content_type\": \"text\"\n}",
         "headerParametersJson": "={ \"api_access_token\": \"{{ $json.body.extra.atoken }}\" }"
       },
       "name": "Send Revoked Message",
@@ -2195,7 +2195,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "2c97dfdb-5f5b-4452-a1dd-16bfa452169c",
+  "versionId": "6ba2bcb1-332d-4fb1-8fed-bbe92670bb09",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

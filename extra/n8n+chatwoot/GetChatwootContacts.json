@@ -115,6 +115,10 @@
             {
               "name": "fromme",
               "value": "={{$json.body.fromme}}"
+            },
+            {
+              "name": "edited",
+              "value": "={{$json.body.edited}}"
             }
           ]
         },
@@ -400,7 +404,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.10) Updates\n* type number to text\n\n## Recommendations \n* Remember set timeout to 20 seconds",
+        "content": "## (1.0.11) Updates\n* missing edited parameter\n\n## Recommendations \n* Remember set timeout to 20 seconds",
         "height": 201.45401153644474,
         "width": 467.54452018877896
       },
@@ -1023,7 +1027,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "de135da2-ba1e-4971-91d6-3b578101d46b",
+  "versionId": "d59193ff-903a-4de3-8570-0460bc110e27",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

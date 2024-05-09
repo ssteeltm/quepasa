@@ -139,27 +139,6 @@
     },
     {
       "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "payload.content",
-              "value": "! \"Algum EMOJI\" | \"Alguma Reação que o sistema não entende ainda ..\""
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "d4a3eabf-64cb-440b-9726-dc95bea29f97",
-      "name": "Set Custom Content",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [
-        -1420,
-        1060
-      ]
-    },
-    {
-      "parameters": {
         "content": "## Fail Retry \nImportant to retry on fail because if you are using any external storage, it will try to save at this time.\nSo you need to ensure success ...",
         "height": 347.0509255000625,
         "width": 258.1602840291324
@@ -169,8 +148,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2120,
-        1380
+        2340,
+        1400
       ]
     },
     {
@@ -204,7 +183,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.15) Updates\n* issue at msg with attachment and empty content\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "content": "## (1.0.16) Updates\n* environment variables for custom contents\n\n## Recommendations \n* Remember set timeout to 10 seconds",
         "height": 189.357048321488,
         "width": 489.8474320052134
       },
@@ -666,27 +645,6 @@
     },
     {
       "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "payload.content",
-              "value": "=**Localização:** \n{{ $json.attachment.url }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "33c5378a-afa4-470e-840b-f59ea84e3855",
-      "name": "Override Default Content",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [
-        980,
-        1500
-      ]
-    },
-    {
-      "parameters": {
         "conditions": {
           "string": [
             {
@@ -792,7 +750,7 @@
           "string": [
             {
               "name": "payload.content",
-              "value": "=⚠️ ***Essa mensagem foi editada !***\n -------------------------------------\n{{ $json.payload.content }}"
+              "value": "={{ $env['C8Q_MSGFOR_EDITED_CONTENT'] ?? '\\u26A0\\uFE0F ***Essa mensagem foi editada !***' }}\n\n-------------------------------------\n{{ $json.payload.content }}"
             },
             {
               "name": "payload.content_attributes.in_reply_to_external_id",
@@ -920,19 +878,61 @@
           "string": [
             {
               "name": "payload.content",
-              "value": "= ** Falha ao baixar anexo ! :: => {{ $json[\"attachment\"][\"filename\"] }}\n------------------------\nerror: {{ $json.error }}"
+              "value": "={{ $env['C8Q_MSGFOR_UNKNOWN_CONTENT'] ?? '! \"Algum EMOJI\" | \"Alguma Reação que o sistema não entende ainda ..\"' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d4a3eabf-64cb-440b-9726-dc95bea29f97",
+      "name": "Set Unknown Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -1420,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "payload.content",
+              "value": "={{ $env['C8Q_MSGFOR_ATTACHERROR_CONTENT'] ?? '** Falha ao baixar anexo !' }}\n\n-------------------------------------\nfilename: {{ $json[\"attachment\"][\"filename\"] }}\nerror: {{ $json.error }}"
             }
           ]
         },
         "options": {}
       },
       "id": "b71393b4-a75d-45e5-ac16-168db47123cc",
-      "name": "(In) Prepend error on content",
+      "name": "(In) Prepend Attach Error Content",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
         -860,
         700
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "payload.content",
+              "value": "= {{ $env['C8Q_MSGFOR_LOCALIZATION_CONTENT'] ?? '** Localização **' }}\n\n-------------------------------------\n{{ $json.attachment.url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "33c5378a-afa4-470e-840b-f59ea84e3855",
+      "name": "Override Localization Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        980,
+        1500
       ]
     }
   ],
@@ -1038,7 +1038,7 @@
       "main": [
         [
           {
-            "node": "(In) Prepend error on content",
+            "node": "(In) Prepend Attach Error Content",
             "type": "main",
             "index": 0
           }
@@ -1046,17 +1046,6 @@
         [
           {
             "node": "(In) Text Message Following With Attachment",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set Custom Content": {
-      "main": [
-        [
-          {
-            "node": "No Operation, do nothing5",
             "type": "main",
             "index": 0
           }
@@ -1184,7 +1173,7 @@
       "main": [
         [
           {
-            "node": "Override Default Content",
+            "node": "Override Localization Content",
             "type": "main",
             "index": 0
           }
@@ -1335,17 +1324,6 @@
           },
           {
             "node": "Post Incoming Message Without Attachment",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Override Default Content": {
-      "main": [
-        [
-          {
-            "node": "If Has Thumbnail",
             "type": "main",
             "index": 0
           }
@@ -1503,7 +1481,7 @@
         ],
         [
           {
-            "node": "Set Custom Content",
+            "node": "Set Unknown Content",
             "type": "main",
             "index": 0
           }
@@ -1521,11 +1499,33 @@
         ]
       ]
     },
-    "(In) Prepend error on content": {
+    "Set Unknown Content": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "(In) Prepend Attach Error Content": {
       "main": [
         [
           {
             "node": "(In) Text Message Following With Attachment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Override Localization Content": {
+      "main": [
+        [
+          {
+            "node": "If Has Thumbnail",
             "type": "main",
             "index": 0
           }
@@ -1539,7 +1539,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "51b207b3-3ebb-4291-b0c7-b88ed0ef22b4",
+  "versionId": "6e864ec7-471b-4449-ba1b-c81431bce1d1",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
