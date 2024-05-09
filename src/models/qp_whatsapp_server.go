@@ -670,6 +670,9 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 		}
 	}
 
+	/* // obsolete, whatsapp now accepts documents with captions
+
+	// missing message id, must generate a new one if it already exists
 	if msg.HasAttachment() {
 		if len(msg.Text) > 0 {
 
@@ -691,6 +694,7 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 			}
 		}
 	}
+	*/
 
 	// sending default msg
 	response, err = source.connection.Send(msg)
