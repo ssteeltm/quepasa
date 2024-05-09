@@ -176,7 +176,7 @@ func ReceiveAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 // Usado para envio de documentos, anexos, separados do texto, em caso de imagem, aceita um caption (titulo)
 func SendDocumentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 
-	// setting default reponse type as json
+	// setting default response type as json
 	w.Header().Set("Content-Type", "application/json")
 
 	server, err := GetServerRespondOnError(w, r)
@@ -253,7 +253,7 @@ func AttachmentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	token := chi.URLParam(r, "token")
 	server, err := models.GetServerFromToken(token)
 	if err != nil {
-		RespondNoContent(w, fmt.Errorf("Token '%s' not found", token))
+		RespondNoContentV2(w, fmt.Errorf("token '%s' not found", token))
 		return
 	}
 

@@ -24,7 +24,7 @@ func GetServerRespondOnError(w http.ResponseWriter, r *http.Request) (server *mo
 	token := GetToken(r)
 	server, err = models.GetServerFromToken(token)
 	if err != nil {
-		RespondNoContent(w, fmt.Errorf("token '%s' not found", token))
+		RespondNoContentV2(w, fmt.Errorf("token '%s' not found", token))
 	}
 	return
 }

@@ -23,9 +23,14 @@ func RespondUnauthorized(w http.ResponseWriter, err error) {
 	RespondErrorCode(w, err, http.StatusUnauthorized)
 }
 
-func RespondNoContent(w http.ResponseWriter, err error) {
+func RespondNoContentV2(w http.ResponseWriter, err error) {
 	log.Debugf("Request Not found: %s", err.Error())
 	RespondErrorCode(w, err, http.StatusNoContent)
+}
+
+func RespondNoContent(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNoContent)
+	w.Header().Del("Content-Type")
 }
 
 // / Usado para avisar que o bot ainda não esta pronto

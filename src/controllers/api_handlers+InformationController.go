@@ -179,8 +179,7 @@ func InformationDeleteRequest(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 
 		if err == models.ErrServerNotFound {
-			response.ParseSuccess(err.Error())
-			RespondInterfaceCode(w, response, http.StatusNoContent)
+			RespondNoContent(w)
 			return
 		}
 
