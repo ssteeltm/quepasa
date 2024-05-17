@@ -143,7 +143,8 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 
 	var requestExtension string
 	if len(attach.FileName) > 0 {
-		requestExtension = filepath.Ext(attach.FileName)
+		fileNameNormalized := strings.ToLower(attach.FileName) // important, because some bitches do capitalize filenames
+		requestExtension = filepath.Ext(fileNameNormalized)
 		logentry.Debugf("send request, detected extension from filename: %s", requestExtension)
 
 	} else if len(attach.Mimetype) > 0 {
