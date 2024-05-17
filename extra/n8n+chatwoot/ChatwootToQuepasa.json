@@ -47,8 +47,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        -6660,
-        4720
+        -7020,
+        4560
       ],
       "id": "9408cd82-3cf7-4fe8-803e-e93735010fea"
     },
@@ -92,7 +92,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -7300,
+        -7440,
         4480
       ],
       "id": "40fc262f-801b-47e1-86a2-e00238b118ae"
@@ -147,13 +147,17 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{$json[\"body\"][\"message_type\"]}}",
+              "value1": "={{$json.body.message_type}}",
               "value2": "outgoing"
+            },
+            {
+              "value1": "={{$json.body.message_type}}",
+              "value2": "template"
             }
           ],
           "number": [
             {
-              "value1": "={{$json[\"body\"][\"message_type\"]}}",
+              "value1": "={{$json.body.message_type}}",
               "operation": "equal",
               "value2": 1
             }
@@ -165,7 +169,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -6920,
+        -7220,
         4480
       ],
       "id": "75151ce2-90c4-4f05-93ca-740bfddca4f6"
@@ -546,21 +550,6 @@
     },
     {
       "parameters": {
-        "mode": "combine",
-        "combinationMode": "multiplex",
-        "options": {}
-      },
-      "id": "52a2d67e-6e53-4186-aa4c-61a9897d4268",
-      "name": "Merge",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 2,
-      "position": [
-        -5040,
-        5140
-      ]
-    },
-    {
-      "parameters": {
         "conditions": {
           "boolean": [
             {
@@ -660,7 +649,7 @@
       "parameters": {
         "content": "## POST RESOLVED MESSAGE\n* to disable, remove that link",
         "height": 461.0344273293615,
-        "width": 3095.2003130765215
+        "width": 2847.0653208940353
       },
       "id": "225c8c85-a64f-4d4b-808c-75d3da5089f9",
       "name": "Sticky Note1",
@@ -670,27 +659,6 @@
         -7580,
         5000
       ]
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "=SELECT uuid FROM conversations WHERE account_id = {{ $json.extra.account }} and display_id = {{ $json.body.id }};",
-        "additionalFields": {}
-      },
-      "id": "5e93387a-b8cf-4de5-8829-c4f1c0864969",
-      "name": "Getting UUID",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 1,
-      "position": [
-        -5220,
-        5060
-      ],
-      "credentials": {
-        "postgres": {
-          "id": "1",
-          "name": "Postgres account"
-        }
-      }
     },
     {
       "parameters": {},
@@ -734,8 +702,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -4660,
-        5120
+        -4960,
+        5200
       ]
     },
     {
@@ -751,7 +719,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const response = [];\nfor (const item of $input.all()) {\n  const body = item.json.body;\n  if (body) {     \n    \n    // obsolete, marked for remove, 2024/04/25\n    const token = item.json.extra.token;\n\n    // default extra content\n    const extra = item.json.extra;\n\n    let chatId = body.conversation.meta?.sender?.identifier;    \n    if (!chatId)\n    {\n      chatId = body.conversation.meta?.sender?.custom_attributes?.quepasa;\n      if (!chatId) {\n        chatId = body.conversation.meta?.sender?.phone_number;\n      }\n    }\n\n    // for each message, *not common to be more than one\n    for (const message of body.conversation.messages) \n    {  \n      const payload = {};\n      payload.chatid = chatId;\n      payload.inreply = message.content_attributes?.in_reply_to_external_id;\n      payload.conversationid = body.conversation.id ?? message.conversation_id;\n      \n      // obsolete, marked for remove, 2024/04/25\n      payload.token = token;\n\n      // -------------------------------------\n      \n      if (message.content_type === 'integrations' && message.content_attributes?.type === 'dyte')      \n        message.content += '\\r\\n *** https://app.dyte.in/meeting/stage/' + message.content_attributes?.data.room_name;      \n\n      // leading with \\ at SHIFT+ENTER\n      if (message.content)       \n      {\n        message.content = message.content.replace(/\\n\\\\/g,\"\\n\").replace(/ \\\\/g,\"\");\n        payload.content = message.content; \n      }\n      \n      // should create an extra message for caption ?\n      const textmsg = (!message.attachments) || (message.attachments.length > 1);\n            \n      if (message.content && textmsg) {                \n        payload.messageid = `${message.id}`; // ensure as string \n                \n        const sender = message.sender?.available_name || message.sender?.name || 'Auto Atendimento';\n        \n        const customs = body.conversation.meta?.sender?.custom_attributes;\n        const pat = !((customs?.hasOwnProperty('skipagenttitle') ?? false) && (customs?.skipagenttitle ?? false));\n\n        if (pat) payload.sender = sender;\n\n        // appending to response as new item\n        response.push({ payload: { ...payload }, extra: extra });\n        payload.content = undefined;\n      }\n\n      if (message.attachments) {\n        let counter = 0;\n        for (const attach of message.attachments) \n        {\n          // fixed payload counter for multiples attachs, 2024/05/06\n          const attachmentPayload = { ...payload }; // Criando uma nova instância de payload\n          attachmentPayload.messageid = `${message.id}-a${counter++}`; // ensure as string, adding an attach counter          \n          attachmentPayload.attachment = attach.data_url;\n          \n          // appending to response as new item\n          response.push({ payload: attachmentPayload, extra: extra });                   \n        }\n      }  \n    }\n  }\n}\n\nreturn response;"
+        "jsCode": "const response = [];\nfor (const item of $input.all()) {\n  const body = item.json.body;\n  if (body) {     \n    \n    // obsolete, marked for remove, 2024/04/25\n    const token = item.json.extra.token;\n\n    // default extra content\n    const extra = item.json.extra;\n\n    let chatId = body.conversation.meta?.sender?.identifier;    \n    if (!chatId)\n    {\n      chatId = body.conversation.meta?.sender?.custom_attributes?.quepasa;\n      if (!chatId) {\n        chatId = body.conversation.meta?.sender?.phone_number;\n      }\n    }\n\n    // for each message, *not common to be more than one\n    for (const message of body.conversation.messages) \n    {  \n      const payload = {};\n      payload.chatid = chatId;\n      payload.inreply = message.content_attributes?.in_reply_to_external_id;\n      payload.conversationid = body.conversation.id ?? message.conversation_id;\n      \n      // obsolete, marked for remove, 2024/04/25\n      payload.token = token;\n\n      // -------------------------------------\n      \n      if (message.content_type === 'integrations' && message.content_attributes?.type === 'dyte')      \n        message.content += '\\r\\n *** https://app.dyte.in/meeting/stage/' + message.content_attributes?.data.room_name;      \n\n      // leading with \\ at SHIFT+ENTER\n      if (message.content)       \n      {\n        message.content = message.content.replace(/\\n\\\\/g,\"\\n\").replace(/ \\\\/g,\"\");\n        payload.content = message.content; \n      }\n      \n      // should create an extra message for caption ?\n      const textmsg = (!message.attachments) || (message.attachments.length > 1);\n            \n      if (message.content && textmsg) {                \n        payload.messageid = `${message.id}`; // ensure as string \n                \n        const sender = message.sender?.available_name || message.sender?.name || $env['C8Q_UNKNOWN_SENDER'] || 'Auto Atendimento';\n        \n        const customs = body.conversation.meta?.sender?.custom_attributes;\n        const pat = !((customs?.hasOwnProperty('skipagenttitle') ?? false) && (customs?.skipagenttitle ?? false));\n\n        if (pat) payload.sender = sender;\n\n        // appending to response as new item\n        response.push({ payload: { ...payload }, extra: extra });\n        payload.content = undefined;\n      }\n\n      if (message.attachments) {\n        let counter = 0;\n        for (const attach of message.attachments) \n        {\n          // fixed payload counter for multiples attachs, 2024/05/06\n          const attachmentPayload = { ...payload }; // Criando uma nova instância de payload\n          attachmentPayload.messageid = `${message.id}-a${counter++}`; // ensure as string, adding an attach counter          \n          attachmentPayload.attachment = attach.data_url;\n          \n          // appending to response as new item\n          response.push({ payload: attachmentPayload, extra: extra });                   \n        }\n      }  \n    }\n  }\n}\n\nreturn response;"
       },
       "id": "21f4f961-7d92-4882-a375-bbdda1a83f37",
       "name": "Payload",
@@ -816,9 +784,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -4860,
-        5040
-      ]
+        -5180,
+        5020
+      ],
+      "disabled": true
     },
     {
       "parameters": {
@@ -856,7 +825,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -4860,
+        -5180,
         5200
       ]
     },
@@ -949,7 +918,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.27) Updates\n* adjust payload for attachs and text msgs\n* attach filename decode\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.28) Updates\n* support for template msgs\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 184.30667672289223,
         "width": 457.17616077915915
       },
@@ -1196,13 +1165,17 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{$json[\"body\"][\"message_type\"]}}",
+              "value1": "={{$json.body.message_type}}",
               "value2": "outgoing"
+            },
+            {
+              "value1": "={{$json.body.message_type}}",
+              "value2": "template"
             }
           ],
           "number": [
             {
-              "value1": "={{$json[\"body\"][\"message_type\"]}}",
+              "value1": "={{$json.body.message_type}}",
               "operation": "equal",
               "value2": 1
             }
@@ -1509,6 +1482,215 @@
         4800
       ],
       "webhookId": "4be09e3c-13a7-48f9-b649-d5942ef6e1e7"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "f1cd8b50-3f69-46af-8fc2-d843edaa499e",
+              "leftValue": "={{$json.body.message_type}}",
+              "rightValue": "=template",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ae855261-fb38-42af-a33a-de76ea51df14",
+      "name": "If Template",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -7020,
+        4400
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.content_type }}",
+                    "rightValue": "input_csat",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "csat"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "id": "12cf0100-d8a8-402c-8611-d053e3be3724",
+                    "leftValue": "={{ $json.body.conversation.status }}",
+                    "rightValue": "=open",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "greetings"
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true,
+          "looseTypeValidation": true
+        }
+      },
+      "id": "672c9fe2-4966-4609-b9b7-b52de2d33c3d",
+      "name": "Switch Template",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        -6880,
+        4160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "7734413d-6030-41a3-8105-ffd84050bddb",
+              "leftValue": "={{ $json.body?.conversation?.meta?.sender?.custom_attributes?.skipevaluation }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "d50d06c3-22c6-4443-a7cc-a3d501569f9c",
+              "leftValue": "={{ $json.body?.conversation?.custom_attributes?.skipevaluation }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "a3e31ad1-fe49-4958-9641-3714f0701122",
+      "name": "Skip Evaluation",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -6680,
+        4080
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "166140fa-1409-40d5-ac5e-41e774a81ffd",
+              "leftValue": "={{ $json.body?.conversation?.meta?.sender?.custom_attributes?.skipgreetings }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "27153f52-beb0-44f3-8e98-34c11fadbf98",
+      "name": "Skip Greetings",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -6680,
+        4220
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "31e8f5f8-8464-4dd2-a6ae-07c4b2510bcc",
+      "name": "No Operation, do nothing4",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -6140,
+        4160
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c7c65a3a-c4ff-4f18-bee8-4316727360e4",
+              "name": "body.conversation.messages[0].content",
+              "value": "=*{{$json.body.conversation.meta.sender.name}}* seu atendimento de Ticket de nº *{{ $json.body.id }}* foi finalizado ! Caso tenha alguma dúvida só enviar uma nova mensagem !\n\nAproveite e avalie nosso atendimento. Sua opinião é muito importante para nós e nos ajudará a identificar áreas de melhorias a fim de continuar oferecendo um serviço de qualidade. 😎\n\nAvalie meu atendimento !\n{{ ($json.extra.cwpublic ?? $env[\"C8Q_CW_PUBLIC_URL\"] ?? $json.extra.cwhost).trimEnd('/') }}/survey/responses/{{$json.body.content.split('/').at(-1)}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "1de438cc-d595-4968-8bc8-a03b9671b0eb",
+      "name": "Custom Evaluation Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        -6460,
+        4100
+      ]
     }
   ],
   "pinData": {},
@@ -1568,7 +1750,7 @@
       "main": [
         [
           {
-            "node": "Is Public ?",
+            "node": "If Template",
             "type": "main",
             "index": 0
           }
@@ -1778,31 +1960,9 @@
         ]
       ]
     },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Payload With CSAT",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Use CSAT ?": {
       "main": [
-        [
-          {
-            "node": "Getting UUID",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ],
+        [],
         [
           {
             "node": "Payload Without CSAT",
@@ -1850,17 +2010,6 @@
         [
           {
             "node": "Ensure ChatId From Custom|Email|Source|Phone",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Getting UUID": {
-      "main": [
-        [
-          {
-            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -1922,17 +2071,6 @@
         [
           {
             "node": "Text Message ?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Payload With CSAT": {
-      "main": [
-        [
-          {
-            "node": "Evaluation Message Payload Ready To Quepasa",
             "type": "main",
             "index": 0
           }
@@ -2319,6 +2457,88 @@
           }
         ]
       ]
+    },
+    "If Template": {
+      "main": [
+        [
+          {
+            "node": "Switch Template",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Public ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Template": {
+      "main": [
+        [
+          {
+            "node": "Skip Evaluation",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip Greetings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip Evaluation": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Custom Evaluation Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip Greetings": {
+      "main": [
+        [],
+        [
+          {
+            "node": "No Operation, do nothing4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing4": {
+      "main": [
+        [
+          {
+            "node": "Is Public ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Custom Evaluation Content": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -2328,7 +2548,7 @@
     "executionTimeout": 50,
     "executionOrder": "v1"
   },
-  "versionId": "d53c6130-6ae4-44ae-9afc-49c6eb4d1072",
+  "versionId": "43c4377e-a4ba-4b13-b473-00949a1e78b0",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

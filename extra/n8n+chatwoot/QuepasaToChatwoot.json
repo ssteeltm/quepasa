@@ -36,8 +36,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        11120,
-        -440
+        11060,
+        -480
       ],
       "id": "f298b95a-045a-437e-a369-38a671315924",
       "retryOnFail": true,
@@ -64,8 +64,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        11360,
-        -440
+        11260,
+        -480
       ],
       "id": "fc98c588-e5f5-41d7-bf7b-faaba57ec8ca"
     },
@@ -96,7 +96,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        12160,
+        12380,
         -460
       ],
       "id": "5adac819-e66b-4a2a-b4c9-5e6a3e9234b6"
@@ -188,53 +188,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "boolean": [
-            {
-              "value1": "={{$json.fromme == true}}"
-            }
-          ]
-        }
-      },
-      "id": "98c812e5-19e9-45b1-a56e-202abbbd7656",
-      "name": "Should Send Greetings ?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        11220,
-        -823.2107318854523
-      ]
-    },
-    {
-      "parameters": {
-        "workflowId": "={{ $env['C8Q_CHATWOOTTOQUEPASAGREETINGS'] ?? 1007 }}",
-        "options": {}
-      },
-      "id": "1f5c22d9-579c-4085-adf2-fe12dd8ced4e",
-      "name": "Throw To Greetings Workflow",
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1,
-      "position": [
-        11680,
-        -823.2107318854523
-      ],
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
-        "mode": "chooseBranch"
-      },
-      "id": "eb5a4300-16af-4188-b699-14e61f23b14d",
-      "name": "Wait For Create a Conversation",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 2,
-      "position": [
-        11460,
-        -823.2107318854523
-      ]
-    },
-    {
-      "parameters": {
         "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}",
         "options": {}
       },
@@ -243,7 +196,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        15320,
+        15540,
         -480
       ],
       "continueOnFail": true
@@ -315,17 +268,6 @@
       ]
     },
     {
-      "parameters": {},
-      "id": "7d25c068-a8c6-497c-83bc-10025662b1f0",
-      "name": "NoOp - Opening Conversation1",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        10900,
-        -440
-      ]
-    },
-    {
       "parameters": {
         "mode": "combine",
         "combinationMode": "multiplex",
@@ -336,8 +278,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        11580,
-        -320
+        11460,
+        -400
       ]
     },
     {
@@ -347,7 +289,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        12800,
+        13020,
         -240
       ]
     },
@@ -362,7 +304,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        12540,
+        12760,
         -380
       ]
     },
@@ -383,7 +325,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        12340,
+        12560,
         -480
       ],
       "id": "35e494cc-41a3-4d0c-97aa-b77cc2f37768"
@@ -404,7 +346,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        15520,
+        15740,
         -240
       ],
       "id": "929eb1c5-5a57-4603-867f-860e15de3cdb"
@@ -419,7 +361,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        15720,
+        15940,
         -240
       ],
       "alwaysOutputData": true,
@@ -464,7 +406,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        13020,
+        13240,
         -243.21073188545233
       ]
     },
@@ -491,7 +433,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        13900,
+        14120,
         -440
       ]
     },
@@ -505,7 +447,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        13480,
+        13700,
         -520
       ],
       "executeOnce": true,
@@ -652,7 +594,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        15320,
+        15540,
         -240
       ],
       "id": "a5b6fc06-5c43-4269-b324-eead5bf58486"
@@ -796,9 +738,9 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.14) Updates\n* custom content for revoked and call msgs\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.15) Updates\n* removed throw greetings, moved to ChatwootToQuepasa\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
-        "width": 398.97654103837476
+        "width": 569.6036185132486
       },
       "id": "97661b0f-d79b-4d77-bb42-c99a3e1c4f1a",
       "name": "Sticky Note",
@@ -847,7 +789,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        15040,
+        15260,
         -360
       ]
     },
@@ -867,7 +809,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        13280,
+        13500,
         -83.21073188545233
       ]
     },
@@ -878,7 +820,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        14800,
+        15020,
         -363.21073188545233
       ]
     },
@@ -893,7 +835,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.3,
       "position": [
-        13680,
+        13900,
         156.78926811454767
       ],
       "alwaysOutputData": true,
@@ -915,7 +857,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        13920,
+        14140,
         -43.21073188545233
       ]
     },
@@ -940,7 +882,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        14300,
+        14520,
         -23.210731885452333
       ]
     },
@@ -961,7 +903,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        13480,
+        13700,
         36.78926811454767
       ]
     },
@@ -982,7 +924,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        13680,
+        13900,
         16.789268114547667
       ]
     },
@@ -1002,7 +944,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        14100,
+        14320,
         -43.21073188545233
       ]
     },
@@ -1299,7 +1241,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        13280,
+        13500,
         -420
       ]
     },
@@ -1314,7 +1256,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        13680,
+        13900,
         -440
       ]
     },
@@ -1346,7 +1288,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        11780,
+        11800,
         -260
       ]
     },
@@ -1392,8 +1334,19 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        11980,
+        12200,
         -360
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "2980aa6f-8654-498e-a15c-5bc413376c8c",
+      "name": "No Operation, do nothing1",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        10860,
+        -380
       ]
     }
   ],
@@ -1406,11 +1359,6 @@
             "node": "Set",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Wait For Create a Conversation",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
@@ -1466,28 +1414,6 @@
         ]
       ]
     },
-    "Should Send Greetings ?": {
-      "main": [
-        [
-          {
-            "node": "Wait For Create a Conversation",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wait For Create a Conversation": {
-      "main": [
-        [
-          {
-            "node": "Throw To Greetings Workflow",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Set Filter Conversation Parameters": {
       "main": [
         [
@@ -1504,22 +1430,6 @@
         [
           {
             "node": "Should Create a New Conversation Thread ?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "NoOp - Opening Conversation1": {
-      "main": [
-        [
-          {
-            "node": "Create a Conversation",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Should Send Greetings ?",
             "type": "main",
             "index": 0
           }
@@ -1687,14 +1597,9 @@
       "main": [
         [
           {
-            "node": "NoOp - Opening Conversation1",
+            "node": "No Operation, do nothing1",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Wait For Create a Conversation1",
-            "type": "main",
-            "index": 1
           }
         ],
         [
@@ -2186,6 +2091,22 @@
           }
         ]
       ]
+    },
+    "No Operation, do nothing1": {
+      "main": [
+        [
+          {
+            "node": "Create a Conversation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait For Create a Conversation1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -2195,7 +2116,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "55026dd1-4cd6-4f4d-b638-4f9156cb26e6",
+  "versionId": "d74e7edf-6db8-443a-89e2-8e04df77ae25",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
