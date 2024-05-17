@@ -145,11 +145,14 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 	if len(attach.FileName) > 0 {
 		fileNameNormalized := strings.ToLower(attach.FileName) // important, because some bitches do capitalize filenames
 		requestExtension = filepath.Ext(fileNameNormalized)
-		logentry.Debugf("send request, detected extension from filename: %s", requestExtension)
+		logentry.Debugf("send request, detected extension: %s, from filename: %s", requestExtension, attach.FileName)
 
 	} else if len(attach.Mimetype) > 0 {
 		requestExtension, _ = library.TryGetExtensionFromMimeType(attach.Mimetype)
-		logentry.Debugf("send request, detected extension from mime type: %s", requestExtension)
+		logentry.Debugf("send request, detected extension from request mime type: %s", requestExtension)
+	} else if len(contentMime) > 0 {
+		requestExtension, _ = library.TryGetExtensionFromMimeType(contentMime)
+		logentry.Debugf("send request, detected extension from content mime type: %s", requestExtension)
 	}
 
 	if len(contentMime) > 0 {

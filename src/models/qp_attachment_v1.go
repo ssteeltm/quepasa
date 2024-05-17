@@ -15,7 +15,7 @@ type QPAttachmentV1 struct {
 	FileName    string `json:"filename,omitempty"`
 }
 
-// Traz o MediaKey em []byte apatir de base64
+// Traz o MediaKey em []byte apartir de base64
 func (source *QPAttachmentV1) MediaKey() ([]byte, error) {
 	return base64.StdEncoding.DecodeString(source.B64MediaKey)
 }
