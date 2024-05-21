@@ -711,6 +711,9 @@ func (source *QpWhatsappServer) GetProfilePicture(wid string, knowingId string) 
 	logger := source.GetLogger()
 	logger.Debugf("getting info about profile picture for: %s, with id: %s", wid, knowingId)
 
+	// future implement a rate control here, high volume of requests causing bans
+	// studying rates ...
+
 	return source.connection.GetProfilePicture(wid, knowingId)
 }
 

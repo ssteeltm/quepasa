@@ -8,11 +8,11 @@ import (
 	models "github.com/nocodeleaks/quepasa/models"
 )
 
-//region CONTROLLER - INIVITE
+//region CONTROLLER - INVITE
 
 func InviteController(w http.ResponseWriter, r *http.Request) {
 
-	// setting default reponse type as json
+	// setting default response type as json
 	w.Header().Set("Content-Type", "application/json")
 
 	response := &models.QpInviteResponse{}
@@ -33,7 +33,7 @@ func InviteController(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !strings.HasSuffix(chatId, "@g.us") {
-		err = fmt.Errorf("chatId must be a valid and formated (@g.us) group id")
+		err = fmt.Errorf("chatId must be a valid and formatted (@g.us) group id")
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
