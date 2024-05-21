@@ -151,7 +151,7 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{$json.payload?.id}}",
+              "value1": "={{$json.chat?.chatwoot?.id}}",
               "operation": "isNotEmpty"
             }
           ]
@@ -249,19 +249,11 @@
               "value": "={{$json.chat.hex}}"
             },
             {
-              "name": "chat.chatwoot.skipgreetings",
-              "value": "={{ $json.payload.custom_attributes?.skipgreetings ?? false }}"
-            },
-            {
               "name": "payload",
               "value": "={{ undefined }}"
             }
           ],
           "number": [
-            {
-              "name": "chat.chatwoot.id",
-              "value": "={{$json.payload.id}}"
-            },
             {
               "name": "attempts",
               "value": "={{ undefined }}"
@@ -370,14 +362,22 @@
         "values": {
           "number": [
             {
-              "name": "payload.id",
+              "name": "chat.chatwoot.id",
               "value": "={{ $json.ctid }}"
             }
           ],
           "boolean": [
             {
-              "name": "payload.custom_attributes.skipgreetings",
+              "name": "chat.chatwoot.skipgreetings",
               "value": "={{ $json.ctatts?.skipgreetings ?? false }}"
+            },
+            {
+              "name": "chat.chatwoot.skipcontact",
+              "value": "={{ $json.ctatts?.skipcontact ?? false }}"
+            },
+            {
+              "name": "chat.chatwoot.skipevaluation",
+              "value": "={{ $json.ctatts?.skipevaluation ?? false }}"
             }
           ],
           "string": [
@@ -404,7 +404,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.11) Updates\n* missing edited parameter\n\n## Recommendations \n* Remember set timeout to 20 seconds",
+        "content": "## (1.0.12) Updates\n* added skipcontact option\n\n## Recommendations \n* Remember set timeout to 20 seconds",
         "height": 201.45401153644474,
         "width": 467.54452018877896
       },
@@ -1027,7 +1027,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "d59193ff-903a-4de3-8570-0460bc110e27",
+  "versionId": "dd463eed-80c4-4c31-b52f-e89e7bf0a4a4",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

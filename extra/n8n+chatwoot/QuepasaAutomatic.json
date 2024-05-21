@@ -215,7 +215,7 @@
       "typeVersion": 1,
       "position": [
         480,
-        1500
+        1700
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -238,7 +238,7 @@
       "typeVersion": 1,
       "position": [
         720,
-        1500
+        1700
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -251,7 +251,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.4) Recommendations \n* exec data position\n",
+        "content": "## (1.0.5) Recommendations \n* added skip contact\n",
         "width": 425.48157586978226
       },
       "id": "d7872589-290c-4614-868f-fabe6b64ca52",
@@ -259,8 +259,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -800,
-        840
+        -320,
+        700
       ]
     },
     {
@@ -448,7 +448,7 @@
       "typeVersion": 1,
       "position": [
         -180,
-        1840
+        1960
       ],
       "credentials": {
         "postgres": {
@@ -477,9 +477,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        720,
-        1860
-      ]
+        740,
+        1980
+      ],
+      "alwaysOutputData": false
     },
     {
       "parameters": {
@@ -491,8 +492,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        320,
-        1920
+        300,
+        2040
       ]
     },
     {
@@ -507,7 +508,7 @@
       "typeVersion": 2.1,
       "position": [
         480,
-        1860
+        1980
       ]
     },
     {
@@ -531,8 +532,54 @@
       "typeVersion": 3.3,
       "position": [
         120,
-        1840
+        1960
       ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT DISTINCT \"accounts\".\"id\" AS \"account\" FROM \"accounts\" WHERE NOT EXISTS (SELECT NULL FROM \"custom_attribute_definitions\" WHERE \"account_id\" = \"accounts\".\"id\" AND \"attribute_key\" = 'skipcontact' AND \"attribute_model\" = 1);",
+        "additionalFields": {}
+      },
+      "id": "a4ea12de-2217-4ab0-82fb-cb25c3fba14c",
+      "name": "Missing Skip For Contact",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        480,
+        1500
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      },
+      "notes": "Sucesso"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO \"custom_attribute_definitions\" (\"attribute_display_name\", \"attribute_key\", \"attribute_display_type\", \"attribute_model\", \"account_id\", \"attribute_description\", \"attribute_values\", \"updated_at\", \"created_at\") VALUES ('Skip Contact', 'skipcontact', 7, 1, {{ $json.account }}, 'Não utilizar este contato ! Ignora a criação de novas conversas.', '[]', NOW(), NOW());",
+        "additionalFields": {}
+      },
+      "id": "f49e4ca4-96ab-4093-96cf-9ded94bb1454",
+      "name": "Insert Skip For Contact",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        720,
+        1500
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      },
+      "notes": "Sucesso"
     }
   ],
   "pinData": {},
@@ -675,6 +722,11 @@
             "node": "Missing Automations",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Missing Skip For Contact",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -749,11 +801,22 @@
           }
         ]
       ]
+    },
+    "Missing Skip For Contact": {
+      "main": [
+        [
+          {
+            "node": "Insert Skip For Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {},
-  "versionId": "379e9bde-df63-45fd-957d-f218d06048c3",
+  "versionId": "9fd6c619-3f7d-4cdf-8fbe-16c3977fb9db",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

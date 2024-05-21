@@ -167,27 +167,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{$json.conversation?.id}}",
-              "operation": "isEmpty"
-            }
-          ]
-        }
-      },
-      "name": "Should Create a New Conversation Thread ?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        10660,
-        -283.21073188545233
-      ],
-      "alwaysOutputData": false,
-      "id": "28d76dbf-72db-49f0-a789-a3e6f16a00f2"
-    },
-    {
-      "parameters": {
         "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}",
         "options": {}
       },
@@ -738,7 +717,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.15) Updates\n* removed throw greetings, moved to ChatwootToQuepasa\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.16) Updates\n* ability to skip contact, skip a new conversation creation\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
         "width": 569.6036185132486
       },
@@ -1339,11 +1318,54 @@
       ]
     },
     {
-      "parameters": {},
-      "id": "2980aa6f-8654-498e-a15c-5bc413376c8c",
-      "name": "No Operation, do nothing1",
-      "type": "n8n-nodes-base.noOp",
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.conversation?.id}}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "name": "Empty Conversation ?",
+      "type": "n8n-nodes-base.if",
       "typeVersion": 1,
+      "position": [
+        10660,
+        -283.21073188545233
+      ],
+      "alwaysOutputData": false,
+      "id": "28d76dbf-72db-49f0-a789-a3e6f16a00f2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "848dd55e-3034-4e40-96ba-b35f5a814cfd",
+              "leftValue": "={{ $json.chat?.chatwoot?.skipcontact ?? false }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "94c2b2dd-94fc-4d95-b229-44487516fe77",
+      "name": "Should Create a New Conversation ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
       "position": [
         10860,
         -380
@@ -1429,7 +1451,7 @@
       "main": [
         [
           {
-            "node": "Should Create a New Conversation Thread ?",
+            "node": "Empty Conversation ?",
             "type": "main",
             "index": 0
           }
@@ -1587,24 +1609,6 @@
         [
           {
             "node": "If Not Resolved Conversation Found ?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Should Create a New Conversation Thread ?": {
-      "main": [
-        [
-          {
-            "node": "No Operation, do nothing1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Conversation Is Not Open ?",
             "type": "main",
             "index": 0
           }
@@ -2092,7 +2096,25 @@
         ]
       ]
     },
-    "No Operation, do nothing1": {
+    "Empty Conversation ?": {
+      "main": [
+        [
+          {
+            "node": "Should Create a New Conversation ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Conversation Is Not Open ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Create a New Conversation ?": {
       "main": [
         [
           {
@@ -2116,7 +2138,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "d74e7edf-6db8-443a-89e2-8e04df77ae25",
+  "versionId": "18310583-c921-4f25-a242-5b644ad90dca",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
