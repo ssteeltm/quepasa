@@ -391,6 +391,11 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 		ID: msg.Id,
 	}
 
+	// saving cached content for instance of future reply
+	if msg.Content == nil {
+		msg.Content = newMessage
+	}
+
 	resp, err := source.Client.SendMessage(context.Background(), jid, newMessage, extra)
 	if err != nil {
 		logentry.Errorf("send error: %s", err)
