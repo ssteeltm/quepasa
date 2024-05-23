@@ -1,5 +1,7 @@
 package whatsapp
 
+import "time"
+
 // Whatsapp service options, setted on start, so if want to changed then, you have to restart the entire service
 type WhatsappOptionsExtended struct {
 
@@ -101,4 +103,21 @@ func (source WhatsappOptionsExtended) HandleBroadcasts(local WhatsappBoolean) bo
 
 		return source.Broadcasts.ToBoolean(WhatsappBroadcasts)
 	}
+}
+
+func (source WhatsappOptionsExtended) HandleHistory(mts uint64) bool {
+	if source.HistorySync != nil {
+		days := *source.HistorySync
+		if days == 0 {
+			return true
+		}
+
+		current := time.Now()
+		limit := current.AddDate(0, 0, -int(days))
+		if int64(mts) > limit.Unix() {
+			return true
+		}
+	}
+
+	return false
 }

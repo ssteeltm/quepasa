@@ -261,7 +261,7 @@ func (handler *QPWhatsappHandlers) GetMessage(id string) (msg whatsapp.WhatsappM
 // sends the message throw external publishers
 func (source *QPWhatsappHandlers) Trigger(payload *whatsapp.WhatsappMessage) {
 	if source != nil {
-		if source.server != nil && !MessagesSignalRHub.IsInterfaceNil() {
+		if source.server != nil {
 			go SignalRDispatch(source.server.Token, payload)
 		}
 

@@ -300,6 +300,12 @@ func (source *WhatsmeowHandlers) OnHistorySyncEvent(evt events.HistorySync) {
 	logentry.Infof("history sync: %s", evt.Data.SyncType)
 	// HistorySyncSaveJSON(evt)
 
+	// whatsmeow service options
+	options := source.GetServiceOptions()
+	if options.HistorySync == nil {
+		return
+	}
+
 	conversations := evt.Data.GetConversations()
 	for _, conversation := range conversations {
 		for _, historyMsg := range conversation.GetMessages() {
@@ -309,7 +315,14 @@ func (source *WhatsmeowHandlers) OnHistorySyncEvent(evt events.HistorySync) {
 				return
 			}
 
-			msgevt, err := source.Client.ParseWebMessage(wid, historyMsg.GetMessage())
+			// converting to event
+			msgInfo := historyMsg.GetMessage()
+			msgTime := msgInfo.GetMessageTimestamp()
+			if !options.HandleHistory(msgTime) {
+				continue
+			}
+
+			msgevt, err := source.Client.ParseWebMessage(wid, msgInfo)
 			if err != nil {
 				logentry.Errorf("failed to parse web message at history sync: %v", err)
 				return
