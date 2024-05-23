@@ -13,7 +13,7 @@ type WhatsappMessage struct {
 	Content interface{} `json:"-"`
 	Info    interface{} `json:"-"`
 
-	Id      string `json:"id"`
+	Id      string `json:"id"`                // Upper text msg id
 	TrackId string `json:"trackid,omitempty"` // Optional id of the system that send that message
 
 	Timestamp time.Time           `json:"timestamp"`

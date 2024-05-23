@@ -86,7 +86,7 @@ func (source *QpSendRequest) ToWhatsappMessage() (msg *whatsapp.WhatsappMessage,
 
 	chat := whatsapp.WhatsappChat{Id: chatId}
 	msg = &whatsapp.WhatsappMessage{
-		Id:           strings.ToUpper(source.Id), // dont know why, must bu upper
+		Id:           strings.ToUpper(source.Id), // dont know why, must be upper
 		TrackId:      source.TrackId,
 		InReply:      source.InReply,
 		Text:         source.Text,
