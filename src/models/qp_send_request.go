@@ -50,10 +50,13 @@ func (source *QpSendRequest) GetLogger() *log.Entry {
 }
 
 func (source *QpSendRequest) EnsureChatId(r *http.Request) (err error) {
-	if len(source.ChatId) == 0 {
-		source.ChatId = GetChatId(r)
+
+	// already set ?
+	if len(source.ChatId) > 0 {
+		return
 	}
 
+	source.ChatId = GetChatId(r)
 	if len(source.ChatId) == 0 {
 		err = fmt.Errorf("chat id missing")
 	}

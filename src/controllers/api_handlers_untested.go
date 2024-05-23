@@ -79,15 +79,6 @@ func SendAny(w http.ResponseWriter, r *http.Request) {
 	// Declare a new request struct.
 	request := &models.QpSendAnyRequest{}
 
-	// Getting ChatId parameter
-	err = request.EnsureValidChatId(r)
-	if err != nil {
-		metrics.MessageSendErrors.Inc()
-		response.ParseError(err)
-		RespondInterface(w, response)
-		return
-	}
-
 	switch os := r.Method; os {
 	case http.MethodPost:
 		// Try to decode the request body into the struct. If there is an error,
@@ -108,6 +99,15 @@ func SendAny(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Has("url") {
 			request.Url = r.URL.Query().Get("url")
 		}
+	}
+
+	// Getting ChatId parameter
+	err = request.EnsureValidChatId(r)
+	if err != nil {
+		metrics.MessageSendErrors.Inc()
+		response.ParseError(err)
+		RespondInterface(w, response)
+		return
 	}
 
 	// override trackid if passed throw any other way
