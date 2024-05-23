@@ -68,7 +68,7 @@ func (source QpWebhook) IsSetExtra() bool {
 var ErrInvalidResponse error = errors.New("the requested url do not return 200 status code")
 
 func (source *QpWebhook) Post(wid string, message *whatsapp.WhatsappMessage) (err error) {
-	log.Infof("dispatching webhook from: %s, id: %s, to: %s", wid, message.Id, source.Url)
+	log.Infof("posting webhook from: %s, id: %s, to: %s", wid, message.Id, source.Url)
 
 	payload := &QpWebhookPayload{
 		WhatsappMessage: message,

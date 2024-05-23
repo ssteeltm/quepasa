@@ -105,7 +105,7 @@ func (source *QPWhatsappHandlers) Receipt(msg *whatsapp.WhatsappMessage) {
 		}
 	}
 
-	// Executando WebHook de forma assincrona
+	// triggering external publishers
 	source.Trigger(msg)
 }
 
@@ -258,8 +258,13 @@ func (handler *QPWhatsappHandlers) GetMessage(id string) (msg whatsapp.WhatsappM
 // endregion
 // region EVENT HANDLER TO INTERNAL USE, GENERALLY TO WEBHOOK
 
+// sends the message throw external publishers
 func (source *QPWhatsappHandlers) Trigger(payload *whatsapp.WhatsappMessage) {
 	if source != nil {
+		if source.server != nil && !MessagesSignalRHub.IsInterfaceNil() {
+			go SignalRDispatch(source.server.Token, payload)
+		}
+
 		for _, handler := range source.aeh {
 			go handler.HandleWebHook(payload)
 		}

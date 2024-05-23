@@ -27,10 +27,13 @@ require (
 	filippo.io/edwards25519 v1.0.0 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/go-chi/chi/v5 v5.0.10 // indirect
 	github.com/go-chi/jwtauth v4.0.4+incompatible // indirect
+	github.com/go-kit/log v0.2.1 // indirect
+	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-openapi/jsonpointer v0.20.0 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
 	github.com/go-openapi/spec v0.20.9 // indirect
@@ -52,6 +55,7 @@ require (
 	github.com/nbutton23/zxcvbn-go v0.0.0-20210217022336-fa2cb2858354 // indirect
 	github.com/nocodeleaks/quepasa/library v0.0.0-00010101000000-000000000000 // indirect
 	github.com/nocodeleaks/quepasa/metrics v0.0.0-00010101000000-000000000000 // indirect
+	github.com/philippseith/signalr v0.6.3 // indirect
 	github.com/prometheus/client_golang v1.16.0 // indirect
 	github.com/prometheus/client_model v0.4.0 // indirect
 	github.com/prometheus/common v0.44.0 // indirect
@@ -61,6 +65,9 @@ require (
 	github.com/swaggo/files v1.0.1 // indirect
 	github.com/swaggo/http-swagger v1.3.4 // indirect
 	github.com/swaggo/swag v1.16.2 // indirect
+	github.com/teivah/onecontext v1.3.0 // indirect
+	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
+	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	go.mau.fi/libsignal v0.1.0 // indirect
 	go.mau.fi/util v0.4.1 // indirect
 	go.mau.fi/whatsmeow v0.0.0-20240520180327-81f8f07f1dfb // indirect
@@ -70,4 +77,5 @@ require (
 	golang.org/x/tools v0.13.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	nhooyr.io/websocket v1.8.11 // indirect
 )

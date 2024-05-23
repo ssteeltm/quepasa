@@ -20,7 +20,9 @@ import (
 */
 type QpSendAnyRequest struct {
 	QpSendRequest
-	Url     string `json:"url,omitempty"`
+	Url string `json:"url,omitempty"`
+
+	// Base64 Embed Content
 	Content string `json:"content,omitempty"`
 }
 

@@ -22,6 +22,7 @@ var FormVerifyEndpoint string = FormEndpointPrefix + "/verify"
 var FormDeleteEndpoint string = FormEndpointPrefix + "/delete"
 
 func RegisterFormAuthenticatedControllers(r chi.Router) {
+
 	r.Use(jwtauth.Verifier(TokenAuth))
 	r.Use(HttpAuthenticatorHandler)
 

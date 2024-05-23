@@ -87,22 +87,27 @@ func Start(options WhatsmeowOptions) {
 	version[2] = 0
 	store.SetOSInfo(showing, version)
 
+	// this section is broken, history sync configurations, do nothing ......
+	// --------------------------------
+
 	historysync := WhatsmeowService.GetHistorySync()
 	if historysync != nil {
-		logentry.Infof("Setting history sync to %v days", *historysync)
-		store.DeviceProps.RequireFullSync = proto.Bool(true)
+		HistorySyncValue := *historysync
+		logentry.Infof("setting history sync to %v days", HistorySyncValue)
 
-		if *historysync == 0 {
+		if HistorySyncValue == 0 {
+			store.DeviceProps.RequireFullSync = proto.Bool(true)
 			store.DeviceProps.HistorySyncConfig = &waProto.DeviceProps_HistorySyncConfig{
-				FullSyncDaysLimit: proto.Uint32(3650),
+				FullSyncDaysLimit:   proto.Uint32(3650),
+				FullSyncSizeMbLimit: proto.Uint32(102400),
 			}
 		} else {
+			store.DeviceProps.RequireFullSync = proto.Bool(false)
 			store.DeviceProps.HistorySyncConfig = &waProto.DeviceProps_HistorySyncConfig{
-				FullSyncDaysLimit: historysync,
+				RecentSyncDaysLimit: proto.Uint32(HistorySyncValue * 10),
 			}
 		}
 
-		store.DeviceProps.HistorySyncConfig.FullSyncSizeMbLimit = proto.Uint32(102400)
 		store.DeviceProps.HistorySyncConfig.StorageQuotaMb = proto.Uint32(102400)
 	}
 }

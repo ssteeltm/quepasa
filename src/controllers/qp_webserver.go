@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"context"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -13,6 +14,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
+	kitlog "github.com/go-kit/log"
+	signalr "github.com/philippseith/signalr"
 
 	// swagger embed files
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -43,20 +47,10 @@ func QPWebServerStart() error {
 	return err
 }
 
-func NormalizePathsToLower(next http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "" {
-			r.URL.Path = strings.ToLower(r.URL.Path)
-		}
-		next.ServeHTTP(w, r)
-	}
-	return http.HandlerFunc(fn)
-}
-
 func newRouter() chi.Router {
 	r := chi.NewRouter()
 
-	r.Use(NormalizePathsToLower)
+	r.Use(MiddlewareForNormalizePaths)
 	r.Use(middleware.StripSlashes)
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -66,51 +60,111 @@ func newRouter() chi.Router {
 	}
 
 	r.Use(middleware.Recoverer)
-	r.Use(middleware.Timeout(30 * time.Second))
 
-	// web routes
-	// authenticated web routes
-	r.Group(RegisterFormAuthenticatedControllers)
+	// API routes, main content
+	ServeAPI(r)
 
-	// unauthenticated web routes
-	r.Group(RegisterFormControllers)
+	// Form routes, extra content
+	ServeForms(r)
 
-	// api routes
-	addAPIRoutes(r)
+	// SignalR
+	ServeSignalR(r)
 
-	// static files
-	workDir, _ := os.Getwd()
-	assetsDir := filepath.Join(workDir, "assets")
-	fileServer(r, "/assets", http.Dir(assetsDir))
+	// Static content
+	ServeStaticContent(r)
 
 	// Swagger Ui
 	ServeSwaggerUi(r)
 
 	// Metrics
 	ServeMetrics(r)
+
 	return r
 }
 
-func addAPIRoutes(r chi.Router) {
-	r.Group(RegisterAPIControllers)
-	r.Group(RegisterAPIV2Controllers)
-	r.Group(RegisterAPIV3Controllers)
+func ServeForms(r chi.Router) {
+
+	// setting group
+	r.Group(func(r chi.Router) {
+
+		// setting timeout for the group
+		r.Use(middleware.Timeout(30 * time.Second))
+
+		// web routes
+		// authenticated web routes
+		r.Group(RegisterFormAuthenticatedControllers)
+
+		// unauthenticated web routes
+		r.Group(RegisterFormControllers)
+	})
 }
 
-func fileServer(r chi.Router, path string, root http.FileSystem) {
-	if strings.ContainsAny(path, "{}*") {
-		panic("FileServer does not permit URL parameters.")
-	}
+func ServeAPI(r chi.Router) {
 
-	fs := http.StripPrefix(path, http.FileServer(root))
-	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
-		path += "/"
-	}
-	path += "*"
-	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fs.ServeHTTP(w, r)
-	}))
+	// setting group
+	r.Group(func(r chi.Router) {
+
+		// setting timeout for the group
+		r.Use(middleware.Timeout(30 * time.Second))
+
+		r.Group(RegisterAPIControllers)
+		r.Group(RegisterAPIV2Controllers)
+		r.Group(RegisterAPIV3Controllers)
+	})
+}
+
+func ServeStaticContent(r chi.Router) {
+
+	// setting group
+	r.Group(func(r chi.Router) {
+
+		// static files
+		workDir, _ := os.Getwd()
+		assetsDir := filepath.Join(workDir, "assets")
+		root := http.Dir(assetsDir)
+
+		path := "/assets"
+
+		if strings.ContainsAny(path, "{}*") {
+			panic("FileServer does not permit URL parameters.")
+		}
+
+		fs := http.StripPrefix(path, http.FileServer(root))
+		if path != "/" && path[len(path)-1] != '/' {
+			r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
+			path += "/"
+		}
+		path += "*"
+		r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fs.ServeHTTP(w, r)
+		}))
+
+	})
+}
+
+func ServeSignalR(r chi.Router) {
+
+	// setting group
+	r.Group(func(r chi.Router) {
+		log.Debug("starting signalr service")
+
+		factory := signalr.HubFactory(models.SignalRHubFactory)
+		//keepalive := signalr.KeepAliveInterval(2 * time.Second)
+		//timeout := signalr.ChanReceiveTimeout(1 * time.Hour)
+
+		logger := log.New()
+		logger.SetLevel(log.TraceLevel)
+
+		ctx := context.Background()
+		slogger := signalr.Logger(kitlog.NewLogfmtLogger(logger.Out), true)
+		server, err := signalr.NewServer(ctx, factory, slogger)
+		if err != nil {
+			log.Errorf("error on set signalr server: %s", err.Error())
+		}
+
+		mappable := WithChiRouter(r)
+		server.MapHTTP(mappable, "/signalr")
+	})
 }
 
 func ServeSwaggerUi(r chi.Router) {

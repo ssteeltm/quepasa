@@ -19,6 +19,7 @@ var FormLogoutEndpoint string = "/logout"
 var FormDownloadEndpoint string = "/download"
 
 func RegisterFormControllers(r chi.Router) {
+
 	r.Get("/", IndexHandler)
 	r.Get(FormLoginEndpoint, LoginFormHandler)
 	r.Post(FormLoginEndpoint, LoginHandler)

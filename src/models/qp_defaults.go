@@ -3,6 +3,6 @@ package models
 import log "github.com/sirupsen/logrus"
 
 // quepasa build version, if ends with .0 means stable versions.
-const QpVersion = "3.24.520.2308"
+const QpVersion = "3.24.523.1253 ! High Unstable ! Do not update, casca de bala ! "
 
 const QpLogLevel = log.InfoLevel

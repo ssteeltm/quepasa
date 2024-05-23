@@ -315,6 +315,7 @@ func (source *WhatsmeowHandlers) OnHistorySyncEvent(evt events.HistorySync) {
 				return
 			}
 
+			// put here a logic for history sync days filter
 			source.Message(*msgevt)
 		}
 	}
