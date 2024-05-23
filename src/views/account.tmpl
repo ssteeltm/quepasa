@@ -20,7 +20,7 @@
           <th>Token</th>
           <th style="text-align: center;">Actions</th>
           <th style="text-align: center;">Extra</th>
-          <th style="text-align: center;">WebHooks</th>
+          <th style="text-align: center;">WH | WS</th>
           <th>State</th>
         </tr>
         </thead>
@@ -138,9 +138,16 @@
             <td style="text-align: center;">
               <a class="button" href="/form/webhooks?token={{ .Token }}">
                 {{ if .Webhooks }}
-                  <span class="icon has-text-success" title="{{ .Webhooks }}"><i class="fas fa-check-square"></i> </span>
-                  {{ else }}
-                  <span class="icon has-text-warning"><i class="fas fa-exclamation-triangle"></i> </span>
+                  <span class="icon has-text-success" title="Active WebHooks"><i class="fas fa-check-square"></i> </span>
+                {{ else }}
+                  <span class="icon has-text-warning"title="No WebHooks"><i class="fas fa-exclamation-triangle"></i> </span>
+                {{ end }}
+              </a>  
+              <a class="button" href="/form/signalr?token={{ .Token }}">
+                {{ if .HasSignalRActiveConnections }}
+                  <span class="icon has-text-success" title="Active WebSockets"><i class="fas fa-check-square"></i> </span>
+                {{ else }}
+                  <span class="icon has-text-warning" title="No WebSockets"><i class="fas fa-exclamation-triangle"></i> </span>
                 {{ end }}
               </a>
             </td>

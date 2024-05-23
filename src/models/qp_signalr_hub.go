@@ -9,15 +9,18 @@ import (
 
 type QpSignalRHub struct {
 	signalr.Hub
+	tokens map[string]string
+	proxy  map[string]signalr.ClientProxy
 }
 
-var MessagesSignalRHub = &QpSignalRHub{}
-var Tokens = map[string]string{}
-var Proxy = map[string]signalr.ClientProxy{}
+var SignalRHub = &QpSignalRHub{
+	tokens: map[string]string{},
+	proxy:  map[string]signalr.ClientProxy{},
+}
 
 // not used
 func SignalRHubFactory() signalr.HubInterface {
-	return MessagesSignalRHub
+	return SignalRHub
 }
 
 func (source *QpSignalRHub) IsInterfaceNil() bool {
@@ -28,56 +31,64 @@ func (source *QpSignalRHub) OnConnected(ConnectionId string) {
 	info, _ := source.Logger()
 	info.Log("connection", ConnectionId, "status", "connected")
 
-	Proxy[ConnectionId] = source.Clients().Caller()
+	source.proxy[ConnectionId] = source.Clients().Caller()
 }
 
 func (source *QpSignalRHub) OnDisconnected(ConnectionId string) {
 	info, _ := source.Logger()
 	info.Log("connection", ConnectionId, "status", "disconnected")
 
-	delete(Tokens, ConnectionId)
-	delete(Proxy, ConnectionId)
+	delete(source.tokens, ConnectionId)
+	delete(source.proxy, ConnectionId)
 }
 
-func (source *QpSignalRHub) TrySend(target string, args ...interface{}) {
+func (source *QpSignalRHub) TrySend(ConnectionId string, target string, args ...interface{}) {
 	if source == nil {
 		return
 	}
 
-	ConnectionId := source.ConnectionID()
-	TrySend(ConnectionId, target, args)
-}
-
-func TrySend(ConnectionId string, target string, args ...interface{}) {
-	proxy := Proxy[ConnectionId]
+	proxy := source.proxy[ConnectionId]
 	if proxy != nil {
-		proxy.Send(target, args)
+		proxy.Send(target, args...)
 	}
 }
 
 func (source *QpSignalRHub) GetToken() string {
 	ConnectionId := source.ConnectionID()
-	token := Tokens[ConnectionId]
+	token := source.tokens[ConnectionId]
 
 	message := fmt.Sprintf("connection id: %s, token: %s", ConnectionId, token)
-	TrySend(ConnectionId, "system", message)
+	source.Clients().Caller().Send(ConnectionId, "system", message)
 	return token
 }
 
 func (source *QpSignalRHub) Token(token string) {
 	ConnectionId := source.ConnectionID()
-	Tokens[ConnectionId] = token
+	source.tokens[ConnectionId] = token
 
 	info, _ := source.Logger()
 	info.Log("connection", ConnectionId, "token", token)
 }
 
-func SignalRDispatch(token string, payload *whatsapp.WhatsappMessage) {
-	for ConnectionId, _token := range Tokens {
-		if _token != token {
-			continue
+func (source *QpSignalRHub) GetActiveConnections(token string) (active []string) {
+	if source != nil {
+		for ConnectionId, _token := range source.tokens {
+			if _token == token {
+				active = append(active, ConnectionId)
+			}
 		}
-
-		TrySend(ConnectionId, "message", payload)
 	}
+
+	return
+}
+
+func (source *QpSignalRHub) Dispatch(token string, payload *whatsapp.WhatsappMessage) {
+	for _, ConnectionId := range source.GetActiveConnections(token) {
+		source.TrySend(ConnectionId, "message", payload)
+	}
+}
+
+func (source *QpSignalRHub) HasActiveConnections(token string) bool {
+	connections := source.GetActiveConnections(token)
+	return len(connections) > 0
 }

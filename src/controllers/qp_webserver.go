@@ -148,7 +148,7 @@ func ServeSignalR(r chi.Router) {
 	r.Group(func(r chi.Router) {
 		log.Debug("starting signalr service")
 
-		factory := signalr.UseHub(models.MessagesSignalRHub)
+		factory := signalr.UseHub(models.SignalRHub)
 		//keepalive := signalr.KeepAliveInterval(2 * time.Second)
 		//timeout := signalr.ChanReceiveTimeout(1 * time.Hour)
 

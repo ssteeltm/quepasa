@@ -76,6 +76,14 @@ func (server *QpWhatsappServer) HandlerEnsure() {
 	}
 }
 
+func (server *QpWhatsappServer) HasSignalRActiveConnections() bool {
+	if server == nil {
+		return false
+	}
+
+	return SignalRHub.HasActiveConnections(server.Token)
+}
+
 //region IMPLEMENT OF INTERFACE STATE RECOVERY
 
 func (server *QpWhatsappServer) GetStatus() whatsapp.WhatsappConnectionState {

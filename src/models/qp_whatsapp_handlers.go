@@ -262,7 +262,7 @@ func (handler *QPWhatsappHandlers) GetMessage(id string) (msg whatsapp.WhatsappM
 func (source *QPWhatsappHandlers) Trigger(payload *whatsapp.WhatsappMessage) {
 	if source != nil {
 		if source.server != nil {
-			go SignalRDispatch(source.server.Token, payload)
+			go SignalRHub.Dispatch(source.server.Token, payload)
 		}
 
 		for _, handler := range source.aeh {
