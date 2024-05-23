@@ -17,10 +17,10 @@ type QpSendRequest struct {
 	Id string `json:"id,omitempty"`
 
 	// Recipient of this message
-	ChatId string `json:"chatId"`
+	ChatId string `json:"chatid"`
 
 	// (Optional) TrackId - less priority (urlparam -> query -> header -> body)
-	TrackId string `json:"trackId,omitempty"`
+	TrackId string `json:"trackid,omitempty"`
 
 	Text string `json:"text,omitempty"`
 
@@ -28,7 +28,7 @@ type QpSendRequest struct {
 	InReply string `json:"inreply,omitempty"`
 
 	// (Optional) Sugested filename on user download
-	FileName string `json:"fileName,omitempty"`
+	FileName string `json:"filename,omitempty"`
 
 	// (Optional) important to navigate throw content
 	FileLength uint64 `json:"filelength,omitempty"`
