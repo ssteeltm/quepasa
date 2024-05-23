@@ -15,48 +15,48 @@ var MessagesSignalRHub = &QpSignalRHub{}
 var Tokens = map[string]string{}
 var Proxy = map[string]signalr.ClientProxy{}
 
+// not used
 func SignalRHubFactory() signalr.HubInterface {
 	return MessagesSignalRHub
 }
 
-func (c *QpSignalRHub) IsInterfaceNil() bool {
-	return c == nil
+func (source *QpSignalRHub) IsInterfaceNil() bool {
+	return source == nil
 }
 
-func ForEach(key any, value any) bool {
-	fmt.Printf("item key: %s, value: %s\n", key, value)
-	return true
+func (source *QpSignalRHub) OnConnected(ConnectionId string) {
+	info, _ := source.Logger()
+	info.Log("connection", ConnectionId, "status", "connected")
+
+	Proxy[ConnectionId] = source.Clients().Caller()
 }
 
-func (c *QpSignalRHub) OnConnected(ConnectionId string) {
-	fmt.Printf("%s connected\n", ConnectionId)
-	Proxy[ConnectionId] = c.Clients().Caller()
-}
+func (source *QpSignalRHub) OnDisconnected(ConnectionId string) {
+	info, _ := source.Logger()
+	info.Log("connection", ConnectionId, "status", "disconnected")
 
-func (c *QpSignalRHub) OnDisconnected(ConnectionId string) {
-	fmt.Printf("%s disconnected\n", ConnectionId)
 	delete(Tokens, ConnectionId)
 	delete(Proxy, ConnectionId)
 }
 
-func (h *QpSignalRHub) TrySend(target string, args ...interface{}) {
-	if h == nil {
+func (source *QpSignalRHub) TrySend(target string, args ...interface{}) {
+	if source == nil {
 		return
 	}
 
-	ConnectionId := h.ConnectionID()
+	ConnectionId := source.ConnectionID()
 	TrySend(ConnectionId, target, args)
 }
 
 func TrySend(ConnectionId string, target string, args ...interface{}) {
 	proxy := Proxy[ConnectionId]
 	if proxy != nil {
-		proxy.Send(target, args...)
+		proxy.Send(target, args)
 	}
 }
 
-func (h *QpSignalRHub) GetToken() string {
-	ConnectionId := h.ConnectionID()
+func (source *QpSignalRHub) GetToken() string {
+	ConnectionId := source.ConnectionID()
 	token := Tokens[ConnectionId]
 
 	message := fmt.Sprintf("connection id: %s, token: %s", ConnectionId, token)
@@ -64,11 +64,12 @@ func (h *QpSignalRHub) GetToken() string {
 	return token
 }
 
-func (h *QpSignalRHub) Token(token string) {
-	ConnectionId := h.ConnectionID()
-	fmt.Printf("token: %s, for connection id: %s", token, ConnectionId)
-
+func (source *QpSignalRHub) Token(token string) {
+	ConnectionId := source.ConnectionID()
 	Tokens[ConnectionId] = token
+
+	info, _ := source.Logger()
+	info.Log("connection", ConnectionId, "token", token)
 }
 
 func SignalRDispatch(token string, payload *whatsapp.WhatsappMessage) {
