@@ -678,31 +678,24 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 		}
 	}
 
-	/* // obsolete, whatsapp now accepts documents with captions
-
-	// missing message id, must generate a new one if it already exists
+	// Trick to send audio with text, creating a new msg
 	if msg.HasAttachment() {
-		if len(msg.Text) > 0 {
 
-			// Overriding filename with caption text if IMAGE or VIDEO
-			if msg.Type == whatsapp.ImageMessageType || msg.Type == whatsapp.VideoMessageType {
-				msg.Attachment.FileName = msg.Text
+		// Overriding filename with caption text if IMAGE or VIDEO
+		if len(msg.Text) > 0 && msg.Type == whatsapp.AudioMessageType {
+
+			// Copying and send text before file
+			textMsg := *msg
+			textMsg.Type = whatsapp.TextMessageType
+			textMsg.Attachment = nil
+			response, err = source.connection.Send(&textMsg)
+			if err != nil {
+				return
 			} else {
-
-				// Copying and send text before file
-				textMsg := *msg
-				textMsg.Type = whatsapp.TextMessageType
-				textMsg.Attachment = nil
-				response, err = source.connection.Send(&textMsg)
-				if err != nil {
-					return
-				} else {
-					source.Handler.Message(&textMsg)
-				}
+				source.Handler.Message(&textMsg)
 			}
 		}
 	}
-	*/
 
 	// sending default msg
 	response, err = source.connection.Send(msg)

@@ -79,8 +79,7 @@ func SendAny(w http.ResponseWriter, r *http.Request) {
 	// Declare a new request struct.
 	request := &models.QpSendAnyRequest{}
 
-	switch os := r.Method; os {
-	case http.MethodPost:
+	if r.ContentLength > 0 && r.Method == http.MethodPost {
 		// Try to decode the request body into the struct. If there is an error,
 		// respond to the client with the error message and a 400 status code.
 		err = json.NewDecoder(r.Body).Decode(&request)
@@ -90,15 +89,14 @@ func SendAny(w http.ResponseWriter, r *http.Request) {
 			RespondInterface(w, response)
 			return
 		}
+	}
 
-	case http.MethodGet:
-		if r.URL.Query().Has("text") {
-			request.Text = r.URL.Query().Get("text")
-		}
+	if len(request.Text) == 0 && r.URL.Query().Has("text") {
+		request.Text = r.URL.Query().Get("text")
+	}
 
-		if r.URL.Query().Has("url") {
-			request.Url = r.URL.Query().Get("url")
-		}
+	if len(request.Url) == 0 && r.URL.Query().Has("url") {
+		request.Url = r.URL.Query().Get("url")
 	}
 
 	// Getting ChatId parameter
