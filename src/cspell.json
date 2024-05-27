@@ -123,6 +123,10 @@
         "zerar"
     ],
     "ignoreWords": [
+        "BUTTONSMSGREGEX",
+        "BUTTONSREGEXBUTTONSINDEX",
+        "BUTTONSREGEXCONTENTINDEX",
+        "BUTTONSREGEXFOOTERINDEX",
         "DBDATABASE",
         "DBDRIVER",
         "DBHOST",
@@ -166,6 +170,7 @@
         "fromme",
         "gambiarra",
         "godotenv",
+        "gosimple",
         "handlereadreceipt",
         "historysync",
         "imsg",

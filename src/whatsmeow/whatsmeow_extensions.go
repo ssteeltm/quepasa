@@ -10,7 +10,7 @@ import (
 
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	whatsmeow "go.mau.fi/whatsmeow"
-	waProto "go.mau.fi/whatsmeow/binary/proto"
+	"go.mau.fi/whatsmeow/proto/waE2E"
 	types "go.mau.fi/whatsmeow/types"
 )
 
@@ -33,18 +33,18 @@ func GetMediaTypeFromWAMsgType(msgType whatsapp.WhatsappMessageType) whatsmeow.M
 	}
 }
 
-func ToWhatsmeowMessage(source whatsapp.IWhatsappMessage) (msg *waProto.Message, err error) {
+func ToWhatsmeowMessage(source whatsapp.IWhatsappMessage) (msg *waE2E.Message, err error) {
 	messageText := source.GetText()
 
 	if !source.HasAttachment() {
-		internal := &waProto.ExtendedTextMessage{Text: &messageText}
-		msg = &waProto.Message{ExtendedTextMessage: internal}
+		internal := &waE2E.ExtendedTextMessage{Text: &messageText}
+		msg = &waE2E.Message{ExtendedTextMessage: internal}
 	}
 
 	return
 }
 
-func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg whatsapp.WhatsappMessage, media whatsmeow.MediaType) (msg *waProto.Message) {
+func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg whatsapp.WhatsappMessage, media whatsmeow.MediaType) (msg *waE2E.Message) {
 	attach := waMsg.Attachment
 
 	var seconds *uint32
@@ -59,18 +59,18 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 
 	switch media {
 	case whatsmeow.MediaImage:
-		internal := &waProto.ImageMessage{
-			Url:           proto.String(response.URL),
+		internal := &waE2E.ImageMessage{
+			URL:           proto.String(response.URL),
 			DirectPath:    proto.String(response.DirectPath),
 			MediaKey:      response.MediaKey,
-			FileEncSha256: response.FileEncSHA256,
-			FileSha256:    response.FileSHA256,
+			FileEncSHA256: response.FileEncSHA256,
+			FileSHA256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
 
 			Mimetype: mimetype,
 			Caption:  proto.String(waMsg.Text),
 		}
-		msg = &waProto.Message{ImageMessage: internal}
+		msg = &waE2E.Message{ImageMessage: internal}
 		return
 	case whatsmeow.MediaAudio:
 
@@ -82,47 +82,47 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			mimetype = proto.String(whatsapp.WhatsappPTTMime)
 		}
 
-		internal := &waProto.AudioMessage{
-			Url:           proto.String(response.URL),
+		internal := &waE2E.AudioMessage{
+			URL:           proto.String(response.URL),
 			DirectPath:    proto.String(response.DirectPath),
 			MediaKey:      response.MediaKey,
-			FileEncSha256: response.FileEncSHA256,
-			FileSha256:    response.FileSHA256,
+			FileEncSHA256: response.FileEncSHA256,
+			FileSHA256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
 			Seconds:       seconds,
 			Mimetype:      mimetype,
-			Ptt:           ptt,
+			PTT:           ptt,
 		}
-		msg = &waProto.Message{AudioMessage: internal}
+		msg = &waE2E.Message{AudioMessage: internal}
 		return
 	case whatsmeow.MediaVideo:
-		internal := &waProto.VideoMessage{
-			Url:           proto.String(response.URL),
+		internal := &waE2E.VideoMessage{
+			URL:           proto.String(response.URL),
 			DirectPath:    proto.String(response.DirectPath),
 			MediaKey:      response.MediaKey,
-			FileEncSha256: response.FileEncSHA256,
-			FileSha256:    response.FileSHA256,
+			FileEncSHA256: response.FileEncSHA256,
+			FileSHA256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
 			Seconds:       seconds,
 			Mimetype:      mimetype,
 			Caption:       proto.String(waMsg.Text),
 		}
-		msg = &waProto.Message{VideoMessage: internal}
+		msg = &waE2E.Message{VideoMessage: internal}
 		return
 	default:
-		internal := &waProto.DocumentMessage{
-			Url:           proto.String(response.URL),
+		internal := &waE2E.DocumentMessage{
+			URL:           proto.String(response.URL),
 			DirectPath:    proto.String(response.DirectPath),
 			MediaKey:      response.MediaKey,
-			FileEncSha256: response.FileEncSHA256,
-			FileSha256:    response.FileSHA256,
+			FileEncSHA256: response.FileEncSHA256,
+			FileSHA256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
 
 			Mimetype: mimetype,
 			FileName: proto.String(attach.FileName),
 			Caption:  proto.String(waMsg.Text),
 		}
-		msg = &waProto.Message{DocumentMessage: internal}
+		msg = &waE2E.Message{DocumentMessage: internal}
 		return
 	}
 }
@@ -166,10 +166,10 @@ var RegexButton regexp.Regexp = *regexp.MustCompile(`\((?P<value>.*)\)(?P<displa
 var RegexButtonValue int = RegexButton.SubexpIndex("value")
 var RegexButtonDisplay int = RegexButton.SubexpIndex("display")
 
-func GenerateButtonsMessage(messageText string) *waProto.ButtonsMessage {
+func GenerateButtonsMessage(messageText string) *waE2E.ButtonsMessage {
 	var contentText *string
 	var footerText *string
-	var buttons []*waProto.ButtonsMessage_Button
+	var buttons []*waE2E.ButtonsMessage_Button
 
 	matches := BUTTONSMSGREGEX.FindStringSubmatch(messageText)
 	contentMatched := matches[BUTTONSREGEXCONTENTINDEX]
@@ -187,7 +187,7 @@ func GenerateButtonsMessage(messageText string) *waProto.ButtonsMessage {
 	for _, s := range buttonsSplited {
 		normalized := strings.TrimSpace(s)
 
-		buttonText := &waProto.ButtonsMessage_Button_ButtonText{}
+		buttonText := &waE2E.ButtonsMessage_Button_ButtonText{}
 		buttonText.DisplayText = &normalized
 		buttonId := buttonText.DisplayText
 
@@ -204,12 +204,12 @@ func GenerateButtonsMessage(messageText string) *waProto.ButtonsMessage {
 			}
 		}
 
-		buttonType := waProto.ButtonsMessage_Button_RESPONSE
-		buttons = append(buttons, &waProto.ButtonsMessage_Button{ButtonText: buttonText, ButtonId: buttonId, Type: &buttonType})
+		buttonType := waE2E.ButtonsMessage_Button_RESPONSE
+		buttons = append(buttons, &waE2E.ButtonsMessage_Button{ButtonText: buttonText, ButtonID: buttonId, Type: &buttonType})
 	}
 
-	headerType := waProto.ButtonsMessage_EMPTY
-	return &waProto.ButtonsMessage{HeaderType: &headerType, ContentText: contentText, Buttons: buttons, FooterText: footerText}
+	headerType := waE2E.ButtonsMessage_EMPTY
+	return &waE2E.ButtonsMessage{HeaderType: &headerType, ContentText: contentText, Buttons: buttons, FooterText: footerText}
 }
 
 func IsValidForButtons(text string) bool {

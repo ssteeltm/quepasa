@@ -1,19 +1,5 @@
 module github.com/nocodeleaks/quepasa/main
 
-replace github.com/nocodeleaks/quepasa/controllers => ./controllers
-
-replace github.com/nocodeleaks/quepasa/library => ./library
-
-replace github.com/nocodeleaks/quepasa/metrics => ./metrics
-
-replace github.com/nocodeleaks/quepasa/models => ./models
-
-replace github.com/nocodeleaks/quepasa/whatsapp => ./whatsapp
-
-replace github.com/nocodeleaks/quepasa/whatsmeow => ./whatsmeow
-
-go 1.19
-
 require (
 	github.com/joho/godotenv v1.5.1
 	github.com/nocodeleaks/quepasa/controllers v0.0.0-00010101000000-000000000000
@@ -70,7 +56,7 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	go.mau.fi/libsignal v0.1.0 // indirect
 	go.mau.fi/util v0.4.1 // indirect
-	go.mau.fi/whatsmeow v0.0.0-20240520180327-81f8f07f1dfb // indirect
+	go.mau.fi/whatsmeow v0.0.0-20240523075404-7f13c31d2cb1 // indirect
 	golang.org/x/crypto v0.23.0 // indirect
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
@@ -79,3 +65,17 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	nhooyr.io/websocket v1.8.11 // indirect
 )
+
+replace github.com/nocodeleaks/quepasa/controllers => ./controllers
+
+replace github.com/nocodeleaks/quepasa/library => ./library
+
+replace github.com/nocodeleaks/quepasa/metrics => ./metrics
+
+replace github.com/nocodeleaks/quepasa/models => ./models
+
+replace github.com/nocodeleaks/quepasa/whatsapp => ./whatsapp
+
+replace github.com/nocodeleaks/quepasa/whatsmeow => ./whatsmeow
+
+go 1.19

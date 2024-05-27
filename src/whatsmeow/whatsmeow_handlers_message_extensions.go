@@ -9,10 +9,10 @@ import (
 	slug "github.com/gosimple/slug"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	log "github.com/sirupsen/logrus"
-	proto "go.mau.fi/whatsmeow/binary/proto"
+	"go.mau.fi/whatsmeow/proto/waE2E"
 )
 
-func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMessage, in *proto.Message) {
+func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMessage, in *waE2E.Message) {
 	logentry := handler.GetLogger()
 	logentry.Tracef("handling knowing message: %v", in)
 
@@ -57,13 +57,13 @@ func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMes
 
 //#region HANDLING TEXT MESSAGES
 
-func HandleTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.Message) {
+func HandleTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.Message) {
 	log.Debug("Received a text message !")
 	out.Type = whatsapp.TextMessageType
 	out.Text = in.GetConversation()
 }
 
-func HandleEditTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.FutureProofMessage) {
+func HandleEditTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.FutureProofMessage) {
 	// never throws , obs !!!!
 	// it came as a single text msg
 	log.Debug("Received a edited text message !")
@@ -71,19 +71,19 @@ func HandleEditTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 	out.Text = in.String()
 }
 
-func HandleProtocolMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ProtocolMessage) {
+func HandleProtocolMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ProtocolMessage) {
 	logentry.Trace("Received a protocol message !")
 
 	switch v := in.GetType(); {
-	case v == proto.ProtocolMessage_MESSAGE_EDIT:
+	case v == waE2E.ProtocolMessage_MESSAGE_EDIT:
 		out.Type = whatsapp.TextMessageType
-		out.Id = in.Key.GetId()
+		out.Id = in.Key.GetID()
 		out.Text = in.EditedMessage.GetConversation()
 		out.Edited = true
 		return
 
-	case v == proto.ProtocolMessage_REVOKE:
-		out.Id = in.Key.GetId()
+	case v == waE2E.ProtocolMessage_REVOKE:
+		out.Id = in.Key.GetID()
 		out.Type = whatsapp.RevokeMessageType
 		return
 
@@ -101,7 +101,7 @@ func HandleProtocolMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, i
 }
 
 // Msg em resposta a outra
-func HandleExtendedTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ExtendedTextMessage) {
+func HandleExtendedTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ExtendedTextMessage) {
 	log.Debug("Received a text|extended message !")
 	out.Type = whatsapp.TextMessageType
 
@@ -110,21 +110,21 @@ func HandleExtendedTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in
 	info := in.ContextInfo
 	if info != nil {
 		out.ForwardingScore = info.GetForwardingScore()
-		out.InReply = info.GetStanzaId()
+		out.InReply = info.GetStanzaID()
 	}
 }
 
-func HandleReactionMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ReactionMessage) {
+func HandleReactionMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ReactionMessage) {
 	log.Debug("Received a Reaction message!")
 
 	out.Type = whatsapp.TextMessageType
 	out.Text = in.GetText()
-	out.InReply = in.Key.GetId()
+	out.InReply = in.Key.GetID()
 }
 
 //#endregion
 
-func HandleButtonsResponseMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ButtonsResponseMessage) {
+func HandleButtonsResponseMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ButtonsResponseMessage) {
 	log.Debug("Received a buttons response message !")
 	out.Type = whatsapp.TextMessageType
 
@@ -137,23 +137,23 @@ func HandleButtonsResponseMessage(log *log.Entry, out *whatsapp.WhatsappMessage,
 		log.Debug(string(b))
 	*/
 
-	out.Text = in.GetSelectedButtonId()
+	out.Text = in.GetSelectedButtonID()
 
 	info := in.ContextInfo
 	if info != nil {
 		out.ForwardingScore = info.GetForwardingScore()
-		out.InReply = info.GetStanzaId()
+		out.InReply = info.GetStanzaID()
 	}
 }
 
-func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ImageMessage) {
+func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ImageMessage) {
 	log.Debug("Received an image message !")
 	out.Type = whatsapp.ImageMessageType
 
 	// in case of caption passed
 	out.Text = in.GetCaption()
 
-	jpeg := GetStringFromBytes(in.JpegThumbnail)
+	jpeg := GetStringFromBytes(in.JPEGThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
 		CanDownload:   true,
 		Mimetype:      in.GetMimetype(),
@@ -164,11 +164,11 @@ func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 	info := in.ContextInfo
 	if info != nil {
 		out.ForwardingScore = info.GetForwardingScore()
-		out.InReply = info.GetStanzaId()
+		out.InReply = info.GetStanzaID()
 	}
 }
 
-func HandleStickerMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.StickerMessage) {
+func HandleStickerMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.StickerMessage) {
 	log.Debug("Received a image|sticker message !")
 
 	if in.GetIsAnimated() {
@@ -187,14 +187,14 @@ func HandleStickerMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pro
 	}
 }
 
-func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.VideoMessage) {
+func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.VideoMessage) {
 	log.Debug("Received a video message !")
 	out.Type = whatsapp.VideoMessageType
 
 	// in case of caption passed
 	out.Text = in.GetCaption()
 
-	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
+	jpeg := base64.StdEncoding.EncodeToString(in.JPEGThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
 		CanDownload: true,
 		Mimetype:    in.GetMimetype(),
@@ -210,14 +210,14 @@ func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 	}
 }
 
-func HandleDocumentMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.DocumentMessage) {
+func HandleDocumentMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.DocumentMessage) {
 	log.Debug("Received a document message !")
 	out.Type = whatsapp.DocumentMessageType
 
 	// in case of caption passed
 	out.Text = in.GetCaption()
 
-	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
+	jpeg := base64.StdEncoding.EncodeToString(in.JPEGThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
 		CanDownload: true,
 		Mimetype:    in.GetMimetype(),
@@ -230,11 +230,11 @@ func HandleDocumentMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 	info := in.ContextInfo
 	if info != nil {
 		out.ForwardingScore = info.GetForwardingScore()
-		out.InReply = info.GetStanzaId()
+		out.InReply = info.GetStanzaID()
 	}
 }
 
-func HandleAudioMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.AudioMessage) {
+func HandleAudioMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.AudioMessage) {
 	log.Debug("Received an audio message !")
 	out.Type = whatsapp.AudioMessageType
 
@@ -248,11 +248,11 @@ func HandleAudioMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 	info := in.ContextInfo
 	if info != nil {
 		out.ForwardingScore = info.GetForwardingScore()
-		out.InReply = info.GetStanzaId()
+		out.InReply = info.GetStanzaID()
 	}
 }
 
-func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.LocationMessage) {
+func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.LocationMessage) {
 	log.Debug("Received a Location message !")
 	out.Type = whatsapp.LocationMessageType
 
@@ -267,7 +267,7 @@ func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 
 	content := []byte("[InternetShortcut]\nURL=" + defaultUrl)
 	length := uint64(len(content))
-	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
+	jpeg := base64.StdEncoding.EncodeToString(in.JPEGThumbnail)
 
 	out.Attachment = &whatsapp.WhatsappAttachment{
 		CanDownload:   false,
@@ -283,7 +283,7 @@ func HandleLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pr
 	out.Attachment.SetContent(&content)
 }
 
-func HandleLiveLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.LiveLocationMessage) {
+func HandleLiveLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.LiveLocationMessage) {
 	log.Debug("Received a Live Location message !")
 	out.Type = whatsapp.LocationMessageType
 
@@ -304,7 +304,7 @@ func HandleLiveLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in
 
 	content := []byte("[InternetShortcut]\nURL=" + defaultUrl)
 	length := uint64(len(content))
-	jpeg := base64.StdEncoding.EncodeToString(in.JpegThumbnail)
+	jpeg := base64.StdEncoding.EncodeToString(in.JPEGThumbnail)
 
 	out.Attachment = &whatsapp.WhatsappAttachment{
 		CanDownload:   false,
@@ -321,7 +321,7 @@ func HandleLiveLocationMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in
 	out.Attachment.SetContent(&content)
 }
 
-func HandleContactMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ContactMessage) {
+func HandleContactMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ContactMessage) {
 	log.Debug("Received a Contact message !")
 	out.Type = whatsapp.ContactMessageType
 

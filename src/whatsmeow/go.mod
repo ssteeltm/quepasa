@@ -15,7 +15,7 @@ require (
 
 require (
 	go.mau.fi/util v0.4.1 // indirect
-	go.mau.fi/whatsmeow v0.0.0-20240520180327-81f8f07f1dfb
+	go.mau.fi/whatsmeow v0.0.0-20240523075404-7f13c31d2cb1
 )
 
 require (
@@ -38,4 +38,4 @@ replace github.com/nocodeleaks/quepasa/whatsapp => ../whatsapp
 
 replace github.com/nocodeleaks/quepasa/library => ../library
 
-go 1.20
+go 1.19

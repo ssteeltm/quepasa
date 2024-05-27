@@ -15,7 +15,7 @@ import (
 
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	whatsmeow "go.mau.fi/whatsmeow"
-	waProto "go.mau.fi/whatsmeow/binary/proto"
+	"go.mau.fi/whatsmeow/proto/waE2E"
 	types "go.mau.fi/whatsmeow/types"
 )
 
@@ -190,7 +190,7 @@ func (source *WhatsmeowConnection) DownloadData(imsg whatsapp.IWhatsappMessage) 
 	downloadable, ok := msg.(whatsmeow.DownloadableMessage)
 	if !ok {
 		source.GetLogger().Debug("not downloadable type, trying default message")
-		waMsg, ok := msg.(*waProto.Message)
+		waMsg, ok := msg.(*waE2E.Message)
 		if !ok {
 			attach := imsg.GetAttachment()
 			if attach != nil {
@@ -334,13 +334,13 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 	// request message text
 	messageText := msg.GetText()
 
-	var newMessage *waProto.Message
+	var newMessage *waE2E.Message
 	if !msg.HasAttachment() {
 		if IsValidForButtons(messageText) {
 			internal := GenerateButtonsMessage(messageText)
-			newMessage = &waProto.Message{ButtonsMessage: internal}
+			newMessage = &waE2E.Message{ButtonsMessage: internal}
 		} else {
-			internal := &waProto.ExtendedTextMessage{Text: &messageText}
+			internal := &waE2E.ExtendedTextMessage{Text: &messageText}
 			if len(msg.InReply) > 0 {
 
 				var sender *string
@@ -355,10 +355,10 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 
 				// getting quoted message if available on cache
 				// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
-				var quoted *waProto.Message
+				var quoted *waE2E.Message
 				cached, _ := source.Handlers.WAHandlers.GetMessage(msg.InReply)
 				if cached.Content != nil {
-					if internal, ok := cached.Content.(*waProto.Message); ok {
+					if internal, ok := cached.Content.(*waE2E.Message); ok {
 						quoted = internal
 					} else {
 						logentry.Warnf("content has an invalid type (%s), on reply to msg id: %s", reflect.TypeOf(cached.Content), msg.InReply)
@@ -367,13 +367,13 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 					logentry.Warnf("message not cached, on reply to msg id: %s", msg.InReply)
 				}
 
-				internal.ContextInfo = &waProto.ContextInfo{
-					StanzaId:      &msg.InReply,
+				internal.ContextInfo = &waE2E.ContextInfo{
+					StanzaID:      &msg.InReply,
 					Participant:   sender,
 					QuotedMessage: quoted,
 				}
 			}
-			newMessage = &waProto.Message{ExtendedTextMessage: internal}
+			newMessage = &waE2E.Message{ExtendedTextMessage: internal}
 		}
 	} else {
 		newMessage, err = source.UploadAttachment(*msg)
@@ -415,7 +415,7 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 }
 
 // func (cli *Client) Upload(ctx context.Context, plaintext []byte, appInfo MediaType) (resp UploadResponse, err error)
-func (conn *WhatsmeowConnection) UploadAttachment(msg whatsapp.WhatsappMessage) (result *waProto.Message, err error) {
+func (conn *WhatsmeowConnection) UploadAttachment(msg whatsapp.WhatsappMessage) (result *waE2E.Message, err error) {
 
 	content := *msg.Attachment.GetContent()
 	if len(content) == 0 {

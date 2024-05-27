@@ -6,4 +6,4 @@ require golang.org/x/sys v0.12.0 // indirect
 
 replace github.com/nocodeleaks/quepasa/whatsapp => ./
 
-go 1.20
+go 1.19

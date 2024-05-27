@@ -55,7 +55,7 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	go.mau.fi/libsignal v0.1.0 // indirect
 	go.mau.fi/util v0.4.1 // indirect
-	go.mau.fi/whatsmeow v0.0.0-20240520180327-81f8f07f1dfb // indirect
+	go.mau.fi/whatsmeow v0.0.0-20240523075404-7f13c31d2cb1 // indirect
 	golang.org/x/crypto v0.23.0 // indirect
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
@@ -75,4 +75,4 @@ replace github.com/nocodeleaks/quepasa/whatsapp => ../whatsapp
 
 replace github.com/nocodeleaks/quepasa/whatsmeow => ../whatsmeow
 
-go 1.20
+go 1.19
