@@ -14,7 +14,6 @@ import (
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	log "github.com/sirupsen/logrus"
 	whatsmeow "go.mau.fi/whatsmeow"
-	"go.mau.fi/whatsmeow/appstate"
 	"go.mau.fi/whatsmeow/binary"
 	types "go.mau.fi/whatsmeow/types"
 	"go.mau.fi/whatsmeow/types/events"
@@ -229,6 +228,8 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		return
 
 	case *events.AppStateSyncComplete:
+		return
+		/* // removing for testing
 		if len(source.Client.Store.PushName) > 0 && evt.Name == appstate.WAPatchCriticalBlock {
 			err := source.Client.SendPresence(types.PresenceAvailable)
 			if err != nil {
@@ -237,6 +238,7 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 				logger.Debug("marked self as available from app state sync")
 			}
 		}
+		*/
 
 	case
 		*events.AppState,
