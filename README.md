@@ -1,5 +1,5 @@
 [![Go Build](https://github.com/nocodeleaks/quepasa/actions/workflows/go.yml/badge.svg)](https://github.com/nocodeleaks/quepasa/actions/workflows/go.yml)
-
+![Static Badge](https://img.shields.io/badge/Current_Version-3.24.527.1116-pink)
 <p align="center">
 	<img src="https://github.com/nocodeleaks/quepasa/raw/main/src/assets/favicon.png" alt="Quepasa-logo" width="100" />	
 	<p align="center">Quepasa is a Open-source, all free license software to exchange messages with Whatsapp Platform</p>
