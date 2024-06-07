@@ -45,8 +45,10 @@ jobs:
       working-directory: ./src
       env: 
         CGO_ENABLED: ${{matrix.go-os == 'windows' && 1 || 0}}
+        GOOS: ${{matrix.go-os}}
+        GOARCH: ${{matrix.go-arch}}
         
-      run: GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o "${{env.BINARYNAME}}" -tags="${{ matrix.build-tags }}" -v ./...
+      run: go build -o "${{env.BINARYNAME}}" -tags="${{ matrix.build-tags }}" -v ./...
       
     - name: Release
       uses: softprops/action-gh-release@v2
