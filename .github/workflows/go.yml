@@ -68,4 +68,4 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         body_path: ".github/RELEASE-TEMPLATE.md"
-        tag_name: $BINARY_NAME
+        tag_name: latest
