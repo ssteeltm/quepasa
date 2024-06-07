@@ -40,7 +40,10 @@ jobs:
         
     - name: Set up binary name 
       run: |
-        BINARY_NAME=${{github.repository}}-${{matrix.goos}}-${{matrix.goarch}}
+        if [[ '${{matrix.goos}}' == 'windows' ]]; then
+            SUFFIX=.exe
+        fi
+        BINARY_NAME=${{github.repository}}-${{matrix.goos}}-${{matrix.goarch}}${SUFFIX}
         echo "BINARY_NAME=$BINARY_NAME" >> $GITHUB_ENV
 
     - name: Install goimports
@@ -50,7 +53,11 @@ jobs:
         
     - name: Build
       working-directory: ./src
-      run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o "$BINARY_NAME" -v ./...
+      run: |
+        if [[ '${{matrix.goos}}' == 'windows' ]]; then
+            CGO_ENABLED=1
+        fi
+        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o "$BINARY_NAME" -v ./...
 
     - name: Test
       working-directory: ./src
