@@ -39,7 +39,7 @@ jobs:
         go-version: ${{env.GOVERSION}}
         
       env: 
-        - BINARYNAME: ${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${{matrix.suffix}}
+        BINARYNAME: ${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${{matrix.suffix}}
 
     - name: Install goimports
       run: |
