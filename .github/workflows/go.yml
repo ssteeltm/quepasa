@@ -50,9 +50,7 @@ jobs:
         
     - name: Build
       working-directory: ./src
-      os: ${{ matrix.goos }}
-      arch: ${{ matrix.goarch }}
-      run: go build -o "$BINARY_NAME" -v ./...
+      run: GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o "$BINARY_NAME" -v ./...
 
     - name: Test
       working-directory: ./src
