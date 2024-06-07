@@ -27,7 +27,7 @@ jobs:
           - { runner: macos-latest,  go-os: darwin,  go-arch: arm64, build-tags: netcgo }
           - { runner: ubuntu-latest, go-os: linux,   go-arch: amd64, }
           - { runner: ubuntu-latest, go-os: linux,   go-arch: arm64, }
-          - { runner: ubuntu-latest, go-os: windows, go-arch: amd64, build-env: CGO_ENABLED=1, suffix: .exe }      
+          - { runner: ubuntu-latest, go-os: windows, go-arch: amd64, suffix: .exe }      
 
     runs-on: ${{ matrix.runner }}
     env: 
@@ -40,11 +40,15 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: ${{env.GOVERSION}}
-        
-        
+                
+    - name: Environment
+      if: matrix.go-os == windows
+      env:
+        CGO_ENABLED: 1
+      
     - name: Build
-      working-directory: ./src
-      run: ${{ matrix.build-env }} GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o "${{env.BINARYNAME}}" -tags="${{ matrix.build-tags }}" -v ./...
+      working-directory: ./src        
+      run: GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o "${{env.BINARYNAME}}" -tags="${{ matrix.build-tags }}" -v ./...
       
     - name: Release
       uses: softprops/action-gh-release@v2
