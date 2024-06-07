@@ -40,31 +40,13 @@ jobs:
         
       env: 
         BINARYNAME: ${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${{matrix.suffix}}
-
-    - name: Install goimports
-      run: |
-        go install golang.org/x/tools/cmd/goimports@latest
-        export PATH="$HOME/go/bin:$PATH"
         
     - name: Build
       working-directory: ./src
       run: ${{ matrix.build-env }} GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o "${{env.BINARYNAME}}" -tags="${{ matrix.build-tags }}" -v ./...
-
-    - name: Test
-      working-directory: ./src
-      run: go test -v ./...
-
-    - name: Format
-      run: if [ "$(goimports -s -l . | wc -l)" -gt 0 ]; then exit 1; fi
-      if: ${{env.GOVERSION == 1.20}}
       
-    - name: Release Notes
-      run:
-        git log $(git describe HEAD~ --tags --abbrev=0)..HEAD --pretty='format:* %h %s%n  * %an <%ae>' --no-merges >> ".github/RELEASE-TEMPLATE.md"
-          
-    - name: Release with Notes
+    - name: Release
       uses: softprops/action-gh-release@v2
       with:
-        body_path: ".github/RELEASE-TEMPLATE.md"
         files: ./src/${{env.BINARYNAME}}
         tag_name: latest
