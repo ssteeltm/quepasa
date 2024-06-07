@@ -12,36 +12,38 @@ on:
 permissions:
     contents: write
     packages: write
-    
+
+env:
+  GOVERSION: "1.20"
+  
 jobs:
 
-  build:
-    runs-on: ${{ matrix.runner }}
+  build:    
     strategy:
       fail-fast: false
       matrix:
-        go-version: ["1.20"]
         include:
-          - { runner: macos-latest,  goos: darwin,  goarch: amd64, tags: netcgo        }
-          - { runner: macos-latest,  goos: darwin,  goarch: arm64, tags: netcgo        }
-          - { runner: ubuntu-latest, goos: linux,   goarch: amd64, env:  CGO_ENABLED=0 }
-          - { runner: ubuntu-latest, goos: linux,   goarch: arm64, env:  CGO_ENABLED=0 }
-          - { runner: windows-latest, goos: windows, goarch: amd64, env:  CGO_ENABLED=1 }
-          
+          - { runner: macos-latest,  go-os: darwin,  go-arch: amd64, tags: netcgo        }
+          - { runner: macos-latest,  go-os: darwin,  go-arch: arm64, tags: netcgo        }
+          - { runner: ubuntu-latest, go-os: linux,   go-arch: amd64, env:  CGO_ENABLED=0 }
+          - { runner: ubuntu-latest, go-os: linux,   go-arch: arm64, env:  CGO_ENABLED=0 }
+          - { runner: windows-latest, go-os: windows, go-arch: amd64, env:  CGO_ENABLED=0 }
+
+    runs-on: ${{ matrix.runner }}
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Go ${{ matrix.go-version }}
+    - name: Set up Go ${GOVERSION}
       uses: actions/setup-go@v3
       with:
-        go-version: ${{ matrix.go-version }}
+        go-version: ${GOVERSION}
         
     - name: Set up binary name 
       run: |
-        if [[ '${{matrix.goos}}' == 'windows' ]]; then
+        if [[ '${{matrix.go-os}}' == 'windows' ]]; then
             SUFFIX=.exe
         fi
-        BINARY_NAME=${{github.repository}}-${{matrix.goos}}-${{matrix.goarch}}${SUFFIX}
+        BINARY_NAME=${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${SUFFIX}
         echo "BINARY_NAME=$BINARY_NAME" >> $GITHUB_ENV
 
     - name: Install goimports
@@ -52,10 +54,10 @@ jobs:
     - name: Build
       working-directory: ./src
       run: |
-        if [[ '${{matrix.goos}}' == 'windows' ]]; then
+        if [[ '${{matrix.go-os}}' == 'windows' ]]; then
             export CGO_ENABLED=1
         fi
-        GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o "$BINARY_NAME" -v ./...
+        GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o "$BINARY_NAME" -v ./...
 
     - name: Test
       working-directory: ./src
@@ -63,7 +65,7 @@ jobs:
 
     - name: Format
       run: if [ "$(goimports -s -l . | wc -l)" -gt 0 ]; then exit 1; fi
-      if: matrix.go-version == 1.20
+      if: ${GOVERSION} == 1.20
       
     - name: Release Notes
       run:
