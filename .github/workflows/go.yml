@@ -65,7 +65,7 @@ jobs:
 
     - name: Format
       run: if [ "$(goimports -s -l . | wc -l)" -gt 0 ]; then exit 1; fi
-      if: ${{env.GOVERSION == "1.20"}}
+      if: ${{env.GOVERSION == 1.20}}
       
     - name: Release Notes
       run:
