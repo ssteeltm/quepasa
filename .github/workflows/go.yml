@@ -38,9 +38,8 @@ jobs:
       with:
         go-version: ${{env.GOVERSION}}
         
-    - name: Set up binary name 
       env: 
-        - BINARY_NAME: ${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${{matrix.suffix}}
+        - BINARYNAME: ${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${{matrix.suffix}}
 
     - name: Install goimports
       run: |
@@ -49,7 +48,7 @@ jobs:
         
     - name: Build
       working-directory: ./src
-      run: ${{ matrix.build-env }} GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o "$BINARY_NAME" -tags="${{ matrix.build-tags }}" -v ./...
+      run: ${{ matrix.build-env }} GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o "${{env.BINARYNAME}}" -tags="${{ matrix.build-tags }}" -v ./...
 
     - name: Test
       working-directory: ./src
@@ -67,5 +66,5 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         body_path: ".github/RELEASE-TEMPLATE.md"
-        files: ./src/${{env.BINARY_NAME}}
+        files: ./src/${{env.BINARYNAME}}
         tag_name: latest
