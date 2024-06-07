@@ -25,6 +25,8 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: ${{ matrix.go-version }}
+        
+    - name: Set up binary name 
       run: |
         BINARY_NAME=${{github.repository}}-$GOOS-$GOARCH
         echo "BINARY_NAME=$BINARY_NAME" >> $GITHUB_ENV
