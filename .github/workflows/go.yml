@@ -28,18 +28,18 @@ jobs:
           - { runner: ubuntu-latest, go-os: linux,   go-arch: amd64, }
           - { runner: ubuntu-latest, go-os: linux,   go-arch: arm64, }
           - { runner: windows-latest, go-os: windows, go-arch: amd64, build-env: CGO_ENABLED=1, suffix: .exe }
+        env: 
+        BINARYNAME: ${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${{matrix.suffix}}
 
     runs-on: ${{ matrix.runner }}
     steps:
-      env: 
-        BINARYNAME: ${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${{matrix.suffix}}
-        
     - uses: actions/checkout@v4
 
     - name: Set up Go ${{env.GOVERSION}}
       uses: actions/setup-go@v3
       with:
         go-version: ${{env.GOVERSION}}
+        
         
     - name: Build
       working-directory: ./src
