@@ -52,12 +52,12 @@ func RegisterAPIControllers(r chi.Router) {
 		// deprecated, discard/remove on next version
 		r.Post(endpoint+"/senddocument", SendDocumentAPIHandlerV2)
 
-		r.Post(endpoint+"/sendurl", SendAnyFromUrl)
+		r.Post(endpoint+"/sendurl", SendAny)
 		r.Post(endpoint+"/sendbinary/{chatid}/{filename}/{text}", SendDocumentFromBinary)
 		r.Post(endpoint+"/sendbinary/{chatid}/{filename}", SendDocumentFromBinary)
 		r.Post(endpoint+"/sendbinary/{chatid}", SendDocumentFromBinary)
 		r.Post(endpoint+"/sendbinary", SendDocumentFromBinary)
-		r.Post(endpoint+"/sendencoded", SendDocumentFromEncoded)
+		r.Post(endpoint+"/sendencoded", SendAny)
 
 		// ----------------------------------------
 		// SENDING MSG ----------------------------

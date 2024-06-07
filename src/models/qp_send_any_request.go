@@ -24,20 +24,22 @@ type QpSendAnyRequest struct {
 	// Url for download content
 	Url string `json:"url,omitempty"`
 
-	// Base64 embed content
+	// BASE64 embed content
 	Content string `json:"content,omitempty"`
 }
 
+// From BASE64 content
 func (source *QpSendAnyRequest) GenerateEmbedContent() (err error) {
-	content, err := base64.StdEncoding.DecodeString(source.Content)
+	decoded, err := base64.StdEncoding.DecodeString(source.Content)
 	if err != nil {
 		return
 	}
 
-	source.QpSendRequest.Content = content
+	source.QpSendRequest.Content = decoded
 	return
 }
 
+// From Url content
 func (source *QpSendAnyRequest) GenerateUrlContent() (err error) {
 	resp, err := http.Get(source.Url)
 	if err != nil {
@@ -46,7 +48,7 @@ func (source *QpSendAnyRequest) GenerateUrlContent() (err error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		err = fmt.Errorf("error on generate content from QpSendAnyRequest, unexpected status code: %v", resp.StatusCode)
+		err = fmt.Errorf("error on generate url content, unexpected status code: %v", resp.StatusCode)
 
 		logentry := source.GetLogger()
 		logentry.Error(err)
@@ -60,9 +62,17 @@ func (source *QpSendAnyRequest) GenerateUrlContent() (err error) {
 
 	source.QpSendRequest.Content = content
 
+	if resp.ContentLength > -1 {
+		source.FileLength = uint64(resp.ContentLength)
+	}
+
+	if len(source.Mimetype) == 0 {
+		source.Mimetype = resp.Header.Get("Content-Type")
+	}
+
 	// setting filename if empty
-	if len(source.QpSendRequest.FileName) == 0 {
-		source.QpSendRequest.FileName = path.Base(source.Url)
+	if len(source.FileName) == 0 {
+		source.FileName = path.Base(source.Url)
 	}
 
 	return

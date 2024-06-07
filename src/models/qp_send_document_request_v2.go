@@ -7,28 +7,21 @@ type QPSendDocumentRequestV2 struct {
 }
 
 func (source *QPSendDocumentRequestV2) ToQpSendRequest() *QpSendRequest {
-	var request *QpSendRequest
-	if len(source.Attachment.Base64) > 0 {
-		RequestEncoded := &QpSendRequestEncoded{
-			Content: source.Attachment.Base64,
-		}
+	request := &QpSendAnyRequest{}
+	request.ChatId = source.Recipient
+	request.Text = source.Message
 
-		RequestEncoded.ChatId = source.Recipient
-		RequestEncoded.GenerateContent()
-		request = &RequestEncoded.QpSendRequest
-		request.Mimetype = source.Attachment.MIME
-		request.FileName = source.Attachment.FileName
+	request.Mimetype = source.Attachment.MIME
+	request.FileName = source.Attachment.FileName
+
+	if len(source.Attachment.Base64) > 0 {
+		request.Content = source.Attachment.Base64
+		request.GenerateEmbedContent()
 
 	} else if len(source.Attachment.Url) > 0 {
-		RequestUrl := &QpSendRequestUrl{
-			Url: source.Attachment.Url,
-		}
-
-		RequestUrl.ChatId = source.Recipient
-		RequestUrl.GenerateContent()
-		request = &RequestUrl.QpSendRequest
+		request.Url = source.Attachment.Url
+		request.GenerateUrlContent()
 	}
 
-	request.Text = source.Message
-	return request
+	return &request.QpSendRequest
 }

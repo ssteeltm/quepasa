@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -115,10 +116,19 @@ func GetAttachFromUploadedFile(r *http.Request, logentry *log.Entry) (attach *Wh
 
 	attach = &WhatsappAttachment{}
 	attach.SetContent(&content)
-	attach.Mimetype = reader.Header.Get("content-type")
-	attach.FileLength = uint64(reader.Size)
-	attach.FileName = reader.Filename
+	attach.Mimetype = reader.Header.Get("Content-Type")
 
+	InformedLength := reader.Header.Get("Content-Length")
+	if len(InformedLength) > 0 {
+		length, err := strconv.ParseUint(InformedLength, 10, 64)
+		if err == nil {
+			attach.FileLength = length
+		}
+	} else {
+		attach.FileLength = uint64(reader.Size)
+	}
+
+	attach.FileName = reader.Filename
 	models.SecureAndCustomizeAttach(attach, logentry)
 
 	return
