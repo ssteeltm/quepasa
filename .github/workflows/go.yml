@@ -27,7 +27,7 @@ jobs:
           - { runner: macos-latest,  go-os: darwin,  go-arch: arm64, build-tags: netcgo }
           - { runner: ubuntu-latest, go-os: linux,   go-arch: amd64, }
           - { runner: ubuntu-latest, go-os: linux,   go-arch: arm64, }
-          - { runner: windows-latest, go-os: windows, go-arch: amd64, build-env: CGO_ENABLED=1, suffix: .exe }      
+          - { runner: ubuntu-latest, go-os: windows, go-arch: amd64, build-env: CGO_ENABLED=1, suffix: .exe }      
 
     runs-on: ${{ matrix.runner }}
     env: 
