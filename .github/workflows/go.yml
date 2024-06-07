@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+    contents: write
+    packages: write
+    
 jobs:
 
   build:
@@ -58,4 +62,3 @@ jobs:
         body_path: ".github/RELEASE-TEMPLATE.md"
         draft: true
         files: ./src/${{env.BINARY_NAME}}
-        token: ${{ secrets.PERSONALTOKEN }}
