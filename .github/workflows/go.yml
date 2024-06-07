@@ -27,7 +27,7 @@ jobs:
           - { runner: macos-latest,  go-os: darwin,  go-arch: arm64, build-tags: netcgo }
           - { runner: ubuntu-latest, go-os: linux,   go-arch: amd64, }
           - { runner: ubuntu-latest, go-os: linux,   go-arch: arm64, }
-          - { runner: windows-latest, go-os: windows, go-arch: amd64, build-env: CGO_ENABLED=1 }
+          - { runner: windows-latest, go-os: windows, go-arch: amd64, build-env: CGO_ENABLED=1, suffix: .exe }
 
     runs-on: ${{ matrix.runner }}
     steps:
@@ -39,12 +39,8 @@ jobs:
         go-version: ${{env.GOVERSION}}
         
     - name: Set up binary name 
-      run: |
-        if [[ '${{matrix.go-os}}' == 'windows' ]]; then
-            SUFFIX=.exe
-        fi
-        BINARY_NAME=${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${SUFFIX}
-        echo "BINARY_NAME=$BINARY_NAME" >> $GITHUB_ENV
+      env: 
+        - BINARY_NAME: ${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${{matrix.suffix}}
 
     - name: Install goimports
       run: |
