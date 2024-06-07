@@ -23,11 +23,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { runner: macos-latest,  go-os: darwin,  go-arch: amd64, tags: netcgo        }
-          - { runner: macos-latest,  go-os: darwin,  go-arch: arm64, tags: netcgo        }
-          - { runner: ubuntu-latest, go-os: linux,   go-arch: amd64, env:  CGO_ENABLED=0 }
-          - { runner: ubuntu-latest, go-os: linux,   go-arch: arm64, env:  CGO_ENABLED=0 }
-          - { runner: windows-latest, go-os: windows, go-arch: amd64, env:  CGO_ENABLED=0 }
+          - { runner: macos-latest,  go-os: darwin,  go-arch: amd64, build-tags: netcgo }
+          - { runner: macos-latest,  go-os: darwin,  go-arch: arm64, build-tags: netcgo }
+          - { runner: ubuntu-latest, go-os: linux,   go-arch: amd64, }
+          - { runner: ubuntu-latest, go-os: linux,   go-arch: arm64, }
+          - { runner: windows-latest, go-os: windows, go-arch: amd64, build-env: CGO_ENABLED=1 }
 
     runs-on: ${{ matrix.runner }}
     steps:
@@ -53,11 +53,7 @@ jobs:
         
     - name: Build
       working-directory: ./src
-      run: |
-        if [[ '${{matrix.go-os}}' == 'windows' ]]; then
-            export CGO_ENABLED=1
-        fi
-        GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o "$BINARY_NAME" -v ./...
+      run: ${{ matrix.build-env }} GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o "$BINARY_NAME" -tags="${{ matrix.build-tags }}" -v ./...
 
     - name: Test
       working-directory: ./src
