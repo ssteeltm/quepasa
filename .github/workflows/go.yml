@@ -42,12 +42,13 @@ jobs:
         go-version: ${{env.GOVERSION}}
                 
     - name: Environment
-      if: matrix.go-os == windows
-      env:
-        CGO_ENABLED: 1
+      
       
     - name: Build
-      working-directory: ./src        
+      working-directory: ./src
+      env: 
+        CGO_ENABLED: ${{matrix.go-os == windows && 1 || 0}}
+        
       run: GOOS=${{ matrix.go-os }} GOARCH=${{ matrix.go-arch }} go build -o "${{env.BINARYNAME}}" -tags="${{ matrix.build-tags }}" -v ./...
       
     - name: Release
