@@ -55,7 +55,7 @@ jobs:
       working-directory: ./src
       run: |
         if [[ '${{matrix.goos}}' == 'windows' ]]; then
-            CGO_ENABLED=1
+            export CGO_ENABLED=1
         fi
         GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o "$BINARY_NAME" -v ./...
 
