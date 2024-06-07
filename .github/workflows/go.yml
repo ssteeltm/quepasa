@@ -31,15 +31,15 @@ jobs:
 
     runs-on: ${{ matrix.runner }}
     steps:
+      env: 
+        BINARYNAME: ${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${{matrix.suffix}}
+        
     - uses: actions/checkout@v4
 
     - name: Set up Go ${{env.GOVERSION}}
       uses: actions/setup-go@v3
       with:
         go-version: ${{env.GOVERSION}}
-        
-      env: 
-        BINARYNAME: ${{github.repository}}-${{matrix.go-os}}-${{matrix.go-arch}}${{matrix.suffix}}
         
     - name: Build
       working-directory: ./src
