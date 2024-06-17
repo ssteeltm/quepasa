@@ -34,6 +34,9 @@ type QpSendRequest struct {
 	// (Optional) mime type to facilitate correct delivery
 	Mimetype string `json:"mime,omitempty"`
 
+	// (Optional) time in seconds for audio/video contents
+	Seconds uint32 `json:"seconds,omitempty"`
+
 	Content []byte
 }
 
@@ -114,6 +117,7 @@ func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAt
 		Mimetype:    source.Mimetype,
 		FileLength:  source.FileLength,
 		FileName:    source.FileName,
+		Seconds:     source.Seconds,
 	}
 
 	// validating content length

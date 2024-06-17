@@ -21,7 +21,7 @@ type WhatsappAttachment struct {
 	// video | image | location (base64 image)
 	JpegThumbnail string `json:"thumbnail,omitempty"`
 
-	// audio
+	// audio/video
 	Seconds uint32 `json:"seconds,omitempty"`
 
 	// audio, used for define that this attach should be sent as ptt compatible, regards its incompatible mime type
