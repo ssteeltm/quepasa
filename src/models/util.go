@@ -21,7 +21,7 @@ func GetFormUser(r *http.Request) (*QpUser, error) {
 
 	user, ok := claims["user_id"].(string)
 	if !ok {
-		return nil, errors.New("User ID missing")
+		return nil, errors.New("missing user id")
 	}
 
 	return WhatsappService.DB.Users.Find(user)
@@ -66,7 +66,7 @@ func GetChatId(r *http.Request) string {
 	return GetRequestParameter(r, "chatid")
 }
 
-//region TRIKCS
+//region TRICKS
 
 /*
 <summary>
@@ -97,13 +97,13 @@ func ToBooleanWithDefault(s string, value bool) bool {
 /*
 <summary>
 
-	URL has key, lowercase comparrison
+	URL has key, lowercase comparison
 
 </summary>
 */
 func QueryHasKey(query *url.URL, key string) bool {
 	for k := range query.Query() {
-		if strings.ToLower(k) == strings.ToLower(key) {
+		if strings.EqualFold(k, key) {
 			return true
 		}
 	}
@@ -113,7 +113,7 @@ func QueryHasKey(query *url.URL, key string) bool {
 /*
 <summary>
 
-	Get URL Value from Key, lowercase comparrison
+	Get URL Value from Key, lowercase comparison
 
 </summary>
 */

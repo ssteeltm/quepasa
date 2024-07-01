@@ -35,17 +35,23 @@ func ReceiveAPIHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	queryValues := r.URL.Query()
-	paramTimestamp := queryValues.Get("timestamp")
-	timestamp, err := GetTimestamp(paramTimestamp)
-	if err != nil {
+	if server.Handler == nil {
 		metrics.MessageReceiveErrors.Inc()
+		err = fmt.Errorf("handlers not attached")
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
 	}
 
 	response.Total = uint64(server.Handler.GetTotal())
+
+	timestamp, err := GetTimestamp(r)
+	if err != nil {
+		metrics.MessageReceiveErrors.Inc()
+		response.ParseError(err)
+		RespondInterface(w, response)
+		return
+	}
 
 	messages := GetMessages(server, timestamp)
 	metrics.MessagesReceived.Add(float64(len(messages)))
