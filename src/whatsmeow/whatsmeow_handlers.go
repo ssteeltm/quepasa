@@ -14,6 +14,7 @@ import (
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	log "github.com/sirupsen/logrus"
 	whatsmeow "go.mau.fi/whatsmeow"
+	"go.mau.fi/whatsmeow/appstate"
 	"go.mau.fi/whatsmeow/binary"
 	types "go.mau.fi/whatsmeow/types"
 	"go.mau.fi/whatsmeow/types/events"
@@ -228,17 +229,15 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		return
 
 	case *events.AppStateSyncComplete:
-		return
-		/* // removing for testing
 		if len(source.Client.Store.PushName) > 0 && evt.Name == appstate.WAPatchCriticalBlock {
-			err := source.Client.SendPresence(types.PresenceAvailable)
+			err := source.Client.SendPresence(WhatsmeowPresence)
 			if err != nil {
-				logger.Warnf("failed to send available presence: %v", err)
+				logger.Warnf("failed to send '%s' presence: %v", WhatsmeowPresence, err)
 			} else {
-				logger.Debug("marked self as available from app state sync")
+				logger.Debugf("marked self as '%s' from app state sync", WhatsmeowPresence)
 			}
 		}
-		*/
+		return
 
 	case
 		*events.AppState,
@@ -270,11 +269,11 @@ func PushNameSetting(cli *whatsmeow.Client, logger *log.Entry) {
 	}
 	// Send presence available when connecting and when the pushname is changed.
 	// This makes sure that outgoing messages always have the right pushname.
-	err := cli.SendPresence(types.PresenceAvailable)
+	err := cli.SendPresence(WhatsmeowPresence)
 	if err != nil {
-		logger.Warnf("failed to send available presence: %v", err)
+		logger.Warnf("failed to send '%s' presence: %v", WhatsmeowPresence, err)
 	} else {
-		logger.Debug("marked self as available")
+		logger.Debugf("marked self as '%s'", WhatsmeowPresence)
 	}
 }
 
