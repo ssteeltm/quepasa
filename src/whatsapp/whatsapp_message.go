@@ -60,7 +60,7 @@ func (m WhatsappOrderedMessages) Less(i, j int) bool {
 	if m[i].Timestamp == m[j].Timestamp {
 		return m[i].Id < m[j].Id
 	}
-	return m[i].Timestamp.After(m[j].Timestamp)
+	return m[i].Timestamp.Before(m[j].Timestamp)
 }
 func (m WhatsappOrderedMessages) Swap(i, j int) { m[i], m[j] = m[j], m[i] }
 

@@ -42,12 +42,18 @@ func StringToTimestamp(timestamp string) (result int64, err error) {
 	return
 }
 
-// Retrieve messages with timestamp parameter
-// Sorting then
-func GetMessages(server *models.QpWhatsappServer, timestamp int64) (messages []whatsapp.WhatsappMessage) {
+/*
+<summary>
+
+	Retrieve messages with timestamp parameter
+	Sorting then, by timestamp and id, desc
+
+</summary>
+*/
+func GetOrderedMessages(server *models.QpWhatsappServer, timestamp int64) (messages []whatsapp.WhatsappMessage) {
 	searchTime := time.Unix(timestamp, 0)
 	messages = server.GetMessages(searchTime)
-	sort.Sort(whatsapp.WhatsappOrderedMessages(messages))
+	sort.Sort(sort.Reverse(whatsapp.WhatsappOrderedMessages(messages)))
 	return
 }
 

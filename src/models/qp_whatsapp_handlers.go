@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -178,24 +179,52 @@ func (source *QPWhatsappHandlers) OnDisconnected() {
 // Salva em cache e inicia gatilhos assíncronos
 func (handler *QPWhatsappHandlers) appendMsgToCache(msg *whatsapp.WhatsappMessage) {
 
-	handler.sync.Lock() // Sinal vermelho para atividades simultâneas
-	// Apartir deste ponto só se executa um por vez
+	handler.sync.Lock() // await for avoid simultaneous calls
 
 	normalizedId := msg.Id
 	normalizedId = strings.ToUpper(normalizedId) // ensure that is an uppercase string before save
 
-	// saving on local normalized cache, do not afect remote msgs
+	// saving on local normalized cache, do not affect remote msgs
 	handler.messages[normalizedId] = *msg
 
-	handler.sync.Unlock() // Sinal verde !
+	handler.sync.Unlock()
 
-	// Executando WebHook de forma assincrona
+	// should cleanup old messages ?
+	length := ENV.CacheLength()
+	handler.CleanUp(length)
+
+	// continue to external dispatchers
 	handler.Trigger(msg)
 }
 
+// Remove old ones, by timestamp, until a maximum length
+func (handler *QPWhatsappHandlers) CleanUp(maximum uint64) {
+	max := int(maximum)
+	if max > 0 {
+		handler.sync.Lock() // await for avoid simultaneous calls
+
+		length := len(handler.messages)
+		if length > max {
+			messages := []whatsapp.WhatsappMessage{}
+			for _, item := range handler.messages {
+				messages = append(messages, item)
+			}
+
+			sort.Sort(whatsapp.WhatsappOrderedMessages(messages))
+
+			amount := length - max
+			for i := 0; i < amount; i++ {
+				key := strings.ToUpper(messages[i].Id)
+				delete(handler.messages, key)
+			}
+		}
+
+		handler.sync.Unlock()
+	}
+}
+
 func (handler *QPWhatsappHandlers) GetMessages(timestamp time.Time) (messages []whatsapp.WhatsappMessage) {
-	handler.sync.Lock() // Sinal vermelho para atividades simultâneas
-	// Apartir deste ponto só se executa um por vez
+	handler.sync.Lock() // await for avoid simultaneous calls
 
 	for _, item := range handler.messages {
 		if item.Timestamp.After(timestamp) {
@@ -203,13 +232,13 @@ func (handler *QPWhatsappHandlers) GetMessages(timestamp time.Time) (messages []
 		}
 	}
 
-	handler.sync.Unlock() // Sinal verde !
+	handler.sync.Unlock()
 	return
 }
 
 // Returns the first in time message stored in cache, used for resync history with message services like whatsapp
 func (handler *QPWhatsappHandlers) GetLeadingMessage() (message *whatsapp.WhatsappMessage) {
-	handler.sync.Lock()
+	handler.sync.Lock() // await for avoid simultaneous calls
 
 	now := time.Now()
 	for _, item := range handler.messages {
@@ -224,8 +253,7 @@ func (handler *QPWhatsappHandlers) GetLeadingMessage() (message *whatsapp.Whatsa
 }
 
 func (handler *QPWhatsappHandlers) GetMessagesByPrefix(id string) (messages []whatsapp.WhatsappMessage) {
-	handler.sync.Lock() // Sinal vermelho para atividades simultâneas
-	// Apartir deste ponto só se executa um por vez
+	handler.sync.Lock() // await for avoid simultaneous calls
 
 	for _, item := range handler.messages {
 		if strings.HasPrefix(item.Id, id) {
@@ -233,25 +261,24 @@ func (handler *QPWhatsappHandlers) GetMessagesByPrefix(id string) (messages []wh
 		}
 	}
 
-	handler.sync.Unlock() // Sinal verde !
+	handler.sync.Unlock()
 	return
 }
 
 // Get a single message if exists
 func (handler *QPWhatsappHandlers) GetMessage(id string) (msg whatsapp.WhatsappMessage, err error) {
-	handler.sync.Lock() // Sinal vermelho para atividades simultâneas
-	// Apartir deste ponto só se executa um por vez
+	handler.sync.Lock() // await for avoid simultaneous calls
 
 	normalizedId := id
 	normalizedId = strings.ToUpper(normalizedId) // ensure that is an uppercase string before save
 
-	// getting from local normalized cache, do not afect remote msgs
+	// getting from local normalized cache, do not affect remote msgs
 	msg, ok := handler.messages[normalizedId]
 	if !ok {
 		err = fmt.Errorf("message not present on handlers (cache) id: %s", normalizedId)
 	}
 
-	handler.sync.Unlock() // Sinal verde !
+	handler.sync.Unlock()
 	return msg, err
 }
 
@@ -273,7 +300,7 @@ func (source *QPWhatsappHandlers) Trigger(payload *whatsapp.WhatsappMessage) {
 
 // Register an event handler that triggers on a new message received on cache
 func (handler *QPWhatsappHandlers) Register(evt QpWebhookHandlerInterface) {
-	handler.sync.Lock() // Sinal vermelho para atividades simultâneas
+	handler.sync.Lock() // await for avoid simultaneous calls
 
 	if !handler.IsRegistered(evt) {
 		handler.aeh = append(handler.aeh, evt)
@@ -284,7 +311,7 @@ func (handler *QPWhatsappHandlers) Register(evt QpWebhookHandlerInterface) {
 
 // Removes an specific event handler
 func (handler *QPWhatsappHandlers) UnRegister(evt QpWebhookHandlerInterface) {
-	handler.sync.Lock() // Sinal vermelho para atividades simultâneas
+	handler.sync.Lock() // await for avoid simultaneous calls
 
 	newHandlers := []QpWebhookHandlerInterface{}
 	for _, v := range handler.aeh {
@@ -301,7 +328,7 @@ func (handler *QPWhatsappHandlers) UnRegister(evt QpWebhookHandlerInterface) {
 
 // Removes an specific event handler
 func (handler *QPWhatsappHandlers) Clear() {
-	handler.sync.Lock() // Sinal vermelho para atividades simultâneas
+	handler.sync.Lock() // await for avoid simultaneous calls
 
 	// updating
 	handler.aeh = nil

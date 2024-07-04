@@ -53,7 +53,7 @@ func ReceiveAPIHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	messages := GetMessages(server, timestamp)
+	messages := GetOrderedMessages(server, timestamp)
 	metrics.MessagesReceived.Add(float64(len(messages)))
 
 	response.Server = server.QpServer

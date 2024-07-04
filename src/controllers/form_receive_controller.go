@@ -34,7 +34,7 @@ func FormReceiveController(w http.ResponseWriter, r *http.Request) {
 			data.ErrorMessage = fmt.Sprintf("%s; %s", err.Error(), data.ErrorMessage)
 		}
 
-		messages := GetMessages(server, timestamp)
+		messages := GetOrderedMessages(server, timestamp)
 		data.Messages = messages
 	}
 
