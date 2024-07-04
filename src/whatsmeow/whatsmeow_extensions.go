@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/proto"
 
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
@@ -223,4 +224,23 @@ func IsValidForButtons(text string) bool {
 		}
 	}
 	return false
+}
+
+/*
+<summary>
+
+	Send defined presence when connecting and when the pushname is changed.
+	This makes sure that outgoing messages always have the right pushname.
+
+<summary/>
+*/
+func SendPresence(client *whatsmeow.Client, presence types.Presence, from string, logentry *log.Entry) {
+	if len(client.Store.PushName) > 0 {
+		err := client.SendPresence(presence)
+		if err != nil {
+			logentry.Warnf("failed to send presence: '%s', error: %s, from: %s", presence, err.Error(), from)
+		} else {
+			logentry.Debugf("marked self as '%s', from: %s", presence, from)
+		}
+	}
 }

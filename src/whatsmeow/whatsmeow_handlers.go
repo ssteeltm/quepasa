@@ -149,6 +149,12 @@ func (source *WhatsmeowHandlers) Register() (err error) {
 	return
 }
 
+func (source *WhatsmeowHandlers) SendPresence(presence types.Presence, from string) {
+	logentry := source.GetLogger()
+	client := source.Client
+	SendPresence(client, presence, from, logentry)
+}
+
 var historySyncID int32
 var startupTime = time.Now().Unix()
 
@@ -193,7 +199,7 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 			// importante para zerar o tempo entre tentativas em caso de erro
 			source.Client.AutoReconnectErrors = 0
 
-			PushNameSetting(source.Client, logger)
+			source.SendPresence(WhatsmeowPresence, "'connected' event")
 		}
 
 		if source.WAHandlers != nil && !source.WAHandlers.IsInterfaceNil() {
@@ -202,7 +208,7 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		return
 
 	case *events.PushNameSetting:
-		PushNameSetting(source.Client, logger)
+		source.SendPresence(WhatsmeowPresence, "'push name setting' event")
 		return
 
 	case *events.Disconnected:
@@ -229,13 +235,8 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		return
 
 	case *events.AppStateSyncComplete:
-		if len(source.Client.Store.PushName) > 0 && evt.Name == appstate.WAPatchCriticalBlock {
-			err := source.Client.SendPresence(WhatsmeowPresence)
-			if err != nil {
-				logger.Warnf("failed to send '%s' presence: %v", WhatsmeowPresence, err)
-			} else {
-				logger.Debugf("marked self as '%s' from app state sync", WhatsmeowPresence)
-			}
+		if evt.Name == appstate.WAPatchCriticalBlock {
+			source.SendPresence(WhatsmeowPresence, "'app state sync complete' event")
 		}
 		return
 
@@ -260,20 +261,6 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 	default:
 		logger.Debugf("event not handled: %v", reflect.TypeOf(evt))
 		return
-	}
-}
-
-func PushNameSetting(cli *whatsmeow.Client, logger *log.Entry) {
-	if len(cli.Store.PushName) == 0 {
-		return
-	}
-	// Send presence available when connecting and when the pushname is changed.
-	// This makes sure that outgoing messages always have the right pushname.
-	err := cli.SendPresence(WhatsmeowPresence)
-	if err != nil {
-		logger.Warnf("failed to send '%s' presence: %v", WhatsmeowPresence, err)
-	} else {
-		logger.Debugf("marked self as '%s'", WhatsmeowPresence)
 	}
 }
 
