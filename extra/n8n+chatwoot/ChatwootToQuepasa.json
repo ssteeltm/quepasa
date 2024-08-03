@@ -36,57 +36,6 @@
       "id": "42faa342-3c71-45fc-b1e9-dfd1b7b2385c"
     },
     {
-      "parameters": {
-        "respondWith": "text",
-        "responseBody": "only for outbound messages",
-        "options": {
-          "responseCode": 200
-        }
-      },
-      "name": "Is Incoming !",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [
-        -7020,
-        4560
-      ],
-      "id": "9408cd82-3cf7-4fe8-803e-e93735010fea"
-    },
-    {
-      "parameters": {
-        "respondWith": "text",
-        "responseBody": "do not forwarding private messages",
-        "options": {
-          "responseCode": 200
-        }
-      },
-      "name": "Is Private !",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [
-        -6400,
-        4720
-      ],
-      "id": "5030cb26-9100-4038-91fe-113bcf09f11c"
-    },
-    {
-      "parameters": {
-        "respondWith": "text",
-        "responseBody": "do not forwarding bot messages",
-        "options": {
-          "responseCode": 200
-        }
-      },
-      "name": "From Customer !",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [
-        -6140,
-        4720
-      ],
-      "id": "6aab869d-4aed-4060-936e-dda76ccb406b"
-    },
-    {
       "parameters": {},
       "name": "Message Created Event",
       "type": "n8n-nodes-base.noOp",
@@ -127,20 +76,6 @@
         5900
       ],
       "id": "18e8ab49-25c4-41cb-9243-d4076d34a940"
-    },
-    {
-      "parameters": {
-        "respondWith": "noData",
-        "options": {}
-      },
-      "id": "d800b94c-f9dc-4a2d-80ba-b7675684b1bc",
-      "name": "Respond to Webhook",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [
-        -4480,
-        3940
-      ]
     },
     {
       "parameters": {
@@ -918,7 +853,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.30) Updates\n* upper msg id\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.31) Updates\n* respond msgs\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 184.30667672289223,
         "width": 457.17616077915915
       },
@@ -1068,22 +1003,6 @@
         -6280,
         5120
       ]
-    },
-    {
-      "parameters": {
-        "respondWith": "noData",
-        "options": {
-          "responseCode": 200
-        }
-      },
-      "name": "Normal Exit (RAS)",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [
-        -2780,
-        5140
-      ],
-      "id": "9e3e5773-53eb-4421-a1ba-0610d12c5c0b"
     },
     {
       "parameters": {
@@ -1577,8 +1496,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3,
       "position": [
-        -6880,
-        4160
+        -6960,
+        3860
       ]
     },
     {
@@ -1621,7 +1540,7 @@
       "typeVersion": 2,
       "position": [
         -6680,
-        4080
+        3700
       ]
     },
     {
@@ -1654,7 +1573,7 @@
       "typeVersion": 2,
       "position": [
         -6680,
-        4220
+        4100
       ]
     },
     {
@@ -1664,8 +1583,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -6140,
-        4160
+        -6060,
+        4120
       ]
     },
     {
@@ -1688,9 +1607,156 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
       "position": [
-        -6460,
-        4100
+        -6380,
+        3720
       ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "do not forwarding bot messages",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond Ok From Customer",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -6140,
+        4720
+      ],
+      "id": "6aab869d-4aed-4060-936e-dda76ccb406b"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "do not forwarding private messages",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond Ok Is Private",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -6400,
+        4720
+      ],
+      "id": "5030cb26-9100-4038-91fe-113bcf09f11c"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "only for outbound messages",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond Ok Is Incoming",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -7020,
+        4560
+      ],
+      "id": "9408cd82-3cf7-4fe8-803e-e93735010fea"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "skip greetings",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond Ok Skip Greetings",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -6500,
+        4000
+      ],
+      "id": "0c94eeae-462c-4622-acfc-a7de5e041334"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "skip evaluation",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond Ok Skip Evaluation",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -6480,
+        3600
+      ],
+      "id": "9935b611-27c1-4611-9a35-0ce6160e60ca"
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {}
+      },
+      "id": "d800b94c-f9dc-4a2d-80ba-b7675684b1bc",
+      "name": "Respond From Chat Control Workflow",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -4480,
+        3940
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {}
+      },
+      "name": "Respond From Inbox Control Workflow",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -5620,
+        4200
+      ],
+      "id": "52e7e08d-6a6a-4fa6-a568-b1ac76acfeb0"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "quepasa send error",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "name": "Respond Error From Quepasa",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -2780,
+        4940
+      ],
+      "id": "51bc5110-835e-4636-a0fe-ab6bfe885e3f"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "sent throw quepasa",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond Ok From Quepasa",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -2780,
+        5140
+      ],
+      "id": "9e3e5773-53eb-4421-a1ba-0610d12c5c0b"
     }
   ],
   "pinData": {},
@@ -1757,7 +1823,7 @@
         ],
         [
           {
-            "node": "Is Incoming !",
+            "node": "Respond Ok Is Incoming",
             "type": "main",
             "index": 0
           }
@@ -1775,7 +1841,7 @@
         ],
         [
           {
-            "node": "Is Private !",
+            "node": "Respond Ok Is Private",
             "type": "main",
             "index": 0
           }
@@ -1793,7 +1859,7 @@
         ],
         [
           {
-            "node": "From Customer !",
+            "node": "Respond Ok From Customer",
             "type": "main",
             "index": 0
           }
@@ -1822,7 +1888,7 @@
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Respond From Chat Control Workflow",
             "type": "main",
             "index": 0
           }
@@ -2339,14 +2405,14 @@
       "main": [
         [
           {
-            "node": "Merge2",
+            "node": "Respond Error From Quepasa",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ],
         [
           {
-            "node": "Normal Exit (RAS)",
+            "node": "Respond Ok From Quepasa",
             "type": "main",
             "index": 0
           }
@@ -2496,7 +2562,13 @@
     },
     "Skip Evaluation": {
       "main": [
-        [],
+        [
+          {
+            "node": "Respond Ok Skip Evaluation",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Custom Evaluation Content",
@@ -2508,7 +2580,13 @@
     },
     "Skip Greetings": {
       "main": [
-        [],
+        [
+          {
+            "node": "Respond Ok Skip Greetings",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "No Operation, do nothing4",
@@ -2539,6 +2617,28 @@
           }
         ]
       ]
+    },
+    "Throw To Quepasa Inbox Control Workflow": {
+      "main": [
+        [
+          {
+            "node": "Respond From Inbox Control Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond Error From Quepasa": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -2548,7 +2648,7 @@
     "executionTimeout": 50,
     "executionOrder": "v1"
   },
-  "versionId": "41e42259-18fb-4e74-9d20-23eb2e7941f6",
+  "versionId": "d07166b6-7c59-46c9-9ec6-3b1086556b09",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
