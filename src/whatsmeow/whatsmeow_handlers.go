@@ -523,25 +523,35 @@ func (source *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) error {
 func (handler *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 	handler.GetLogger().Trace("event Receipt !")
 
+	chatID := fmt.Sprint(evt.Chat.User, "@", evt.Chat.Server)
+
+	// Ignorar chats com @g.us, @broadcast e @newslatter
+	if strings.Contains(chatID, "@g.us") || strings.Contains(chatID, "@broadcast") || strings.Contains(chatID, "@newslatter") {
+		return
+	}
+
+	// Verificar se o evento é do tipo "read" (quando o contato leu)
+	if evt.Type != "read" {
+		return
+	}
+
 	message := &whatsapp.WhatsappMessage{Content: evt}
 	message.Id = "readreceipt"
 
-	// basic information
+	// Informações básicas
 	message.Timestamp = evt.Timestamp
 	message.FromMe = false
 
 	message.Chat = whatsapp.WhatsappChat{}
-	chatID := fmt.Sprint(evt.Chat.User, "@", evt.Chat.Server)
 	message.Chat.Id = chatID
 
 	message.Type = whatsapp.SystemMessageType
 
-	// message ids comma separated
+	// IDs de mensagem separados por vírgula
 	message.Text = strings.Join(evt.MessageIDs, ",")
 
 	if handler.WAHandlers != nil {
-
-		// following to internal handlers
+		// Enviar para handlers internos
 		go handler.WAHandlers.Receipt(message)
 	}
 }
