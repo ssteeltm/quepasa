@@ -525,12 +525,12 @@ func (handler *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 
 	chatID := fmt.Sprint(evt.Chat.User, "@", evt.Chat.Server)
 
-	// Ignorar chats com @g.us, @broadcast e @newslatter
+	// Ignore chats with @g.us, @broadcast and @newsletter
 	if strings.Contains(chatID, "@g.us") || strings.Contains(chatID, "@broadcast") || strings.Contains(chatID, "@newslatter") {
 		return
 	}
 
-	// Verificar se o evento é do tipo "read" (quando o contato leu)
+	// Check if the event is of type "read" (when the contact read)
 	if evt.Type != "read" {
 		return
 	}
@@ -538,7 +538,7 @@ func (handler *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 	message := &whatsapp.WhatsappMessage{Content: evt}
 	message.Id = "readreceipt"
 
-	// Informações básicas
+	// basic information
 	message.Timestamp = evt.Timestamp
 	message.FromMe = false
 
@@ -547,11 +547,11 @@ func (handler *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 
 	message.Type = whatsapp.SystemMessageType
 
-	// IDs de mensagem separados por vírgula
+	// message ids comma separated
 	message.Text = strings.Join(evt.MessageIDs, ",")
 
 	if handler.WAHandlers != nil {
-		// Enviar para handlers internos
+		// following to internal handlers
 		go handler.WAHandlers.Receipt(message)
 	}
 }
