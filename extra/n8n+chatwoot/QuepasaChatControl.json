@@ -3,33 +3,22 @@
   "nodes": [
     {
       "parameters": {
-        "conditions": {
-          "number": [
-            {
-              "value1": "={{$json.payload}}",
-              "operation": "isNotEmpty"
-            }
-          ]
-        }
-      },
-      "id": "d8b33b51-654b-45c7-b153-4dfdeb793ea9",
-      "name": "If From Chat ?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        5080,
-        460
-      ]
-    },
-    {
-      "parameters": {
         "dataType": "string",
-        "value1": "={{$json.payload?.content?? \"\"}}",
+        "value1": "={{ $json.body.text ?? $json.payload.content ?? \"\" }}",
         "rules": {
           "rules": [
             {
               "operation": "startsWith",
               "value2": "/invite"
+            },
+            {
+              "operation": "regex",
+              "value2": "^\\/api|^\\/\\/",
+              "output": 3
+            },
+            {
+              "value2": "401: logged out from another device",
+              "output": 1
             }
           ]
         },
@@ -40,8 +29,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 1,
       "position": [
-        5420,
-        440
+        5140,
+        460
       ]
     },
     {
@@ -109,15 +98,15 @@
           "string": [
             {
               "name": "chatid",
-              "value": "={{ $json.chatid ?? $json.payload?.chatid }}"
+              "value": "={{ $json.body?.chat?.id ?? $json.payload?.chatid }}"
             },
             {
               "name": "qphost",
-              "value": "={{$json.extra?.qphost??$json.query?.qphost}}"
+              "value": "={{$json.extra.qphost??$json.query.qphost}}"
             },
             {
               "name": "qptoken",
-              "value": "={{$json.extra?.qptoken??$json.query?.qptoken??$json.extra.identifier}}"
+              "value": "={{$json.extra.qptoken ?? $json.extra.identifier}}"
             }
           ]
         },
@@ -190,7 +179,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.5)\n* posting failure message back to chatwoot\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.6)\n* including /api to call external workflow\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
         "height": 205.7265251035022,
         "width": 561.5346630524019
       },
@@ -228,8 +217,8 @@
       "type": "n8n-nodes-chatwoot.chatwoot",
       "typeVersion": 1,
       "position": [
-        5620,
-        1020
+        6080,
+        780
       ]
     },
     {
@@ -271,8 +260,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        6000,
-        1040
+        6420,
+        820
       ]
     },
     {
@@ -298,8 +287,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        6380,
-        1060
+        6740,
+        840
       ]
     },
     {
@@ -325,28 +314,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        6780,
-        1000
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.body.text }}",
-              "value2": "401: logged out from another device"
-            }
-          ]
-        }
-      },
-      "id": "025fee7d-2590-4cb5-86fb-7562063a6d7b",
-      "name": "Is Logout?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        5420,
-        960
+        7080,
+        760
       ]
     },
     {
@@ -359,8 +328,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        5920,
-        580
+        5420,
+        960
       ],
       "continueOnFail": true
     },
@@ -415,8 +384,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        5720,
-        500
+        5240,
+        880
       ]
     },
     {
@@ -441,8 +410,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        5820,
-        960
+        6260,
+        720
       ]
     },
     {
@@ -456,8 +425,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        6180,
-        980
+        6580,
+        740
       ]
     },
     {
@@ -471,31 +440,24 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        6580,
-        1000
+        6880,
+        760
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "2ab2d887-6fa2-4fce-9813-87d8e77dfb59",
+      "name": "Is Logged Out",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        5920,
+        700
       ]
     }
   ],
   "pinData": {},
   "connections": {
-    "If From Chat ?": {
-      "main": [
-        [
-          {
-            "node": "Switch From Chat",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Is Logout?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Switch From Chat": {
       "main": [
         [
@@ -505,7 +467,13 @@
             "index": 0
           }
         ],
-        [],
+        [
+          {
+            "node": "Is Logged Out",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [],
         [
           {
@@ -591,7 +559,7 @@
       "main": [
         [
           {
-            "node": "If From Chat ?",
+            "node": "Switch From Chat",
             "type": "main",
             "index": 0
           }
@@ -627,22 +595,6 @@
             "node": "Merge3",
             "type": "main",
             "index": 1
-          }
-        ]
-      ]
-    },
-    "Is Logout?": {
-      "main": [
-        [
-          {
-            "node": "Merge1",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Busca Contato",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -729,6 +681,22 @@
           }
         ]
       ]
+    },
+    "Is Logged Out": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Busca Contato",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -737,7 +705,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 15
   },
-  "versionId": "fcaf34cc-b8f6-47ca-847e-5da98db4ebe6",
+  "versionId": "aba4e3a4-e84a-45b6-8237-0ce80b263872",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

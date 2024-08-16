@@ -36,7 +36,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        11060,
+        11360,
         -480
       ],
       "id": "f298b95a-045a-437e-a369-38a671315924",
@@ -64,7 +64,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        11260,
+        11560,
         -480
       ],
       "id": "fc98c588-e5f5-41d7-bf7b-faaba57ec8ca"
@@ -167,21 +167,6 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}",
-        "options": {}
-      },
-      "id": "410d80fe-c240-4a37-8c63-03fb63533a9a",
-      "name": "Throw To Quepasa Chat Control Workflow",
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1,
-      "position": [
-        15540,
-        -480
-      ],
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
         "content": "## Getting and Filtering Conversations\n",
         "height": 616.1278921539156,
         "width": 2110.852343765206
@@ -257,7 +242,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        11460,
+        11760,
         -400
       ]
     },
@@ -325,8 +310,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        15740,
-        -240
+        15420,
+        -360
       ],
       "id": "929eb1c5-5a57-4603-867f-860e15de3cdb"
     },
@@ -340,8 +325,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        15940,
-        -240
+        15620,
+        -360
       ],
       "alwaysOutputData": true,
       "continueOnFail": true
@@ -573,8 +558,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        15540,
-        -240
+        15220,
+        -360
       ],
       "id": "a5b6fc06-5c43-4269-b324-eead5bf58486"
     },
@@ -717,7 +702,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.16) Updates\n* ability to skip contact, skip a new conversation creation\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.17) Updates\n* regex to match chat control\n* include /api to chat control\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
         "width": 569.6036185132486
       },
@@ -744,33 +729,6 @@
         -280
       ],
       "continueOnFail": true
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.text ?? '' }}",
-              "operation": "startsWith",
-              "value2": "/invite"
-            },
-            {
-              "value1": "={{ $json.text ?? '' }}",
-              "operation": "startsWith",
-              "value2": "//"
-            }
-          ]
-        },
-        "combineOperation": "any"
-      },
-      "id": "8e4aa83c-500a-433f-933d-4eea690a1cbc",
-      "name": "If Chat Command",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        15260,
-        -360
-      ]
     },
     {
       "parameters": {
@@ -929,41 +887,6 @@
     },
     {
       "parameters": {
-        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}",
-        "options": {}
-      },
-      "id": "59427297-7da6-4b06-89a4-08647a762959",
-      "name": "Throw To Quepasa Chat Control Workflow1",
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1,
-      "position": [
-        7360,
-        -500
-      ],
-      "continueOnFail": true
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json.body.chat.id }}",
-              "value2": "system"
-            }
-          ]
-        }
-      },
-      "id": "0c24ce6e-5dac-46e2-b9dc-6200f5ae8f7b",
-      "name": "IF",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        7160,
-        -380
-      ]
-    },
-    {
-      "parameters": {
         "conditions": {
           "number": [
             {
@@ -1046,7 +969,7 @@
         "jsonParameters": true,
         "options": {},
         "bodyParametersJson": "={\n   \"private\": false,\n   \"content\": \"{{ $env['C8Q_MSGFOR_REVOKED_CONTENT'] ?? '\\u274C Essa mensagem foi apagada !!!' }}\",\n   \"message_type\": 2,\n   \"content_attributes\": {      \n      \"in_reply_to\": {{ +$json.revoked.id }},\n      \"in_reply_to_external_id\": \"{{ $json.body.id }}\"\n   },\n   \"content_type\": \"text\"\n}",
-        "headerParametersJson": "={ \"api_access_token\": \"{{ $json.body.extra.atoken }}\" }"
+        "headerParametersJson": "={ \"api_access_token\": \"{{ $json.extra.atoken }}\" }"
       },
       "name": "Send Revoked Message",
       "type": "n8n-nodes-base.httpRequest",
@@ -1077,7 +1000,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT messages.account_id, conversations.display_id as conversation_id, messages.id\nFROM messages INNER JOIN conversations \nON messages.conversation_id = conversations.id\nWHERE messages.account_id = '{{ $json.body.extra.account }}' AND messages.source_id = '{{ $json.body.id }}';",
+        "query": "SELECT messages.account_id, conversations.display_id as conversation_id, messages.id\nFROM messages INNER JOIN conversations \nON messages.conversation_id = conversations.id\nWHERE messages.account_id = '{{ $json.extra.account }}' AND messages.source_id = '{{ $json.body.id }}';",
         "options": {}
       },
       "id": "ac24beed-702b-4e3b-bdea-6985eb9e854d",
@@ -1119,7 +1042,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT messages.account_id, conversations.display_id as conversation_id, messages.id\nFROM messages INNER JOIN conversations \nON messages.conversation_id = conversations.id\nWHERE messages.account_id = '{{ $json.body.extra.account }}' AND messages.id = '{{ $json.internalid }}';",
+        "query": "SELECT messages.account_id, conversations.display_id as conversation_id, messages.id\nFROM messages INNER JOIN conversations \nON messages.conversation_id = conversations.id\nWHERE messages.account_id = '{{ $json.extra.account }}' AND messages.id = '{{ $json.internalid }}';",
         "options": {}
       },
       "id": "206e5a0d-80bc-4843-baf1-2bdbd9495dcd",
@@ -1178,6 +1101,18 @@
             {
               "name": "extra.cwhost",
               "value": "={{ $json.extra.cwhost ?? \"http://127.0.0.1:3000\" }}"
+            },
+            {
+              "name": "params",
+              "value": "={{undefined}}"
+            },
+            {
+              "name": "headers",
+              "value": "={{undefined}}"
+            },
+            {
+              "name": "query",
+              "value": "={{undefined}}"
             }
           ]
         },
@@ -1199,6 +1134,10 @@
             {
               "name": "extra",
               "value": "={{ $json.extra ?? $json.body.extra }}"
+            },
+            {
+              "name": "body.extra",
+              "value": "={{ undefined }}"
             }
           ]
         },
@@ -1267,7 +1206,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        11800,
+        12000,
         -260
       ]
     },
@@ -1332,8 +1271,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        10660,
-        -283.21073188545233
+        10960,
+        -280
       ],
       "alwaysOutputData": false,
       "id": "28d76dbf-72db-49f0-a789-a3e6f16a00f2"
@@ -1367,9 +1306,50 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        10860,
+        11160,
         -380
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.chat.id }}",
+              "value2": "system"
+            },
+            {
+              "value1": "={{ $json.body.text }}",
+              "operation": "regex",
+              "value2": "^\\/api|^\\/\\/|^\\/invite[\\s]*?$"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "0c24ce6e-5dac-46e2-b9dc-6200f5ae8f7b",
+      "name": "If Chat Control",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        7160,
+        -380
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "={{ $env['C8Q_QUEPASACHATCONTROL'] ?? 1003 }}",
+        "options": {}
+      },
+      "id": "59427297-7da6-4b06-89a4-08647a762959",
+      "name": "Throw To Quepasa Chat Control Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        7360,
+        -500
+      ],
+      "continueOnFail": true
     }
   ],
   "pinData": {},
@@ -1711,24 +1691,6 @@
         ]
       ]
     },
-    "If Chat Command": {
-      "main": [
-        [
-          {
-            "node": "Throw To Quepasa Chat Control Workflow",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Chatwoot Message Payload",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If Not In Reply": {
       "main": [
         [
@@ -1756,7 +1718,7 @@
       "main": [
         [
           {
-            "node": "If Chat Command",
+            "node": "Chatwoot Message Payload",
             "type": "main",
             "index": 0
           }
@@ -1843,29 +1805,11 @@
         ]
       ]
     },
-    "IF": {
-      "main": [
-        [
-          {
-            "node": "Throw To Quepasa Chat Control Workflow1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Throw Get Chatwoot Contacts Workflow",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If Not Revoked ?": {
       "main": [
         [
           {
-            "node": "IF",
+            "node": "If Chat Control",
             "type": "main",
             "index": 0
           }
@@ -2129,6 +2073,24 @@
           }
         ]
       ]
+    },
+    "If Chat Control": {
+      "main": [
+        [
+          {
+            "node": "Throw To Quepasa Chat Control Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Throw Get Chatwoot Contacts Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -2138,7 +2100,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "18310583-c921-4f25-a242-5b644ad90dca",
+  "versionId": "76f1f736-b8ac-4066-9b20-18eb96b5214e",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

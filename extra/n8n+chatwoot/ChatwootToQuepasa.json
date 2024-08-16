@@ -486,26 +486,6 @@
     {
       "parameters": {
         "conditions": {
-          "boolean": [
-            {
-              "value1": "={{ $json.csat_survey_enabled }}",
-              "value2": true
-            }
-          ]
-        }
-      },
-      "id": "ce9f0dd5-2604-432d-91e4-53707db3cb52",
-      "name": "Use CSAT ?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -5400,
-        5180
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
           "string": [
             {
               "value1": "={{ $json.body.status }}",
@@ -637,8 +617,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -4960,
-        5200
+        -4980,
+        5160
       ]
     },
     {
@@ -702,7 +682,7 @@
             },
             {
               "name": "payload.content",
-              "value": "=*{{ $json[\"body\"][\"meta\"][\"sender\"][\"name\"] }}* seu atendimento de Ticket de nº *{{ $json.body.id }}* foi finalizado ! Caso tenha alguma dúvida só enviar uma nova mensagem !\n\nAproveite e avalie nosso atendimento. Sua opinião é muito importante para nós e nos ajudará a identificar áreas de melhorias a fim de continuar oferecendo um serviço de qualidade. 😎\n\nAvalie meu atendimento !\n{{ ($json.extra.cwpublic ?? $env[\"C8Q_CW_PUBLIC_URL\"] ?? $json.extra.cwhost).trimEnd('/') }}/survey/responses/{{ $json.uuid }}"
+              "value": "={{ $env['C8Q_MSGFOR_NO_CSAT'] ?? '-----------------------------------------------------\\r\\nSeu atendimento foi marcado como *concluído* !\\r\\nQualquer mensagem ou reação após este anúncio, irá iniciar uma *nova* conversa.\\r\\n-----------------------------------------------------' }}"
             }
           ],
           "number": [
@@ -710,46 +690,11 @@
               "name": "payload.conversationid",
               "value": "={{ $json.body.id }}"
             }
-          ]
-        },
-        "options": {}
-      },
-      "id": "898fdead-4989-4d54-9400-d15d9335fc2e",
-      "name": "Payload With CSAT",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [
-        -5180,
-        5020
-      ],
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "keepOnlySet": true,
-        "values": {
-          "string": [
-            {
-              "name": "extra",
-              "value": "={{ $json.extra }}"
-            },
-            {
-              "name": "payload.chatid",
-              "value": "={{ $json.body.meta.sender.identifier }}"
-            },
-            {
-              "name": "payload.messageid",
-              "value": "={{ $json.body.id }}-eval"
-            },
-            {
-              "name": "payload.content",
-              "value": "-----------------------------------------------------\nSeu atendimento foi marcado como *concluído* !\nQualquer mensagem ou reação após este anúncio, irá iniciar uma *nova* conversa.\n-----------------------------------------------------"
-            }
           ],
-          "number": [
+          "boolean": [
             {
-              "name": "payload.conversationid",
-              "value": "={{ $json.body.id }}"
+              "name": "csat_survey_enabled",
+              "value": "={{ $json.csat_survey_enabled }}"
             }
           ]
         },
@@ -760,8 +705,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -5180,
-        5200
+        -5380,
+        5180
       ]
     },
     {
@@ -853,7 +798,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.31) Updates\n* respond msgs\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.32) Updates\n* added env for no csat msg\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 184.30667672289223,
         "width": 457.17616077915915
       },
@@ -1436,72 +1381,6 @@
     },
     {
       "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": false,
-                  "leftValue": "",
-                  "typeValidation": "loose"
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.body.content_type }}",
-                    "rightValue": "input_csat",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "csat"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": false,
-                  "leftValue": "",
-                  "typeValidation": "loose"
-                },
-                "conditions": [
-                  {
-                    "id": "12cf0100-d8a8-402c-8611-d053e3be3724",
-                    "leftValue": "={{ $json.body.conversation.status }}",
-                    "rightValue": "=open",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "greetings"
-            }
-          ]
-        },
-        "options": {
-          "ignoreCase": true,
-          "looseTypeValidation": true
-        }
-      },
-      "id": "672c9fe2-4966-4609-b9b7-b52de2d33c3d",
-      "name": "Switch Template",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3,
-      "position": [
-        -6960,
-        3860
-      ]
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -1757,6 +1636,97 @@
         5140
       ],
       "id": "9e3e5773-53eb-4421-a1ba-0610d12c5c0b"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.content_type }}",
+                    "rightValue": "input_csat",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "csat"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                },
+                "conditions": [
+                  {
+                    "id": "12cf0100-d8a8-402c-8611-d053e3be3724",
+                    "leftValue": "={{ $json.body.conversation.status }}",
+                    "rightValue": "=open",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "greetings"
+            }
+          ]
+        },
+        "options": {
+          "ignoreCase": true,
+          "looseTypeValidation": true
+        }
+      },
+      "id": "672c9fe2-4966-4609-b9b7-b52de2d33c3d",
+      "name": "Switch Template",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        -6960,
+        3860
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.csat_survey_enabled }}"
+            }
+          ],
+          "string": [
+            {
+              "value1": "={{ $json.payload.content }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "ce9f0dd5-2604-432d-91e4-53707db3cb52",
+      "name": "Use MSG For Resolved Conversations Without CSAT ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -5200,
+        5180
+      ]
     }
   ],
   "pinData": {},
@@ -2026,23 +1996,11 @@
         ]
       ]
     },
-    "Use CSAT ?": {
-      "main": [
-        [],
-        [
-          {
-            "node": "Payload Without CSAT",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Merge1": {
       "main": [
         [
           {
-            "node": "Use CSAT ?",
+            "node": "Payload Without CSAT",
             "type": "main",
             "index": 0
           }
@@ -2147,7 +2105,7 @@
       "main": [
         [
           {
-            "node": "Evaluation Message Payload Ready To Quepasa",
+            "node": "Use MSG For Resolved Conversations Without CSAT ?",
             "type": "main",
             "index": 0
           }
@@ -2542,24 +2500,6 @@
         ]
       ]
     },
-    "Switch Template": {
-      "main": [
-        [
-          {
-            "node": "Skip Evaluation",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Skip Greetings",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Skip Evaluation": {
       "main": [
         [
@@ -2639,6 +2579,35 @@
           }
         ]
       ]
+    },
+    "Switch Template": {
+      "main": [
+        [
+          {
+            "node": "Skip Evaluation",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip Greetings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use MSG For Resolved Conversations Without CSAT ?": {
+      "main": [
+        [
+          {
+            "node": "Evaluation Message Payload Ready To Quepasa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -2648,7 +2617,7 @@
     "executionTimeout": 50,
     "executionOrder": "v1"
   },
-  "versionId": "d07166b6-7c59-46c9-9ec6-3b1086556b09",
+  "versionId": "7e74043c-af82-4eb6-a445-274bbf6847cb",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
