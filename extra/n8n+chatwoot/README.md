@@ -2,15 +2,17 @@
 
 * [(1.0.1) Chatwoot Profile Update](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootProfileUpdate.json)
 * [(1.0.32) Chatwoot To Quepasa](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootToQuepasa.json)
-* [(1.0.16) Post To Chatwoot](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/PostToChatwoot.json)
-* [(1.0.5) Quepasa Automatic](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaAutomatic.json)
+* [(1.0.17) Post To Chatwoot](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/PostToChatwoot.json)
+* [(1.0.6) Quepasa Automatic](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaAutomatic.json)
 * [(1.0.6) Quepasa Chat Control](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaChatControl.json)
 * [(1.0.9) Quepasa Inbox Control](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaInboxControl.json)
 * [(1.0.1) Quepasa Qrcode](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaQrcode.json)
-* [(1.0.17) Quepasa To Chatwoot](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaToChatwoot.json)
-* [(1.0.12) Get Chatwoot Contacts](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/GetChatwootContacts.json)
+* [(1.0.18) Quepasa To Chatwoot](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaToChatwoot.json)
+* [(1.0.13) Get Chatwoot Contacts](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/GetChatwootContacts.json)
 * [(1.0.1) Post To WebCallBack](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/PostToWebCallBack.json)
 * [(1.0.1) Chatwoot Extra](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootExtra.json)
+* [(1.0.0) To Chatwoot Transcript]()
+
 
 ### Use N8N Environment File to set these variables:
 > use your respectives ids
@@ -47,6 +49,13 @@
 	> (string) Workflow Id - ChatwootExtra, used by QuepasaQrcode
 	> (default) iiEsUj7ybtzEZAFj
 	
+	# C8Q_TOCHATWOOTTRANSCRIPT
+	> (string) Workflow Id - ToChatwootTranscript, used by transcript audios to text
+	> (default) pi4APHD9F05Dv6FR
+	
+	# C8Q_TOCHATWOOTTRANSCRIPTRESUME
+	> (boolean => true | false) Gets a resume (OpenAI) for audio transcripted messages
+
 	# C8Q_SINGLETHREAD
 	> (boolean => true | false) Enable a single conversation per contact, for all life time, not just a ticket
 	

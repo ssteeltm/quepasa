@@ -183,7 +183,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.16) Updates\n* environment variables for custom contents\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "content": "## (1.0.17) Updates\n* added audio transcript workflow\n\n## Recommendations \n* Remember set timeout to 10 seconds",
         "height": 189.357048321488,
         "width": 489.8474320052134
       },
@@ -934,6 +934,73 @@
         980,
         1500
       ]
+    },
+    {
+      "parameters": {
+        "workflowId": "={{ $env['C8Q_TOCHATWOOTTRANSCRIPT'] ?? 'pi4APHD9F05Dv6FR' }}",
+        "mode": "each",
+        "options": {}
+      },
+      "id": "4aa1546e-d2aa-4843-92f2-96716486666e",
+      "name": "Throw Audio Transcript Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        1860
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "19a56ff4-9d4b-4b6a-82cc-4cc55b3ee1ad",
+              "leftValue": "={{ $json.payload.event }}",
+              "rightValue": "audio",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "2a96a9dc-5069-441c-abf2-995aa10ef929",
+              "leftValue": "={{ $json.payload.message_type }}",
+              "rightValue": "incoming",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "e49bac21-445a-47a1-826d-1ecdcd06d0d5",
+              "leftValue": "={{ $json.chat.chatwoot?.skipaudiotranscript ?? false }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0ac5f4ea-6591-4381-a62b-4e20bed9b3ea",
+      "name": "Is Valid Audio For Transcript",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        1880
+      ]
     }
   ],
   "pinData": {},
@@ -1201,6 +1268,11 @@
         [
           {
             "node": "Post Incoming Message Attachment",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Is Valid Audio For Transcript",
             "type": "main",
             "index": 0
           }
@@ -1531,6 +1603,17 @@
           }
         ]
       ]
+    },
+    "Is Valid Audio For Transcript": {
+      "main": [
+        [
+          {
+            "node": "Throw Audio Transcript Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -1539,7 +1622,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 10
   },
-  "versionId": "6e864ec7-471b-4449-ba1b-c81431bce1d1",
+  "versionId": "fe0d815d-e241-43f8-8578-996708b8c52a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

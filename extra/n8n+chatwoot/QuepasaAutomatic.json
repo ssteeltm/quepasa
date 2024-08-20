@@ -205,53 +205,7 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "=SELECT DISTINCT \"accounts\".\"id\" AS \"account\" FROM \"accounts\" WHERE NOT EXISTS (SELECT NULL FROM \"custom_attribute_definitions\" WHERE \"account_id\" = \"accounts\".\"id\" AND \"attribute_key\" = 'skipevaluation' AND \"attribute_model\" = 0);",
-        "additionalFields": {}
-      },
-      "id": "65aa9347-77a6-4ea6-8965-caf81a419901",
-      "name": "Missing Evaluation For Conversation",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 1,
-      "position": [
-        480,
-        1700
-      ],
-      "alwaysOutputData": false,
-      "credentials": {
-        "postgres": {
-          "id": "1",
-          "name": "Postgres account"
-        }
-      },
-      "notes": "Sucesso"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "=INSERT INTO \"custom_attribute_definitions\" (\"attribute_display_name\", \"attribute_key\", \"attribute_display_type\", \"attribute_model\", \"account_id\", \"attribute_description\", \"attribute_values\", \"updated_at\", \"created_at\") VALUES ('Skip Evaluation', 'skipevaluation', 7, 0, {{ $json.account }}, 'Não utilizar sistema de avaliação ou protocolo para esta conversa !', '[]', NOW(), NOW());",
-        "additionalFields": {}
-      },
-      "id": "35fe92f8-d6aa-4960-b525-dcb481353e5f",
-      "name": "Insert Skip Evaluation For Conversation Attribute",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 1,
-      "position": [
-        720,
-        1700
-      ],
-      "alwaysOutputData": false,
-      "credentials": {
-        "postgres": {
-          "id": "1",
-          "name": "Postgres account"
-        }
-      },
-      "notes": "Sucesso"
-    },
-    {
-      "parameters": {
-        "content": "## (1.0.5) Recommendations \n* added skip contact\n",
+        "content": "## (1.0.6) Recommendations \n* added skip audio transcript\n",
         "width": 425.48157586978226
       },
       "id": "d7872589-290c-4614-868f-fabe6b64ca52",
@@ -398,7 +352,8 @@
           "mode": "list",
           "cachedResultName": "accounts"
         },
-        "additionalFields": {}
+        "additionalFields": {},
+        "options": {}
       },
       "id": "135e04e0-3b91-4a61-adf8-95c20aacc1e5",
       "name": "Postgres Trigger",
@@ -440,15 +395,16 @@
           "cachedResultName": "channel_api"
         },
         "firesOn": "DELETE",
-        "additionalFields": {}
+        "additionalFields": {},
+        "options": {}
       },
       "id": "5cec24ef-8743-448d-849f-c39b1aaa72e6",
       "name": "When API Inbox Deleted",
       "type": "n8n-nodes-base.postgresTrigger",
       "typeVersion": 1,
       "position": [
-        -180,
-        1960
+        -200,
+        2280
       ],
       "credentials": {
         "postgres": {
@@ -477,8 +433,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        740,
-        1980
+        720,
+        2300
       ],
       "alwaysOutputData": false
     },
@@ -492,8 +448,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        300,
-        2040
+        280,
+        2360
       ]
     },
     {
@@ -507,8 +463,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        480,
-        1980
+        460,
+        2300
       ]
     },
     {
@@ -531,8 +487,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
       "position": [
-        120,
-        1960
+        100,
+        2280
       ]
     },
     {
@@ -571,6 +527,98 @@
       "position": [
         720,
         1500
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      },
+      "notes": "Sucesso"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO \"custom_attribute_definitions\" (\"attribute_display_name\", \"attribute_key\", \"attribute_display_type\", \"attribute_model\", \"account_id\", \"attribute_description\", \"attribute_values\", \"updated_at\", \"created_at\") VALUES ('Skip Evaluation', 'skipevaluation', 7, 0, {{ $json.account }}, 'Não utilizar sistema de avaliação ou protocolo para esta conversa !', '[]', NOW(), NOW());",
+        "additionalFields": {}
+      },
+      "id": "9b246bfb-2e7d-420f-9573-63a6162e4062",
+      "name": "Insert Skip Evaluation For Conversation Attribute",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        720,
+        1700
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      },
+      "notes": "Sucesso"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT DISTINCT \"accounts\".\"id\" AS \"account\" FROM \"accounts\" WHERE NOT EXISTS (SELECT NULL FROM \"custom_attribute_definitions\" WHERE \"account_id\" = \"accounts\".\"id\" AND \"attribute_key\" = 'skipevaluation' AND \"attribute_model\" = 0);",
+        "additionalFields": {}
+      },
+      "id": "b4a2fdf9-bd37-4957-869c-ee6aacda073f",
+      "name": "Missing Evaluation For Conversation",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        480,
+        1700
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      },
+      "notes": "Sucesso"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT DISTINCT \"accounts\".\"id\" AS \"account\" FROM \"accounts\" WHERE NOT EXISTS (SELECT NULL FROM \"custom_attribute_definitions\" WHERE \"account_id\" = \"accounts\".\"id\" AND \"attribute_key\" = 'skipaudiotranscript' AND \"attribute_model\" = 1);",
+        "additionalFields": {}
+      },
+      "id": "701e9e46-9403-4627-8ac0-29c82a9018c3",
+      "name": "Missing Audio Transcript For Contact",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        480,
+        1920
+      ],
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      },
+      "notes": "Sucesso"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO \"custom_attribute_definitions\" (\"attribute_display_name\", \"attribute_key\", \"attribute_display_type\", \"attribute_model\", \"account_id\", \"attribute_description\", \"attribute_values\", \"updated_at\", \"created_at\") VALUES ('Skip Audio Transcript', 'skipaudiotranscript', 7, 1, {{ $json.account }}, 'Não utilizar sistema de transcrição de áudio para este contato !', '[]', NOW(), NOW());",
+        "additionalFields": {}
+      },
+      "id": "cf85e049-4ad2-46b0-8181-7aa19c5d0b40",
+      "name": "Insert Skip Audio Transcript For Contact Attribute",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        720,
+        1920
       ],
       "alwaysOutputData": false,
       "credentials": {
@@ -639,17 +687,6 @@
         ]
       ]
     },
-    "Missing Evaluation For Conversation": {
-      "main": [
-        [
-          {
-            "node": "Insert Skip Evaluation For Conversation Attribute",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Missing Agent Title For Contact": {
       "main": [
         [
@@ -694,11 +731,6 @@
       "main": [
         [
           {
-            "node": "Missing Evaluation For Conversation",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "Missing Evaluation For Contact",
             "type": "main",
             "index": 0
@@ -725,6 +757,16 @@
           },
           {
             "node": "Missing Skip For Contact",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Missing Evaluation For Conversation",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Missing Audio Transcript For Contact",
             "type": "main",
             "index": 0
           }
@@ -812,11 +854,33 @@
           }
         ]
       ]
+    },
+    "Missing Evaluation For Conversation": {
+      "main": [
+        [
+          {
+            "node": "Insert Skip Evaluation For Conversation Attribute",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Missing Audio Transcript For Contact": {
+      "main": [
+        [
+          {
+            "node": "Insert Skip Audio Transcript For Contact Attribute",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {},
-  "versionId": "9fd6c619-3f7d-4cdf-8fbe-16c3977fb9db",
+  "versionId": "463430e1-c1b3-464f-b3ae-7fa4639ac3b6",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

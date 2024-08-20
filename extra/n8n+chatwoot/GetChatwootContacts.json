@@ -378,6 +378,10 @@
             {
               "name": "chat.chatwoot.skipevaluation",
               "value": "={{ $json.ctatts?.skipevaluation ?? false }}"
+            },
+            {
+              "name": "chat.chatwoot.skipaudiotranscript",
+              "value": "={{ $json.ctatts?.skipaudiotranscript ?? false }}"
             }
           ],
           "string": [
@@ -404,7 +408,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.12) Updates\n* added skipcontact option\n\n## Recommendations \n* Remember set timeout to 20 seconds",
+        "content": "## (1.0.13) Updates\n* added skipaudiotranscript option\n\n## Recommendations \n* Remember set timeout to 20 seconds",
         "height": 201.45401153644474,
         "width": 467.54452018877896
       },
@@ -1027,7 +1031,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "dd463eed-80c4-4c31-b52f-e89e7bf0a4a4",
+  "versionId": "8c772b0c-980b-4a0a-94f7-0458874ba30e",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

@@ -513,6 +513,10 @@
               "value": "={{$json.chat.id}}"
             },
             {
+              "name": "chat",
+              "value": "={{$json.chat}}"
+            },
+            {
               "name": "conversation",
               "value": "={{$json.conversation}}"
             },
@@ -702,7 +706,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.17) Updates\n* regex to match chat control\n* include /api to chat control\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.18) Updates\n* follow with chat info\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
         "width": 569.6036185132486
       },
@@ -2100,7 +2104,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "76f1f736-b8ac-4066-9b20-18eb96b5214e",
+  "versionId": "48721439-f711-43b1-9921-2fea7f869c11",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
@@ -2108,16 +2112,16 @@
   "id": "1009",
   "tags": [
     {
-      "createdAt": "2023-05-19T22:54:38.266Z",
-      "updatedAt": "2023-05-19T22:54:38.266Z",
-      "id": "13",
-      "name": "github.com/nocodeleaks"
-    },
-    {
       "createdAt": "2022-10-13T15:26:19.857Z",
       "updatedAt": "2023-08-24T21:01:00.296Z",
       "id": "6",
       "name": "chatwoot"
+    },
+    {
+      "createdAt": "2023-05-19T22:54:38.266Z",
+      "updatedAt": "2023-05-19T22:54:38.266Z",
+      "id": "13",
+      "name": "github.com/nocodeleaks"
     }
   ]
 }
