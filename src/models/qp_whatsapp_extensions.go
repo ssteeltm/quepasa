@@ -243,7 +243,9 @@ func ToggleReadReceipts(source whatsapp.IWhatsappOptions) error {
 	} else {
 		options.ReadReceipts = whatsapp.UnSetBooleanType
 	}
-	return source.Save()
+
+	reason := fmt.Sprintf("toggle read receipts: %s", options.ReadReceipts)
+	return source.Save(reason)
 }
 
 func ToggleGroups(source whatsapp.IWhatsappOptions) error {
@@ -256,7 +258,9 @@ func ToggleGroups(source whatsapp.IWhatsappOptions) error {
 	} else {
 		options.Groups = whatsapp.UnSetBooleanType
 	}
-	return source.Save()
+
+	reason := fmt.Sprintf("toggle groups: %s", options.ReadReceipts)
+	return source.Save(reason)
 }
 
 func ToggleBroadcasts(source whatsapp.IWhatsappOptions) error {
@@ -269,7 +273,9 @@ func ToggleBroadcasts(source whatsapp.IWhatsappOptions) error {
 	} else {
 		options.Broadcasts = whatsapp.UnSetBooleanType
 	}
-	return source.Save()
+
+	reason := fmt.Sprintf("toggle broadcasts: %s", options.ReadReceipts)
+	return source.Save(reason)
 }
 
 func ToggleCalls(source whatsapp.IWhatsappOptions) error {
@@ -282,7 +288,9 @@ func ToggleCalls(source whatsapp.IWhatsappOptions) error {
 	} else {
 		options.Calls = whatsapp.UnSetBooleanType
 	}
-	return source.Save()
+
+	reason := fmt.Sprintf("toggle calls: %s", options.ReadReceipts)
+	return source.Save(reason)
 }
 
 //#endregion

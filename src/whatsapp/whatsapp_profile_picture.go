@@ -1,7 +1,7 @@
 package whatsapp
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -35,6 +35,6 @@ func (source *WhatsappProfilePicture) Download() (content []byte, err error) {
 	}
 	defer resp.Body.Close()
 
-	content, err = ioutil.ReadAll(resp.Body)
+	content, err = io.ReadAll(resp.Body)
 	return
 }

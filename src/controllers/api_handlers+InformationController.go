@@ -150,7 +150,7 @@ func InformationPatchRequest(w http.ResponseWriter, r *http.Request) {
 	//#endregion
 
 	if len(update) > 0 {
-		err = server.Save()
+		err = server.Save("patching info")
 		if err != nil {
 			response.ParseError(err)
 			RespondInterface(w, response)

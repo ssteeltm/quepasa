@@ -39,7 +39,7 @@ func (source *QpWhatsappServerWebhook) GetOptions() *whatsapp.WhatsappOptions {
 
 //#endregion
 
-func (source *QpWhatsappServerWebhook) Save() (err error) {
+func (source *QpWhatsappServerWebhook) Save(reason string) (err error) {
 
 	if source == nil {
 		err = fmt.Errorf("nil webhook source")
@@ -57,7 +57,7 @@ func (source *QpWhatsappServerWebhook) Save() (err error) {
 	}
 
 	logentry := source.GetLogger()
-	logentry.Debugf("saving webhook info: %+v", source)
+	logentry.Debugf("saving webhook info, reason: %s, content: %+v", reason, source)
 
 	affected, err := source.server.WebhookAddOrUpdate(source.QpWebhook)
 	if err == nil {
@@ -69,5 +69,7 @@ func (source *QpWhatsappServerWebhook) Save() (err error) {
 
 func (source *QpWhatsappServerWebhook) ToggleForwardInternal() (handle bool, err error) {
 	source.ForwardInternal = !source.ForwardInternal
-	return source.ForwardInternal, source.Save()
+
+	reason := fmt.Sprintf("toggle forward internal: %v", source.ForwardInternal)
+	return source.ForwardInternal, source.Save(reason)
 }

@@ -56,7 +56,9 @@ func (source *QpWhatsappServer) GetOptions() *whatsapp.WhatsappOptions {
 
 func (source *QpWhatsappServer) SetOptions(options *whatsapp.WhatsappOptions) error {
 	source.WhatsappOptions = *options
-	return source.Save()
+
+	reason := fmt.Sprintf("options updated: %v", source.WhatsappOptions)
+	return source.Save(reason)
 }
 
 //#endregion
@@ -590,10 +592,10 @@ func (server *QpWhatsappServer) GetToken() string {
 
 </summary>
 */
-func (source *QpWhatsappServer) Save() (err error) {
+func (source *QpWhatsappServer) Save(reason string) (err error) {
 	logger := source.GetLogger()
 
-	logger.Infof("saving server info: %+v", source)
+	logger.Infof("saving server info, reason: %s, json: %+v", reason, source)
 	ok, err := source.db.Exists(source.Token)
 	if err != nil {
 		log.Errorf("error on checking existent server: %s", err.Error())
@@ -615,7 +617,9 @@ func (source *QpWhatsappServer) Save() (err error) {
 func (server *QpWhatsappServer) MarkVerified(value bool) (err error) {
 	if server.Verified != value {
 		server.Verified = value
-		return server.Save()
+
+		reason := fmt.Sprintf("mark verified as %v", value)
+		return server.Save(reason)
 	}
 	return nil
 }
@@ -630,7 +634,8 @@ func (source *QpWhatsappServer) ToggleDevel() (handle bool, err error) {
 		logger.Logger.SetLevel(log.InfoLevel)
 	}
 
-	return source.Devel, source.Save()
+	reason := fmt.Sprintf("toggle devel: %v", source.Devel)
+	return source.Devel, source.Save(reason)
 }
 
 //endregion

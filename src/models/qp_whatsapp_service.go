@@ -127,7 +127,7 @@ func (source *QPWhatsappService) AppendPaired(paired *QpWhatsappPairing) (server
 		server.User = paired.User.Username
 	}
 
-	err = server.Save()
+	err = server.Save("server paired")
 	return
 }
 

@@ -66,7 +66,7 @@ func UserController(w http.ResponseWriter, r *http.Request) {
 	}
 
 	server.User = request.Username
-	err = server.Save()
+	err = server.Save("updating username")
 	if err != nil {
 		response.ParseError(err)
 		RespondInterface(w, response)

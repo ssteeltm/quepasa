@@ -20,16 +20,19 @@ func main() {
 	godotenv.Load()
 
 	loglevel := models.ENV.LogLevel()
-
-	logruslevel, err := log.ParseLevel(loglevel)
-	if err != nil {
-		log.Errorf("trying parse an invalid loglevel: %s, current: %v", loglevel, log.GetLevel())
+	if len(loglevel) == 0 {
+		log.Infof("current log level: %v", log.GetLevel())
 	} else {
-		log.SetLevel(logruslevel)
+		logruslevel, err := log.ParseLevel(loglevel)
+		if err != nil {
+			log.Errorf("trying parse an invalid loglevel: %s, current: %v", loglevel, log.GetLevel())
+		} else {
+			log.SetLevel(logruslevel)
+		}
 	}
 
 	// checks for pending database migrations
-	err = models.MigrateToLatest()
+	err := models.MigrateToLatest()
 	if err != nil {
 		log.Fatalf("database migration error: %s", err.Error())
 	}
