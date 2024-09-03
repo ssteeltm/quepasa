@@ -188,24 +188,36 @@ func (source *WhatsmeowConnection) Connect() (err error) {
 func (source *WhatsmeowConnection) DownloadData(imsg whatsapp.IWhatsappMessage) (data []byte, err error) {
 	msg := imsg.GetSource()
 	downloadable, ok := msg.(whatsmeow.DownloadableMessage)
-	if !ok {
-		source.GetLogger().Debug("not downloadable type, trying default message")
-		waMsg, ok := msg.(*waE2E.Message)
-		if !ok {
-			attach := imsg.GetAttachment()
-			if attach != nil {
-				data := attach.GetContent()
-				if data != nil {
-					return *data, err
-				}
-			}
-
-			err = fmt.Errorf("parameter msg cannot be converted to an original message")
-			return
-		}
-		return source.Client.DownloadAny(waMsg)
+	if ok {
+		return source.Client.Download(downloadable)
 	}
-	return source.Client.Download(downloadable)
+
+	logentry := source.GetLogger()
+	logentry.Debug("not downloadable type, trying default message")
+
+	waMsg, ok := msg.(*waE2E.Message)
+	if !ok {
+		attach := imsg.GetAttachment()
+		if attach != nil {
+			data := attach.GetContent()
+			if data != nil {
+				return *data, err
+			}
+		}
+
+		err = fmt.Errorf("parameter msg cannot be converted to an original message")
+		return
+	}
+
+	data, err = source.Client.DownloadAny(waMsg)
+	if err != nil {
+		if strings.Contains(err.Error(), whatsmeow.ErrFileLengthMismatch.Error()) {
+			logentry.Infof("ignoring (%s) whatsmeow error for msg id: %s", whatsmeow.ErrFileLengthMismatch.Error(), imsg.GetId())
+			err = nil
+		}
+	}
+
+	return
 }
 
 func (conn *WhatsmeowConnection) Download(imsg whatsapp.IWhatsappMessage, cache bool) (att *whatsapp.WhatsappAttachment, err error) {
