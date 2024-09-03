@@ -173,7 +173,7 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{$json.payload.content}}",
+              "value1": "={{$json.payload.content?.trim()}}",
               "operation": "startsWith",
               "value2": "/"
             }
@@ -798,7 +798,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.32) Updates\n* added env for no csat msg\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.33) Updates\n* trim content for commands\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 184.30667672289223,
         "width": 457.17616077915915
       },
@@ -2617,7 +2617,7 @@
     "executionTimeout": 50,
     "executionOrder": "v1"
   },
-  "versionId": "7e74043c-af82-4eb6-a445-274bbf6847cb",
+  "versionId": "fcd94e5d-37a2-4d8a-a9c0-81c9a7f5b00d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
