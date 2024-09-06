@@ -73,6 +73,22 @@ func GetServerFromBot(source QPBot) (server *QpWhatsappServer, err error) {
 	return GetServerFromID(source.Wid)
 }
 
+// insecure
+func GetServerFirstAvailable() (server *QpWhatsappServer, err error) {
+	for _, item := range WhatsappService.Servers {
+		if item != nil && item.GetStatus() == whatsapp.Ready {
+			server = item
+			break
+		}
+	}
+
+	if server == nil {
+		err = ErrServerNotFound
+	}
+
+	return
+}
+
 func GetServerFromToken(token string) (server *QpWhatsappServer, err error) {
 	for _, item := range WhatsappService.Servers {
 		if item != nil && strings.EqualFold(item.Token, token) {

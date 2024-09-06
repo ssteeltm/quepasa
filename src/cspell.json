@@ -141,6 +141,7 @@
         "HTTPLOGS",
         "Infof",
         "Logfmt",
+        "MASTERKEY",
         "READRECEIPTS",
         "READUPDATE",
         "REMOVEDIGIT",

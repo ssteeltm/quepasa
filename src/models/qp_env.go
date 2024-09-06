@@ -24,6 +24,7 @@ const (
 	ENV_DBSSLMODE  = "DBSSLMODE"
 
 	ENV_SIGNING_SECRET = "SIGNING_SECRET" // token for hash singing cookies
+	ENV_MASTER_KEY     = "MASTERKEY"
 
 	ENV_WEBSOCKETSSL             = "WEBSOCKETSSL" // use ssl for websocket qrcode
 	ENV_MIGRATIONS               = "MIGRATIONS"   // enable migrations
@@ -243,4 +244,10 @@ func (*Environment) CacheLength() uint64 {
 	}
 
 	return 0
+}
+
+// Master Key for super admin methods
+func (*Environment) MasterKey() string {
+	result, _ := GetEnvStr(ENV_MASTER_KEY)
+	return result
 }

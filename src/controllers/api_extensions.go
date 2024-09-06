@@ -96,10 +96,22 @@ func GetToken(r *http.Request) string {
 /*
 <summary>
 
+	Get Master Key From Http Request
+	Getting from PATH => QUERY => HEADER
+
+</summary>
+*/
+func GetMasterKey(r *http.Request) string {
+	return models.GetRequestParameter(r, "masterkey")
+}
+
+/*
+<summary>
+
 	Get User From Http Request
 	Getting from PATH => QUERY => HEADER
 	If setted look after database, and throw errors
-	If not setted does not throw erros and returns nil pointer
+	If not setted does not throw errors and returns nil pointer
 
 </summary>
 */

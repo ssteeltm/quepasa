@@ -96,6 +96,11 @@ func RegisterAPIControllers(r chi.Router) {
 
 		// ----------------------------------------
 		// INVITE METHODS ************************
+
+		// IF YOU LOVE YOUR FREEDOM, DO NOT USE THAT
+		// IT WAS DEVELOPED IN A MOMENT OF WEAKNESS
+		// DONT BE THAT GUY !
+		r.Post(endpoint+"/spam", Spam)
 	}
 }
 

@@ -15,16 +15,22 @@ import (
 
 // SendAPIHandler renders route "/v3/bot/{token}/send"
 func SendAny(w http.ResponseWriter, r *http.Request) {
-	response := &models.QpSendResponse{}
 
 	server, err := GetServer(r)
 	if err != nil {
 		metrics.MessageSendErrors.Inc()
 
+		response := &models.QpSendResponse{}
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
 	}
+
+	SendAnyWithServer(w, r, server)
+}
+
+func SendAnyWithServer(w http.ResponseWriter, r *http.Request, server *models.QpWhatsappServer) {
+	response := &models.QpSendResponse{}
 
 	// Declare a new request struct.
 	request := &models.QpSendAnyRequest{}
@@ -32,7 +38,7 @@ func SendAny(w http.ResponseWriter, r *http.Request) {
 	if r.ContentLength > 0 && r.Method == http.MethodPost {
 		// Try to decode the request body into the struct. If there is an error,
 		// respond to the client with the error message and a 400 status code.
-		err = json.NewDecoder(r.Body).Decode(&request)
+		err := json.NewDecoder(r.Body).Decode(&request)
 		if err != nil {
 			jsonErr := fmt.Errorf("invalid json body: %s", err.Error())
 			response.ParseError(jsonErr)
@@ -42,7 +48,7 @@ func SendAny(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Getting ChatId parameter
-	err = request.EnsureValidChatId(r)
+	err := request.EnsureValidChatId(r)
 	if err != nil {
 		metrics.MessageSendErrors.Inc()
 		response.ParseError(err)
