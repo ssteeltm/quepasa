@@ -184,11 +184,6 @@ func (source *WhatsmeowConnection) Connect() (err error) {
 	return
 }
 
-func (source *WhatsmeowConnection) PairPhone(phone string) (string, error) {
-
-	return source.Client.PairPhone(phone, true, whatsmeow.PairClientChrome, "Quepasa Pairing")
-}
-
 func (source *WhatsmeowConnection) GetContacts() (chats []whatsapp.WhatsappChat, err error) {
 	if source.Client == nil {
 		err = errors.New("invalid client")
@@ -509,6 +504,21 @@ func (source *WhatsmeowConnection) GetInvite(groupId string) (link string, err e
 	return
 }
 
+//region PAIRING
+
+func (source *WhatsmeowConnection) PairPhone(phone string) (string, error) {
+
+	if !source.Client.IsConnected() {
+		err := source.Client.Connect()
+		if err != nil {
+			log.Errorf("error on connecting for getting whatsapp qrcode: %s", err.Error())
+			return "", err
+		}
+	}
+
+	return source.Client.PairPhone(phone, true, whatsmeow.PairClientChrome, "Chrome (Linux)")
+}
+
 func (conn *WhatsmeowConnection) GetWhatsAppQRCode() string {
 
 	var result string
@@ -543,6 +553,8 @@ func (conn *WhatsmeowConnection) GetWhatsAppQRCode() string {
 	wg.Wait()
 	return result
 }
+
+//endregion
 
 func TryUpdateChannel(ch chan<- string, value string) (closed bool) {
 	defer func() {

@@ -72,4 +72,6 @@ type IWhatsappConnection interface {
 	HistorySync(time.Time) error
 
 	GetContacts() ([]WhatsappChat, error)
+
+	PairPhone(phone string) (string, error)
 }

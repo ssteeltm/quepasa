@@ -5,8 +5,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	log "github.com/sirupsen/logrus"
-	"github.com/skip2/go-qrcode"
 
 	models "github.com/nocodeleaks/quepasa/models"
 )
@@ -25,6 +23,8 @@ func RegisterAPIControllers(r chi.Router) {
 		r.Delete(endpoint+"/info", InformationController)
 
 		r.Get(endpoint+"/scan", ScannerController)
+		r.Get(endpoint+"/paircode", PairCodeController)
+
 		r.Get(endpoint+"/command", CommandController)
 
 		// ----------------------------------------
@@ -104,54 +104,6 @@ func RegisterAPIControllers(r chi.Router) {
 		// DONT BE THAT GUY !
 		r.Post(endpoint+"/spam", Spam)
 	}
-}
-
-func ScannerController(w http.ResponseWriter, r *http.Request) {
-	// setting default response type as json
-	w.Header().Set("Content-Type", "application/json")
-
-	response := &models.QpResponse{}
-
-	token := GetToken(r)
-	if len(token) == 0 {
-		err := fmt.Errorf("token not found")
-		RespondBadRequest(w, err)
-		return
-	}
-
-	user, err := GetUser(r)
-	if err != nil {
-		err := fmt.Errorf("user not found: %s", err.Error())
-		response.ParseError(err)
-		RespondInterface(w, response)
-		return
-	}
-
-	pairing := &models.QpWhatsappPairing{Token: token, User: user}
-	con, err := pairing.GetConnection()
-	if err != nil {
-		err := fmt.Errorf("cant get connection: %s", err.Error())
-		response.ParseError(err)
-		RespondInterface(w, response)
-		return
-	}
-
-	log.Infof("requesting qrcode for token %s", token)
-	result := con.GetWhatsAppQRCode()
-
-	var png []byte
-	png, err = qrcode.Encode(result, qrcode.Medium, 256)
-	if err != nil {
-		err := fmt.Errorf("cant get qrcode: %s", err.Error())
-		response.ParseError(err)
-		RespondInterface(w, response)
-		return
-	}
-
-	w.Header().Set("Content-Disposition", "attachment; filename=qrcode.png")
-	w.Header().Set("Content-Type", "image/png")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(png))
 }
 
 func CommandController(w http.ResponseWriter, r *http.Request) {

@@ -21,17 +21,3 @@ func (source *QpSendRequestV2) EnsureValidChatId(r *http.Request) (err error) {
 	source.Recipient = chatid
 	return
 }
-
-func (source *QpSendRequestV2) ToCurrentVersion() *QpSendRequest {
-	result := &QpSendRequest{
-		ChatId: source.Recipient,
-		Text:   source.Message,
-	}
-
-	attachDefault := QPAttachmentV1{}
-	if source.Attachment != attachDefault {
-		// proccess attach
-	}
-
-	return result
-}
