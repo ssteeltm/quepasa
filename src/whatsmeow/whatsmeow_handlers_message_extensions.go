@@ -206,7 +206,7 @@ func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E
 	info := in.ContextInfo
 	if info != nil {
 		out.ForwardingScore = info.GetForwardingScore()
-		out.InReply = info.GetStanzaId()
+		out.InReply = info.GetStanzaID()
 	}
 }
 

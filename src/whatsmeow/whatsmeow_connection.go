@@ -184,6 +184,46 @@ func (source *WhatsmeowConnection) Connect() (err error) {
 	return
 }
 
+func (source *WhatsmeowConnection) PairPhone(phone string) (string, error) {
+
+	return source.Client.PairPhone(phone, true, whatsmeow.PairClientChrome, "Quepasa Pairing")
+}
+
+func (source *WhatsmeowConnection) GetContacts() (chats []whatsapp.WhatsappChat, err error) {
+	if source.Client == nil {
+		err = errors.New("invalid client")
+		return chats, err
+	}
+
+	if source.Client.Store == nil {
+		err = errors.New("invalid store")
+		return chats, err
+	}
+
+	contacts, err := source.Client.Store.Contacts.GetAllContacts()
+	if err != nil {
+		return chats, err
+	}
+
+	for jid, info := range contacts {
+
+		title := info.FullName
+		if len(title) == 0 {
+			title = info.BusinessName
+			if len(title) == 0 {
+				title = info.PushName
+			}
+		}
+
+		chats = append(chats, whatsapp.WhatsappChat{
+			Id:    jid.String(),
+			Title: title,
+		})
+	}
+
+	return chats, nil
+}
+
 // func (cli *Client) Download(msg DownloadableMessage) (data []byte, err error)
 func (source *WhatsmeowConnection) DownloadData(imsg whatsapp.IWhatsappMessage) (data []byte, err error) {
 	msg := imsg.GetSource()

@@ -731,3 +731,10 @@ func (server *QpWhatsappServer) GetInvite(groupId string) (link string, err erro
 }
 
 //#endregion
+//#region GET ALL CONTACTS
+
+func (server *QpWhatsappServer) GetContacts() ([]whatsapp.WhatsappChat, error) {
+	return server.connection.GetContacts()
+}
+
+//#endregion

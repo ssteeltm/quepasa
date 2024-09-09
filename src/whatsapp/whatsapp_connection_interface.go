@@ -70,4 +70,6 @@ type IWhatsappConnection interface {
 	IsOnWhatsApp(...string) ([]string, error)
 
 	HistorySync(time.Time) error
+
+	GetContacts() ([]WhatsappChat, error)
 }

@@ -97,6 +97,8 @@ func RegisterAPIControllers(r chi.Router) {
 		// ----------------------------------------
 		// INVITE METHODS ************************
 
+		r.Get(endpoint+"/contacts", ContactsController)
+
 		// IF YOU LOVE YOUR FREEDOM, DO NOT USE THAT
 		// IT WAS DEVELOPED IN A MOMENT OF WEAKNESS
 		// DONT BE THAT GUY !
