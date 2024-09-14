@@ -191,9 +191,7 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		return
 
 	case *events.Receipt:
-		//if source.HandleReadReceipts() {
 		go source.Receipt(*evt)
-		//}
 		return
 
 	case *events.Connected:
@@ -551,6 +549,10 @@ func (source *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 		}
 	}
 
+	if source.WAHandlers == nil {
+		return
+	}
+
 	for id, status := range statuses {
 		updated := source.WAHandlers.MessageStatusUpdate(id, status)
 		if !updated {
@@ -560,6 +562,10 @@ func (source *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 		logentry.Debugf("updated status for msg id: %s, status: %s", id, status)
 
 		if status.Uint32() != whatsapp.WhatsappMessageStatusRead.Uint32() {
+			continue
+		}
+
+		if !source.HandleReadReceipts() {
 			continue
 		}
 
@@ -580,10 +586,8 @@ func (source *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 		// message ids comma separated
 		message.Text = id
 
-		if source.WAHandlers != nil {
-			// following to internal handlers
-			go source.WAHandlers.Receipt(message)
-		}
+		// following to internal handlers
+		go source.WAHandlers.Receipt(message)
 	}
 }
 
