@@ -34,6 +34,9 @@ type WhatsmeowHandlers struct {
 	unregisterRequestedToken bool
 	service                  *WhatsmeowServiceModel
 
+	// events counter
+	Counter uint64
+
 	LogEntry *log.Entry
 }
 
@@ -188,9 +191,9 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		return
 
 	case *events.Receipt:
-		if source.HandleReadReceipts() {
-			go source.Receipt(*evt)
-		}
+		//if source.HandleReadReceipts() {
+		go source.Receipt(*evt)
+		//}
 		return
 
 	case *events.Connected:
@@ -238,6 +241,10 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		if evt.Name == appstate.WAPatchCriticalBlock {
 			source.SendPresence(WhatsmeowPresence, "'app state sync complete' event")
 		}
+		return
+
+	case *events.JoinedGroup:
+		source.JoinedGroup(*evt)
 		return
 
 	case
@@ -297,7 +304,7 @@ func (source *WhatsmeowHandlers) OnHistorySyncEvent(evt events.HistorySync) {
 	conversations := evt.Data.GetConversations()
 	for _, conversation := range conversations {
 		for _, historyMsg := range conversation.GetMessages() {
-			wid, err := types.ParseJID(conversation.GetId())
+			wid, err := types.ParseJID(conversation.GetID())
 			if err != nil {
 				logentry.Errorf("failed to parse jid at history sync: %v", err)
 				return
@@ -342,8 +349,8 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 	}
 
 	message := &whatsapp.WhatsappMessage{
-		Content: evt.Message,
-		Info:    evt.Info,
+		Content:        evt.Message,
+		InfoForHistory: evt.Info,
 	}
 
 	// basic information
@@ -518,41 +525,65 @@ func (source *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) error {
 
 //#endregion
 
-//#region EVENT READ RECEIPT
+// #region EVENT READ RECEIPT
 
-func (handler *WhatsmeowHandlers) Receipt(evt events.Receipt) {
-	handler.GetLogger().Trace("event Receipt !")
+func (source *WhatsmeowHandlers) Receipt(evt events.Receipt) {
+	eventid := atomic.AddUint64(&source.Counter, 1)
+	logentry := source.GetLogger().WithField("eventid", eventid)
+
+	logentry.Trace("event Receipt !")
 
 	chatID := fmt.Sprint(evt.Chat.User, "@", evt.Chat.Server)
 
-	// Ignore chats with @g.us, @broadcast and @newsletter
-	if strings.Contains(chatID, "@g.us") || strings.Contains(chatID, "@broadcast") || strings.Contains(chatID, "@newsletter") {
+	// Ignore chats with @broadcast and @newsletter
+	if strings.Contains(chatID, "@broadcast") || strings.Contains(chatID, "@newsletter") {
 		return
 	}
 
-	// Check if the event is of type "read" (when the contact read)
-	if evt.Type != "read" {
-		return
+	statuses := make(map[string]whatsapp.WhatsappMessageStatus)
+	for _, id := range evt.MessageIDs {
+		last := statuses[id]
+		current := GetWhatsappMessageStatus(evt.Type)
+		logentry.Tracef("reading receipt event for msg id: %s, from: %s, type: %s, status: %s", id, evt.SourceString(), evt.Type, current)
+
+		if current.Uint32() > last.Uint32() {
+			statuses[id] = current
+		}
 	}
 
-	message := &whatsapp.WhatsappMessage{Content: evt}
-	message.Id = "readreceipt"
+	for id, status := range statuses {
+		updated := source.WAHandlers.MessageStatusUpdate(id, status)
+		if !updated {
+			continue
+		}
 
-	// basic information
-	message.Timestamp = evt.Timestamp
-	message.FromMe = false
+		logentry.Debugf("updated status for msg id: %s, status: %s", id, status)
 
-	message.Chat = whatsapp.WhatsappChat{}
-	message.Chat.Id = chatID
+		if status.Uint32() != whatsapp.WhatsappMessageStatusRead.Uint32() {
+			continue
+		}
 
-	message.Type = whatsapp.SystemMessageType
+		logentry.Debugf("dispatching read receipt event for msg id: %s, status: %s", id, status)
 
-	// message ids comma separated
-	message.Text = strings.Join(evt.MessageIDs, ",")
+		message := &whatsapp.WhatsappMessage{Content: evt}
+		message.Id = "readreceipt"
 
-	if handler.WAHandlers != nil {
-		// following to internal handlers
-		go handler.WAHandlers.Receipt(message)
+		// basic information
+		message.Timestamp = evt.Timestamp
+		message.FromMe = false
+
+		message.Chat = whatsapp.WhatsappChat{}
+		message.Chat.Id = chatID
+
+		message.Type = whatsapp.SystemMessageType
+
+		// message ids comma separated
+		message.Text = id
+
+		if source.WAHandlers != nil {
+			// following to internal handlers
+			go source.WAHandlers.Receipt(message)
+		}
 	}
 }
 
@@ -578,6 +609,38 @@ func (handler *WhatsmeowHandlers) OnLoggedOutEvent(evt events.LoggedOut) {
 
 	handler.Follow(message)
 	handler.UnRegister()
+}
+
+//#endregion
+
+//#region HANDLE GROUP JOIN OUT EVENT
+
+func (handler *WhatsmeowHandlers) JoinedGroup(evt events.JoinedGroup) {
+
+	id := evt.CreateKey
+	if len(id) == 0 {
+		id = handler.Client.GenerateMessageID()
+	}
+
+	message := &whatsapp.WhatsappMessage{
+		Content: evt,
+
+		Id:        id,
+		Timestamp: time.Now().Truncate(time.Second),
+		Type:      whatsapp.GroupMessageType,
+		Chat:      whatsapp.WhatsappChat{Id: evt.GroupInfo.JID.String(), Title: evt.GroupInfo.GroupName.Name},
+		Text:      "joined group",
+
+		Info: GroupJoinInfo{
+			Owner:        evt.GroupInfo.OwnerJID.String(),
+			Created:      evt.GroupInfo.GroupCreated,
+			Participants: len(evt.GroupInfo.Participants),
+			Reason:       evt.Reason,
+			Type:         evt.Type,
+		},
+	}
+
+	handler.Follow(message)
 }
 
 //#endregion

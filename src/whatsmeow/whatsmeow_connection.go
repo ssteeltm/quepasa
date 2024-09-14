@@ -403,7 +403,7 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 				// getting quoted message if available on cache
 				// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
 				var quoted *waE2E.Message
-				cached, _ := source.Handlers.WAHandlers.GetMessage(msg.InReply)
+				cached, _ := source.Handlers.WAHandlers.GetById(msg.InReply)
 				if cached.Content != nil {
 					if internal, ok := cached.Content.(*waE2E.Message); ok {
 						quoted = internal
@@ -613,14 +613,14 @@ func (source *WhatsmeowConnection) GetWhatsAppQRChannel(ctx context.Context, out
 func (source *WhatsmeowConnection) HistorySync(timestamp time.Time) (err error) {
 	logentry := source.GetLogger()
 
-	leading := source.Handlers.WAHandlers.GetLeadingMessage()
+	leading := source.Handlers.WAHandlers.GetLeading()
 	if leading == nil {
 		err = fmt.Errorf("no valid msg in cache for retrieve parents")
 		return err
 	}
 
 	// Convert interface to struct using type assertion
-	info, ok := leading.Info.(types.MessageInfo)
+	info, ok := leading.InfoForHistory.(types.MessageInfo)
 	if !ok {
 		logentry.Error("error converting leading for history")
 	}

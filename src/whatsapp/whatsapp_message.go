@@ -10,8 +10,8 @@ import (
 type WhatsappMessage struct {
 
 	// original message from source service
-	Content interface{} `json:"-"`
-	Info    interface{} `json:"-"`
+	Content        interface{} `json:"-"`
+	InfoForHistory interface{} `json:"-"`
 
 	Id      string `json:"id"`                // Upper text msg id
 	TrackId string `json:"trackid,omitempty"` // Optional id of the system that send that message
@@ -22,7 +22,7 @@ type WhatsappMessage struct {
 	// Em qual chat (grupo ou direct) essa msg foi postada, para onde devemos responder
 	Chat WhatsappChat `json:"chat"`
 
-	// Se a msg foi postado em algum grupo ? quem postou !
+	// If this message was posted on a Group, Who posted it !
 	Participant *WhatsappChat `json:"participant,omitempty"`
 
 	// Message text if exists
@@ -40,7 +40,7 @@ type WhatsappMessage struct {
 	// Edited message
 	Edited bool `json:"edited,omitempty"`
 
-	// Quantas vezes essa msg foi encaminhada
+	// How many times this message was forwarded
 	ForwardingScore uint32 `json:"forwardingscore,omitempty"`
 
 	// Msg in reply of another ? Message ID
@@ -48,6 +48,12 @@ type WhatsappMessage struct {
 
 	// Msg in reply preview
 	Synopsis string `json:"synopsis,omitempty"`
+
+	// Delivered, Read, Imported statuses
+	Status WhatsappMessageStatus `json:"status,omitempty"`
+
+	// Extra information for custom messages
+	Info interface{} `json:"info,omitempty"`
 }
 
 //region ORDER BY TIMESTAMP
@@ -91,6 +97,12 @@ func (source *WhatsappMessage) GetParticipantId() string {
 
 func (source *WhatsappMessage) GetText() string {
 	return source.Text
+}
+
+// Indicates if the message has any status information
+// *Trick to help in Views
+func (source *WhatsappMessage) HasStatus() bool {
+	return source != nil && len(source.Status) > 0
 }
 
 func (source *WhatsappMessage) HasAttachment() bool {

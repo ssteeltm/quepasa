@@ -34,7 +34,7 @@ func GetMessageController(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 
-		msg, err := server.Handler.GetMessage(messageid)
+		msg, err := server.Handler.GetById(messageid)
 		if err != nil {
 			response.ParseError(err)
 			RespondInterface(w, response)
@@ -42,7 +42,7 @@ func GetMessageController(w http.ResponseWriter, r *http.Request) {
 		}
 
 		response.ParseSuccess("found")
-		response.Message = &msg
+		response.Message = msg
 		RespondSuccess(w, response)
 	}
 }

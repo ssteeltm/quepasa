@@ -66,11 +66,8 @@ func (source *QpWhatsappServer) SetOptions(options *whatsapp.WhatsappOptions) er
 // Ensure default handler
 func (server *QpWhatsappServer) HandlerEnsure() {
 	if server.Handler == nil {
-		handlerMessages := make(map[string]whatsapp.WhatsappMessage)
 		handler := &QPWhatsappHandlers{
 			server:       server,
-			messages:     handlerMessages,
-			sync:         &sync.Mutex{},
 			syncRegister: &sync.Mutex{},
 		}
 
@@ -122,13 +119,13 @@ func (server QpWhatsappServer) GetWId() string {
 }
 
 func (source *QpWhatsappServer) DownloadData(id string) ([]byte, error) {
-	msg, err := source.Handler.GetMessage(id)
+	msg, err := source.Handler.GetById(id)
 	if err != nil {
 		return nil, err
 	}
 
 	source.GetLogger().Infof("downloading msg data %s", id)
-	return source.connection.DownloadData(&msg)
+	return source.connection.DownloadData(msg)
 }
 
 /*
@@ -139,13 +136,13 @@ func (source *QpWhatsappServer) DownloadData(id string) ([]byte, error) {
 </summary>
 */
 func (source *QpWhatsappServer) Download(id string, cache bool) (att *whatsapp.WhatsappAttachment, err error) {
-	msg, err := source.Handler.GetMessage(id)
+	msg, err := source.Handler.GetById(id)
 	if err != nil {
 		return
 	}
 
 	source.GetLogger().Infof("downloading msg %s, using cache: %v", id, cache)
-	att, err = source.connection.Download(&msg, cache)
+	att, err = source.connection.Download(msg, cache)
 	if err != nil {
 		return
 	}
@@ -154,10 +151,10 @@ func (source *QpWhatsappServer) Download(id string, cache bool) (att *whatsapp.W
 }
 
 func (source *QpWhatsappServer) RevokeByPrefix(id string) (errors []error) {
-	messages := source.Handler.GetMessagesByPrefix(id)
+	messages := source.Handler.GetByPrefix(id)
 	for _, msg := range messages {
 		source.GetLogger().Infof("revoking msg by prefix %s", msg.Id)
-		err := source.connection.Revoke(&msg)
+		err := source.connection.Revoke(msg)
 		if err != nil {
 			errors = append(errors, err)
 		}
@@ -166,13 +163,13 @@ func (source *QpWhatsappServer) RevokeByPrefix(id string) (errors []error) {
 }
 
 func (source *QpWhatsappServer) Revoke(id string) (err error) {
-	msg, err := source.Handler.GetMessage(id)
+	msg, err := source.Handler.GetById(id)
 	if err != nil {
 		return
 	}
 
 	source.GetLogger().Infof("revoking msg %s", id)
-	return source.connection.Revoke(&msg)
+	return source.connection.Revoke(msg)
 }
 
 //endregion
@@ -217,7 +214,10 @@ func (server *QpWhatsappServer) GetMessages(timestamp time.Time) (messages []wha
 			logger.Warnf("error on requested history sync: %s", err.Error())
 		}
 	}
-	messages = append(messages, server.Handler.GetMessages(timestamp)...)
+
+	for _, item := range server.Handler.GetByTime(timestamp) {
+		messages = append(messages, *item)
+	}
 	return
 }
 
@@ -662,6 +662,11 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 	logger := source.GetLogger()
 	logger.Debugf("sending msg to: %s", msg.Chat.Id)
 
+	if source.connection.IsInterfaceNil() {
+		err = ErrorInvalidConnection
+		return
+	}
+
 	// leading with wrongs digit 9
 	if ENV.ShouldRemoveDigit9() {
 
@@ -720,21 +725,36 @@ func (source *QpWhatsappServer) GetProfilePicture(wid string, knowingId string) 
 	// future implement a rate control here, high volume of requests causing bans
 	// studying rates ...
 
+	if source.connection.IsInterfaceNil() {
+		err = ErrorInvalidConnection
+		return
+	}
+
 	return source.connection.GetProfilePicture(wid, knowingId)
 }
 
 //#endregion
 //#region GROUP INVITE LINK
 
-func (server *QpWhatsappServer) GetInvite(groupId string) (link string, err error) {
-	return server.connection.GetInvite(groupId)
+func (source *QpWhatsappServer) GetInvite(groupId string) (link string, err error) {
+	if source.connection.IsInterfaceNil() {
+		err = ErrorInvalidConnection
+		return
+	}
+
+	return source.connection.GetInvite(groupId)
 }
 
 //#endregion
 //#region GET ALL CONTACTS
 
-func (server *QpWhatsappServer) GetContacts() ([]whatsapp.WhatsappChat, error) {
-	return server.connection.GetContacts()
+func (source *QpWhatsappServer) GetContacts() (contacts []whatsapp.WhatsappChat, err error) {
+	if source.connection.IsInterfaceNil() {
+		err = ErrorInvalidConnection
+		return
+	}
+
+	return source.connection.GetContacts()
 }
 
 //#endregion

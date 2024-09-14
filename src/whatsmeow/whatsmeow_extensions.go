@@ -244,3 +244,16 @@ func SendPresence(client *whatsmeow.Client, presence types.Presence, from string
 		}
 	}
 }
+
+func GetWhatsappMessageStatus(receipt types.ReceiptType) whatsapp.WhatsappMessageStatus {
+	switch receipt {
+	case types.ReceiptTypeDelivered:
+		return whatsapp.WhatsappMessageStatusDelivered
+	case types.ReceiptTypeRetry, types.ReceiptTypeServerError:
+		return whatsapp.WhatsappMessageStatusError
+	case types.ReceiptTypeRead, types.ReceiptTypePlayed:
+		return whatsapp.WhatsappMessageStatusRead
+	}
+
+	return whatsapp.WhatsappMessageStatusUnknown
+}

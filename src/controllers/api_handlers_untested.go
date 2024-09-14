@@ -43,7 +43,7 @@ func ReceiveAPIHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.Total = uint64(server.Handler.GetTotal())
+	response.Total = server.Handler.Count()
 
 	timestamp, err := GetTimestamp(r)
 	if err != nil {

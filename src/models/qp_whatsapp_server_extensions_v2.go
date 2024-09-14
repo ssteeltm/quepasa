@@ -3,7 +3,6 @@ package models
 import "time"
 
 // returning []QPMessageV1
-// server.GetMessages(searchTime)
 func GetMessagesFromServerV2(server *QpWhatsappServer, searchTime time.Time) (messages []QpMessageV2) {
 	list := server.GetMessages(searchTime)
 	for _, item := range list {

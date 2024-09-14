@@ -7,7 +7,6 @@ import (
 )
 
 // returning []QPMessageV1
-// bot.GetMessages(searchTime)
 func GetMessagesFromBotV2(source QPBot, timestamp string) (messages []QpMessageV2, err error) {
 
 	server, err := GetServerFromBot(source)

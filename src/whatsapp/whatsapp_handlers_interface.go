@@ -1,10 +1,13 @@
 package whatsapp
 
-// Eventos vindos do serviço de whatsapp
+// Controls Cache and Events from current WhatsApp service
 type IWhatsappHandlers interface {
 
-	// Recebimento/Envio de mensagem
+	// Process a single message
 	Message(*WhatsappMessage)
+
+	// Update message status information
+	MessageStatusUpdate(id string, status WhatsappMessageStatus) bool
 
 	// Update read receipt status
 	Receipt(*WhatsappMessage)
@@ -12,9 +15,9 @@ type IWhatsappHandlers interface {
 	// Event
 	LoggedOut(string)
 
-	GetLeadingMessage() *WhatsappMessage
+	GetLeading() *WhatsappMessage
 
-	GetMessage(id string) (WhatsappMessage, error)
+	GetById(id string) (*WhatsappMessage, error)
 
 	OnConnected()
 
