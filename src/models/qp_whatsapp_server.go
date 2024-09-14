@@ -44,6 +44,14 @@ func (source *QpWhatsappServer) GetLogger() *log.Entry {
 	return source.Logger
 }
 
+func (source *QpWhatsappServer) GetValidConnection() (whatsapp.IWhatsappConnection, error) {
+	if source == nil || source.connection == nil || source.connection.IsInterfaceNil() {
+		return nil, ErrorInvalidConnection
+	}
+
+	return source.connection, nil
+}
+
 //#region IMPLEMENTING WHATSAPP OPTIONS INTERFACE
 
 func (source *QpWhatsappServer) GetOptions() *whatsapp.WhatsappOptions {
@@ -444,23 +452,26 @@ func (source *QpWhatsappServer) Restart() (err error) {
 
 // Somente usar em caso de não ser permitida a reconxão automática
 func (source *QpWhatsappServer) Disconnect(cause string) {
-	if source.connection != nil && !source.connection.IsInterfaceNil() {
-		if source.connection.IsConnected() {
+	conn, err := source.GetValidConnection()
+	if err == nil {
+		if conn.IsConnected() {
 			logentry := source.GetLogger()
 			logentry.Infof("disconnecting whatsapp server by: %s", cause)
 
-			source.connection.Dispose(cause)
+			conn.Dispose(cause)
 			source.connection = nil
 		}
 	}
 }
 
 // Retorna o titulo em cache (se houver) do id passado em parametro
-func (server *QpWhatsappServer) GetChatTitle(wid string) string {
-	if !server.connection.IsInterfaceNil() {
-		return server.connection.GetChatTitle(wid)
+func (source *QpWhatsappServer) GetChatTitle(wid string) string {
+	conn, err := source.GetValidConnection()
+	if err != nil {
+		return ""
 	}
-	return ""
+
+	return conn.GetChatTitle(wid)
 }
 
 // Usado para exibir os servidores/bots de cada usuario em suas respectivas telas
@@ -662,8 +673,8 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 	logger := source.GetLogger()
 	logger.Debugf("sending msg to: %s", msg.Chat.Id)
 
-	if source.connection.IsInterfaceNil() {
-		err = ErrorInvalidConnection
+	conn, err := source.GetValidConnection()
+	if err != nil {
 		return
 	}
 
@@ -674,7 +685,7 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 		if len(phone) > 0 {
 			phoneWithout9, _ := library.RemoveDigit9IfElegible(phone)
 			if len(phoneWithout9) > 0 {
-				valids, err := source.connection.IsOnWhatsApp(phone, phoneWithout9)
+				valids, err := conn.IsOnWhatsApp(phone, phoneWithout9)
 				if err != nil {
 					return nil, err
 				}
@@ -698,7 +709,7 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 			textMsg := *msg
 			textMsg.Type = whatsapp.TextMessageType
 			textMsg.Attachment = nil
-			response, err = source.connection.Send(&textMsg)
+			response, err = conn.Send(&textMsg)
 			if err != nil {
 				return
 			} else {
@@ -708,7 +719,7 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 	}
 
 	// sending default msg
-	response, err = source.connection.Send(msg)
+	response, err = conn.Send(msg)
 	if err == nil {
 		source.Handler.Message(msg)
 	}
@@ -725,36 +736,36 @@ func (source *QpWhatsappServer) GetProfilePicture(wid string, knowingId string) 
 	// future implement a rate control here, high volume of requests causing bans
 	// studying rates ...
 
-	if source.connection.IsInterfaceNil() {
-		err = ErrorInvalidConnection
+	conn, err := source.GetValidConnection()
+	if err != nil {
 		return
 	}
 
-	return source.connection.GetProfilePicture(wid, knowingId)
+	return conn.GetProfilePicture(wid, knowingId)
 }
 
 //#endregion
 //#region GROUP INVITE LINK
 
 func (source *QpWhatsappServer) GetInvite(groupId string) (link string, err error) {
-	if source.connection.IsInterfaceNil() {
-		err = ErrorInvalidConnection
+	conn, err := source.GetValidConnection()
+	if err != nil {
 		return
 	}
 
-	return source.connection.GetInvite(groupId)
+	return conn.GetInvite(groupId)
 }
 
 //#endregion
 //#region GET ALL CONTACTS
 
 func (source *QpWhatsappServer) GetContacts() (contacts []whatsapp.WhatsappChat, err error) {
-	if source.connection.IsInterfaceNil() {
-		err = ErrorInvalidConnection
+	conn, err := source.GetValidConnection()
+	if err != nil {
 		return
 	}
 
-	return source.connection.GetContacts()
+	return conn.GetContacts()
 }
 
 //#endregion
