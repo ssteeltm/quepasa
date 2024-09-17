@@ -765,7 +765,15 @@ func (source *QpWhatsappServer) GetContacts() (contacts []whatsapp.WhatsappChat,
 		return
 	}
 
-	return conn.GetContacts()
+	contacts, err = conn.GetContacts()
+	if err == nil {
+		for index, contact := range contacts {
+			contact.FormatContact()
+			contacts[index] = contact
+		}
+	}
+
+	return
 }
 
 //#endregion
