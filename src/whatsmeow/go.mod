@@ -15,7 +15,7 @@ require (
 
 require (
 	go.mau.fi/util v0.6.0 // indirect
-	go.mau.fi/whatsmeow v0.0.0-20240821142752-3d63c6fcc1a7
+	go.mau.fi/whatsmeow v0.0.0-20240917093958-061c065cc1ee
 )
 
 require (
