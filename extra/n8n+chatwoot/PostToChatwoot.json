@@ -37,8 +37,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -2020,
-        960
+        -1800,
+        1060
       ],
       "id": "4cc64138-d2f9-4419-95a6-a8a2bee9a464"
     },
@@ -55,7 +55,7 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        -1420,
+        -1200,
         700
       ],
       "continueOnFail": true
@@ -86,7 +86,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -1820,
+        -1600,
         880
       ],
       "id": "0af31fae-f50e-469b-83d0-77d80f4e72fc"
@@ -102,7 +102,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -1240,
+        -1020,
         780
       ]
     },
@@ -113,7 +113,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -1620,
+        -1400,
         800
       ]
     },
@@ -133,7 +133,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -1060,
+        -840,
         780
       ]
     },
@@ -148,8 +148,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2340,
-        1400
+        2400,
+        1360
       ]
     },
     {
@@ -183,8 +183,8 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.17) Updates\n* added audio transcript workflow\n\n## Recommendations \n* Remember set timeout to 10 seconds",
-        "height": 189.357048321488,
+        "content": "## (1.0.19) Updates\n* adding participant phone\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "height": 262.55904520292785,
         "width": 489.8474320052134
       },
       "id": "5c00d5f6-1dbb-4218-8a8e-8853fd826635",
@@ -193,7 +193,7 @@
       "typeVersion": 1,
       "position": [
         -3380,
-        549.8812688918849
+        476.67927201044506
       ]
     },
     {
@@ -276,8 +276,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        2420,
-        1560
+        2700,
+        1520
       ],
       "id": "4ebd53bb-6850-419e-a7b1-2e5f336b0a88",
       "retryOnFail": true,
@@ -299,7 +299,7 @@
       "type": "n8n-nodes-base.moveBinaryData",
       "typeVersion": 1,
       "position": [
-        1380,
+        1600,
         1440
       ],
       "alwaysOutputData": true
@@ -314,7 +314,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        1000,
+        1220,
         1060
       ]
     },
@@ -349,7 +349,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        3240,
+        3460,
         1040
       ],
       "id": "741bdae9-353f-4da0-8444-7f5ce9e3865c",
@@ -412,7 +412,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        1640,
+        1860,
         860
       ],
       "id": "2f0a55d2-bc66-432d-b63b-55e10b63e78e",
@@ -441,7 +441,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 1,
       "position": [
-        -220,
+        0,
         1060
       ]
     },
@@ -452,7 +452,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        760,
+        980,
         1500
       ]
     },
@@ -463,7 +463,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        760,
+        980,
         1060
       ]
     },
@@ -474,7 +474,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        760,
+        980,
         1800
       ]
     },
@@ -485,7 +485,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1640,
+        1860,
         1060
       ]
     },
@@ -500,7 +500,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        3020,
+        3240,
         1040
       ]
     },
@@ -520,7 +520,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2120,
+        2340,
         940
       ]
     },
@@ -541,7 +541,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2300,
+        2520,
         800
       ]
     },
@@ -563,7 +563,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        2540,
+        2760,
         660
       ]
     },
@@ -585,7 +585,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        2540,
+        2760,
         960
       ]
     },
@@ -607,7 +607,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        2540,
+        2760,
         820
       ]
     },
@@ -618,7 +618,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        2820,
+        3040,
         820
       ]
     },
@@ -639,7 +639,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        1220,
+        1440,
         1060
       ]
     },
@@ -659,7 +659,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1200,
+        1420,
         1500
       ]
     },
@@ -670,7 +670,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1540,
+        1760,
         1520
       ]
     },
@@ -690,7 +690,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -420,
+        -200,
         960
       ],
       "retryOnFail": true,
@@ -703,7 +703,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -220,
+        0,
         880
       ]
     },
@@ -714,7 +714,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1000,
+        1220,
         1220
       ]
     },
@@ -823,7 +823,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        1900,
+        2120,
         940
       ],
       "alwaysOutputData": true,
@@ -837,7 +837,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -1220,
+        -1000,
         960
       ]
     },
@@ -857,7 +857,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -1620,
+        -1400,
         980
       ]
     },
@@ -868,7 +868,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -680,
+        -460,
         800
       ]
     },
@@ -889,7 +889,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -1420,
+        -1200,
         1060
       ]
     },
@@ -910,7 +910,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -860,
+        -640,
         700
       ]
     },
@@ -931,7 +931,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        980,
+        1200,
         1500
       ]
     },
@@ -939,15 +939,17 @@
       "parameters": {
         "workflowId": "={{ $env['C8Q_TOCHATWOOTTRANSCRIPT'] ?? 'pi4APHD9F05Dv6FR' }}",
         "mode": "each",
-        "options": {}
+        "options": {
+          "waitForSubWorkflow": false
+        }
       },
       "id": "4aa1546e-d2aa-4843-92f2-96716486666e",
       "name": "Throw Audio Transcript Workflow",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        1200,
-        1860
+        3480,
+        1640
       ],
       "onError": "continueRegularOutput"
     },
@@ -998,9 +1000,134 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        960,
-        1880
+        3020,
+        1800
       ]
+    },
+    {
+      "parameters": {},
+      "id": "5467046f-1b2a-422f-bbb2-6dbe721c36cc",
+      "name": "From .vcf",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        1220
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "cf9452e2-8491-4cf4-bf06-8440851e354e",
+      "name": "From .url",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        1520
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "e260f983-f4d6-4adf-b7c8-c348ae9f409e",
+      "name": "From any *",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        1800
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "823c5aa8-d3fa-452d-9d8e-9a6b7ad8c0f0",
+              "name": "msgid",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1f1a357c-40d4-4cf5-ab33-81a8705ecb28",
+      "name": "Getting Msg Id",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3020,
+        1520
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "id": "ea82e6e6-1bfd-42b5-9d29-ec096c58c2d1",
+      "name": "Merge With Posted Msg Id",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3260,
+        1640
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e4c92b92-7d5c-4835-8f9d-c4cd0e384533",
+              "leftValue": "={{ $json.participant.phone }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "dc15a1ab-efc4-441f-87f7-71c50f8ff8c3",
+      "name": "If Has Phone ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -2020,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "payload.content",
+              "value": "=**({{ $json.participant.phone }}) {{$json.participant.title}}**: {{$json.payload.content}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Prepend Title & Phone",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -1800,
+        920
+      ],
+      "id": "ca99dcc2-4a93-4452-b092-073bf6a5e236"
     }
   ],
   "pinData": {},
@@ -1016,7 +1143,7 @@
         ],
         [
           {
-            "node": "Prepend Title",
+            "node": "If Has Phone ?",
             "type": "main",
             "index": 0
           }
@@ -1267,12 +1394,7 @@
       "main": [
         [
           {
-            "node": "Post Incoming Message Attachment",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Is Valid Audio For Transcript",
+            "node": "From any *",
             "type": "main",
             "index": 0
           }
@@ -1424,7 +1546,7 @@
       "main": [
         [
           {
-            "node": "Post Incoming Message Attachment",
+            "node": "From .url",
             "type": "main",
             "index": 0
           }
@@ -1464,7 +1586,7 @@
       "main": [
         [
           {
-            "node": "Post Incoming Message Attachment",
+            "node": "From .vcf",
             "type": "main",
             "index": 0
           }
@@ -1608,7 +1730,107 @@
       "main": [
         [
           {
+            "node": "Merge With Posted Msg Id",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "From .vcf": {
+      "main": [
+        [
+          {
+            "node": "Post Incoming Message Attachment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "From .url": {
+      "main": [
+        [
+          {
+            "node": "Post Incoming Message Attachment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "From any *": {
+      "main": [
+        [
+          {
+            "node": "Is Valid Audio For Transcript",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Post Incoming Message Attachment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post Incoming Message Attachment": {
+      "main": [
+        [
+          {
+            "node": "Getting Msg Id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge With Posted Msg Id": {
+      "main": [
+        [
+          {
             "node": "Throw Audio Transcript Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Getting Msg Id": {
+      "main": [
+        [
+          {
+            "node": "Merge With Posted Msg Id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Has Phone ?": {
+      "main": [
+        [
+          {
+            "node": "Prepend Title & Phone",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepend Title",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepend Title & Phone": {
+      "main": [
+        [
+          {
+            "node": "Has Incoming Attachment",
             "type": "main",
             "index": 0
           }
@@ -1620,9 +1842,10 @@
   "settings": {
     "saveManualExecutions": false,
     "callerPolicy": "workflowsFromSameOwner",
-    "executionTimeout": 10
+    "executionTimeout": 10,
+    "executionOrder": "v1"
   },
-  "versionId": "fe0d815d-e241-43f8-8578-996708b8c52a",
+  "versionId": "98b060b9-af5e-47fd-bdc1-b7e665936bf7",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

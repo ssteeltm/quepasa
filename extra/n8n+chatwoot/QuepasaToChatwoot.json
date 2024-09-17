@@ -537,6 +537,10 @@
               "value": "={{$json.participant?.title}}"
             },
             {
+              "name": "participant.phone",
+              "value": "={{$json.participant?.phone}}"
+            },
+            {
               "name": "payload.external_created_at",
               "value": "={{ new Date($json.timestamp).getTime() / 1000 }}"
             },
@@ -706,7 +710,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.18) Updates\n* follow with chat info\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.19) Updates\n* adding participant phone\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
         "width": 569.6036185132486
       },
@@ -2104,7 +2108,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "48721439-f711-43b1-9921-2fea7f869c11",
+  "versionId": "8ebca865-4dc0-4b06-8eb3-e8ef33b2d518",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
