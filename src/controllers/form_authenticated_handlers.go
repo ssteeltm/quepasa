@@ -75,6 +75,12 @@ func FormAccountController(w http.ResponseWriter, r *http.Request) {
 		WMOptions: whatsmeow.WhatsmeowService.Options,
 	}
 
+	masterkey := models.ENV.MasterKey()
+	data.HasMasterKey = len(masterkey) > 0
+	if data.HasMasterKey {
+		data.HasSignalRActiveConnections = models.SignalRHub.HasActiveConnections(masterkey)
+	}
+
 	data.Servers = models.GetServersForUser(user)
 	data.Version = models.QpVersion
 	templates := template.Must(template.ParseFiles("views/layouts/main.tmpl", "views/account.tmpl"))

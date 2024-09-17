@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"strings"
 
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	signalr "github.com/philippseith/signalr"
@@ -72,8 +73,9 @@ func (source *QpSignalRHub) Token(token string) {
 
 func (source *QpSignalRHub) GetActiveConnections(token string) (active []string) {
 	if source != nil {
+		masterkey := ENV.MasterKey()
 		for ConnectionId, _token := range source.tokens {
-			if _token == token {
+			if strings.EqualFold(masterkey, _token) || _token == token {
 				active = append(active, ConnectionId)
 			}
 		}
