@@ -798,9 +798,9 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.34) Updates\n* payload, checks if is valid for whatsapp\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.35) Updates\n* responding to webhook for avoid requeue from sidequik\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 184.30667672289223,
-        "width": 457.17616077915915
+        "width": 591.0097010851398
       },
       "id": "224d6d50-a48c-4de4-a996-154f372cf182",
       "name": "Sticky Note2",
@@ -1418,8 +1418,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        -6680,
-        3700
+        -6560,
+        3640
       ]
     },
     {
@@ -1544,23 +1544,6 @@
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "skip greetings",
-        "options": {
-          "responseCode": 200
-        }
-      },
-      "name": "Respond Ok Skip Greetings",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [
-        -6500,
-        4000
-      ],
-      "id": "0c94eeae-462c-4622-acfc-a7de5e041334"
-    },
-    {
-      "parameters": {
-        "respondWith": "text",
         "responseBody": "skip evaluation",
         "options": {
           "responseCode": 200
@@ -1570,8 +1553,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        -6480,
-        3600
+        -6200,
+        3560
       ],
       "id": "9935b611-27c1-4611-9a35-0ce6160e60ca"
     },
@@ -1727,6 +1710,265 @@
         -5200,
         5180
       ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "1edd577c-e244-446b-bfd4-a56596df741b",
+      "name": "Any Other Update",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -7080,
+        6600
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "46ededa4-aef3-4b97-a8ce-062304f1adb2",
+      "name": "Not Outgoing",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -6860,
+        6600
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "9c5a6a6c-b008-4948-8ace-ef81feac2bec",
+      "name": "Not Public",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -6640,
+        6600
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "2b9102fc-a661-486e-b6d8-d3c4f7b16314",
+      "name": "Revoked",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -6440,
+        6400
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "58ee3a0f-1938-4035-9f9f-f1c1df500c56",
+      "name": "Normal Exit C",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -7140,
+        5320
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "9aaef731-b4f9-49a5-92f9-fc588b38a679",
+      "name": "Normal Exit C1",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -6960,
+        5320
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "7d7a7d62-8e50-46d4-85b7-85326803f368",
+      "name": "Normal Exit C2",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -6100,
+        4980
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "78108b71-1f74-4398-a8c6-16c0d601f6f0",
+      "name": "Normal Exit C3",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -5860,
+        4980
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "3e96fca5-5d3a-4a0a-9782-33541b2efed7",
+      "name": "Normal Exit C4",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -4980,
+        5340
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "d7e99525-f5de-49c0-918f-60c755a19966",
+      "name": "Normal Exit C5",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -2280,
+        4740
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "b534f29b-9e2d-46a0-80c9-0c7a8fb5b192",
+      "name": "Normal Exit C6",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -1760,
+        5060
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "skip greetings",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond Ok Skip Greetings",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        -6320,
+        4000
+      ],
+      "id": "b719b522-5121-4ea0-9981-f1eb7f42ec8d"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE messages SET content = NULL WHERE id = {{ +$json.body.id }}",
+        "additionalFields": {}
+      },
+      "id": "a751a075-437b-40dc-9bde-396c8b49998e",
+      "name": "Clear Evaluation Message",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        -6380,
+        3560
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE messages SET content = NULL WHERE id = {{ +$json.body.id }}",
+        "additionalFields": {}
+      },
+      "id": "ce277dde-1c4f-428e-8727-e79e9fd35464",
+      "name": "Clear Greetings Message",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        -6480,
+        4000
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE messages SET \"content_type\" = 0, \"content\" = '{{ $json.body.conversation.messages[0].content }}' WHERE id = {{ +$json.body.id }}",
+        "additionalFields": {}
+      },
+      "id": "6afa4bf5-1354-41e5-8c6e-57b61ea4761e",
+      "name": "Update Evaluation Message With Custom Content",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        -6160,
+        3720
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "1",
+          "name": "Postgres account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -1933,6 +2175,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Any Other Update",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -2015,6 +2264,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Normal Exit C",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -2058,7 +2314,13 @@
     },
     "Skip Evaluation By Contact": {
       "main": [
-        [],
+        [
+          {
+            "node": "Normal Exit C3",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "No Operation, do nothing3",
@@ -2215,6 +2477,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Normal Exit C1",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -2260,7 +2529,13 @@
     },
     "Skip Evaluate By Conversation": {
       "main": [
-        [],
+        [
+          {
+            "node": "Normal Exit C2",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Skip Evaluation By Contact",
@@ -2300,6 +2575,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Not Public",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -2308,6 +2590,13 @@
         [
           {
             "node": "Is Public Update ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Not Outgoing",
             "type": "main",
             "index": 0
           }
@@ -2398,6 +2687,13 @@
         [
           {
             "node": "Success ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normal Exit C6",
             "type": "main",
             "index": 0
           }
@@ -2504,7 +2800,7 @@
       "main": [
         [
           {
-            "node": "Respond Ok Skip Evaluation",
+            "node": "Clear Evaluation Message",
             "type": "main",
             "index": 0
           }
@@ -2522,7 +2818,7 @@
       "main": [
         [
           {
-            "node": "Respond Ok Skip Greetings",
+            "node": "Clear Greetings Message",
             "type": "main",
             "index": 0
           }
@@ -2552,6 +2848,11 @@
         [
           {
             "node": "No Operation, do nothing4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Evaluation Message With Custom Content",
             "type": "main",
             "index": 0
           }
@@ -2606,6 +2907,57 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Normal Exit C4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quepasa Revoke": {
+      "main": [
+        [
+          {
+            "node": "Revoked",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Message Status": {
+      "main": [
+        [
+          {
+            "node": "Normal Exit C5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Greetings Message": {
+      "main": [
+        [
+          {
+            "node": "Respond Ok Skip Greetings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Evaluation Message": {
+      "main": [
+        [
+          {
+            "node": "Respond Ok Skip Evaluation",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }
@@ -2617,7 +2969,7 @@
     "executionTimeout": 50,
     "executionOrder": "v1"
   },
-  "versionId": "d292e1c5-a1f6-47b8-bb08-0c4b0f73151e",
+  "versionId": "6e69e52d-5934-4aa0-95b4-668876d49b95",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

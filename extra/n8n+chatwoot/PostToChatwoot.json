@@ -148,7 +148,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2400,
+        2620,
         1360
       ]
     },
@@ -281,7 +281,7 @@
       ],
       "id": "4ebd53bb-6850-419e-a7b1-2e5f336b0a88",
       "retryOnFail": true,
-      "waitBetweenTries": 2000
+      "waitBetweenTries": 3000
     },
     {
       "parameters": {
@@ -964,7 +964,7 @@
           "conditions": [
             {
               "id": "19a56ff4-9d4b-4b6a-82cc-4cc55b3ee1ad",
-              "leftValue": "={{ $json.payload.event }}",
+              "leftValue": "={{ $json.event }}",
               "rightValue": "audio",
               "operator": {
                 "type": "string",
@@ -1845,7 +1845,7 @@
     "executionTimeout": 10,
     "executionOrder": "v1"
   },
-  "versionId": "98b060b9-af5e-47fd-bdc1-b7e665936bf7",
+  "versionId": "34359305-6587-482b-9401-b1975235406a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
