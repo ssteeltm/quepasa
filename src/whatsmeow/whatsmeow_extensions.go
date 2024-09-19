@@ -6,13 +6,12 @@ import (
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
-	log "github.com/sirupsen/logrus"
-	"google.golang.org/protobuf/proto"
-
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
+	log "github.com/sirupsen/logrus"
 	whatsmeow "go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/proto/waE2E"
 	types "go.mau.fi/whatsmeow/types"
+	"google.golang.org/protobuf/proto"
 )
 
 func GetMediaTypeFromAttachment(source *whatsapp.WhatsappAttachment) whatsmeow.MediaType {

@@ -1,5 +1,5 @@
 {
-  "name": "ToChatwootTranscript - OpenAI",
+  "name": "ToChatwootTranscriptViaOpenAI",
   "nodes": [
     {
       "parameters": {
@@ -25,21 +25,6 @@
       "position": [
         1080,
         280
-      ]
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineAll",
-        "options": {}
-      },
-      "id": "90d2f7a1-3120-43a9-8ed7-3af9e66440ad",
-      "name": "Merge1",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [
-        2940,
-        200
       ]
     },
     {
@@ -126,47 +111,6 @@
         "assignments": {
           "assignments": [
             {
-              "id": "72a5c39c-2651-45e9-9787-02d267b0a352",
-              "name": "conversation",
-              "value": "={{$json.conversation}}",
-              "type": "object"
-            },
-            {
-              "id": "70d692bb-cbb4-4c28-bb11-933feadabf95",
-              "name": "extra",
-              "value": "={{$json.extra}}",
-              "type": "object"
-            },
-            {
-              "id": "7cc15bfa-39d7-484e-bb09-6fc98da24f74",
-              "name": "api_key",
-              "value": "={{$json.api_key}}",
-              "type": "string"
-            },
-            {
-              "id": "fcdfd613-6f96-4754-8e08-21ee5491d9fe",
-              "name": "text",
-              "value": "={{$json.text}}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "b39a0873-7e17-486d-82fe-cbf81772293c",
-      "name": "Edit Fields",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1960,
-        320
-      ]
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
               "id": "2c18cfcd-7efa-4822-a88e-2a5ce8b61586",
               "name": "=resume",
               "value": "={{ $json.choices[0].message.content }}",
@@ -214,59 +158,6 @@
       "notesInFlow": true
     },
     {
-      "parameters": {},
-      "id": "2abeb6b1-da2b-4777-8e98-8b7b5c5cdf7a",
-      "name": "No Operation, do nothing",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        2340,
-        220
-      ]
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "={{ $json.extra.cwhost }}/api/v1/accounts/{{ $json[\"extra\"][\"account\"] }}/conversations/{{ $json[\"conversation\"][\"id\"] }}/messages",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "api_access_token",
-              "value": "={{ $json.extra.atoken }}"
-            }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "content",
-              "value": "={{ $json.resume ?? $json.text }}"
-            },
-            {
-              "name": "message_type",
-              "value": "incoming"
-            },
-            {
-              "name": "private",
-              "value": "true"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "b0534054-80dc-47f6-923d-cb880cf7ff7f",
-      "name": "Post Incoming Message",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
-      "position": [
-        3120,
-        340
-      ],
-      "notesInFlow": true
-    },
-    {
       "parameters": {
         "conditions": {
           "options": {
@@ -296,6 +187,158 @@
       "position": [
         2140,
         320
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "72a5c39c-2651-45e9-9787-02d267b0a352",
+              "name": "conversation",
+              "value": "={{$json.conversation}}",
+              "type": "object"
+            },
+            {
+              "id": "70d692bb-cbb4-4c28-bb11-933feadabf95",
+              "name": "extra",
+              "value": "={{$json.extra}}",
+              "type": "object"
+            },
+            {
+              "id": "fcdfd613-6f96-4754-8e08-21ee5491d9fe",
+              "name": "payload.content",
+              "value": "={{$json.text}}",
+              "type": "string"
+            },
+            {
+              "id": "0c232292-a96f-46d4-8e45-5a947e295820",
+              "name": "payload.content_attributes.in_reply_to",
+              "value": "={{+$json.msgid}}",
+              "type": "number"
+            },
+            {
+              "id": "5feaaa7c-e22f-4870-aee5-7a8b48d3fd8c",
+              "name": "payload.message_type",
+              "value": "incoming",
+              "type": "string"
+            },
+            {
+              "id": "9f081859-57b0-4d84-b612-bb425513c7b0",
+              "name": "payload.private",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "5a5405c2-28bd-4774-865f-65d003963d69",
+              "name": "api_key",
+              "value": "={{$json.api_key}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3fc7d3a3-080e-4e81-9db7-84467d8effb0",
+      "name": "ChatWoot Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1960,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$json.extra.cwhost}}/api/v1/accounts/{{$json.extra.account}}/conversations/{{$json.conversation.id}}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api_access_token",
+              "value": "={{ $json.extra.atoken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.payload }}",
+        "options": {}
+      },
+      "id": "6b6072a3-190d-4e42-bd9a-90fc2670aa5e",
+      "name": "Post Incoming Message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        3340,
+        320
+      ],
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "06a56ebd-eb0f-4613-bec6-0efa4c150725",
+              "name": "payload.content",
+              "value": "={{ $json.resume ?? $json.payload.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "d601c3c7-5cf3-4d85-a341-7e54b5b90d2c",
+      "name": "Append Resume If Exists",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3140,
+        320
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "2abeb6b1-da2b-4777-8e98-8b7b5c5cdf7a",
+      "name": "Get Resume",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2340,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "id": "90d2f7a1-3120-43a9-8ed7-3af9e66440ad",
+      "name": "Merge Resume",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2940,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## (1.0.1) Updates\n* in reply to\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "height": 167.46034452664873,
+        "width": 489.8474320052134
+      },
+      "id": "87ab5e9b-1307-4822-99d4-ae9244a8022b",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        75.09870067627912
       ]
     }
   ],
@@ -359,18 +402,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "If Should Resume",
+            "node": "ChatWoot Payload",
             "type": "main",
             "index": 0
           }
@@ -381,7 +413,7 @@
       "main": [
         [
           {
-            "node": "Merge1",
+            "node": "Merge Resume",
             "type": "main",
             "index": 0
           }
@@ -399,7 +431,36 @@
         ]
       ]
     },
-    "Merge1": {
+    "If Should Resume": {
+      "main": [
+        [
+          {
+            "node": "Get Resume",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append Resume If Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ChatWoot Payload": {
+      "main": [
+        [
+          {
+            "node": "If Should Resume",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Resume If Exists": {
       "main": [
         [
           {
@@ -410,7 +471,7 @@
         ]
       ]
     },
-    "No Operation, do nothing": {
+    "Get Resume": {
       "main": [
         [
           {
@@ -419,25 +480,18 @@
             "index": 0
           },
           {
-            "node": "Merge1",
+            "node": "Merge Resume",
             "type": "main",
             "index": 1
           }
         ]
       ]
     },
-    "If Should Resume": {
+    "Merge Resume": {
       "main": [
         [
           {
-            "node": "No Operation, do nothing",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Post Incoming Message",
+            "node": "Append Resume If Exists",
             "type": "main",
             "index": 0
           }
@@ -447,9 +501,12 @@
   },
   "active": false,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": 30
   },
-  "versionId": "cf6223dd-fd5e-4997-baa7-ff0123860936",
+  "versionId": "574af2b2-c341-4c47-94de-ff27ce498a59",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
