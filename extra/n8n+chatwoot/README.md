@@ -106,3 +106,6 @@
 	
 	# st | singlethread
 	> (boolean) Single Thread - default false - should use a single thread conversation and do not open a new ?
+	
+	# soc
+	> (boolean) Should Open Conversation ? - default true
