@@ -96,7 +96,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        12380,
+        12400,
         -460
       ],
       "id": "5adac819-e66b-4a2a-b4c9-5e6a3e9234b6"
@@ -247,32 +247,6 @@
       ]
     },
     {
-      "parameters": {},
-      "id": "8d386184-d94c-48ae-98f4-c191055c85a5",
-      "name": "NoOp - Opening Conversation",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        13020,
-        -240
-      ]
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combinationMode": "multiplex",
-        "options": {}
-      },
-      "id": "05115a45-9ce3-4681-9af6-aeb18de3f359",
-      "name": "Merge1",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 2,
-      "position": [
-        12760,
-        -380
-      ]
-    },
-    {
       "parameters": {
         "keepOnlySet": true,
         "values": {
@@ -289,8 +263,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        12560,
-        -480
+        12580,
+        -460
       ],
       "id": "35e494cc-41a3-4d0c-97aa-b77cc2f37768"
     },
@@ -310,7 +284,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        15420,
+        15520,
         -360
       ],
       "id": "929eb1c5-5a57-4603-867f-860e15de3cdb"
@@ -325,7 +299,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        15620,
+        15720,
         -360
       ],
       "alwaysOutputData": true,
@@ -342,8 +316,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        12960,
-        -360
+        13280,
+        -340
       ]
     },
     {
@@ -370,8 +344,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        13240,
-        -243.21073188545233
+        13340,
+        -243
       ]
     },
     {
@@ -397,7 +371,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        14120,
+        14220,
         -440
       ]
     },
@@ -411,7 +385,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        13700,
+        13800,
         -520
       ],
       "executeOnce": true,
@@ -570,7 +544,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        15220,
+        15320,
         -360
       ],
       "id": "a5b6fc06-5c43-4269-b324-eead5bf58486"
@@ -714,7 +688,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.19) Updates\n* adding participant phone\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.20) Updates\n* adjusting conversation status\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 200.52521040961017,
         "width": 569.6036185132486
       },
@@ -758,8 +732,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        13500,
-        -83.21073188545233
+        13600,
+        -83
       ]
     },
     {
@@ -769,8 +743,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        15020,
-        -363.21073188545233
+        15120,
+        -363
       ]
     },
     {
@@ -784,8 +758,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.3,
       "position": [
-        13900,
-        156.78926811454767
+        14000,
+        157
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -806,8 +780,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        14140,
-        -43.21073188545233
+        14240,
+        -43
       ]
     },
     {
@@ -831,8 +805,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        14520,
-        -23.210731885452333
+        14620,
+        -23
       ]
     },
     {
@@ -852,8 +826,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        13700,
-        36.78926811454767
+        13800,
+        37
       ]
     },
     {
@@ -873,8 +847,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
       "position": [
-        13900,
-        16.789268114547667
+        14000,
+        17
       ]
     },
     {
@@ -893,8 +867,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        14320,
-        -43.21073188545233
+        14420,
+        -43
       ]
     },
     {
@@ -1171,7 +1145,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        13500,
+        13600,
         -420
       ]
     },
@@ -1186,7 +1160,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        13900,
+        14000,
         -440
       ]
     },
@@ -1362,6 +1336,52 @@
         -500
       ],
       "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput1"
+            }
+          }
+        }
+      },
+      "id": "05115a45-9ce3-4681-9af6-aeb18de3f359",
+      "name": "Merge Conversation Status",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        12780,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "32b3d83b-34ff-4f65-8b29-9fd1c5e5ce55",
+      "name": "Wait For SHIT ChatWoot API process internal things",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        12960,
+        -400
+      ],
+      "webhookId": "2bd8aead-fb32-4bad-b0da-cf93d85285fd"
+    },
+    {
+      "parameters": {},
+      "id": "cf779b9f-18e9-4b8e-9a83-7de03ea24cb5",
+      "name": "Conversation Opened",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        13160,
+        -340
+      ]
     }
   ],
   "pinData": {},
@@ -1461,33 +1481,11 @@
         ]
       ]
     },
-    "NoOp - Opening Conversation": {
-      "main": [
-        [
-          {
-            "node": "If Call Request ?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge1": {
-      "main": [
-        [
-          {
-            "node": "NoOp - Opening Conversation",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Set Updated Conversation Status": {
       "main": [
         [
           {
-            "node": "Merge1",
+            "node": "Merge Conversation Status",
             "type": "main",
             "index": 0
           }
@@ -2022,7 +2020,7 @@
         ],
         [
           {
-            "node": "NoOp - Opening Conversation",
+            "node": "If Call Request ?",
             "type": "main",
             "index": 0
           }
@@ -2033,7 +2031,7 @@
       "main": [
         [
           {
-            "node": "Merge1",
+            "node": "Merge Conversation Status",
             "type": "main",
             "index": 1
           },
@@ -2045,7 +2043,7 @@
         ],
         [
           {
-            "node": "NoOp - Opening Conversation",
+            "node": "Conversation Opened",
             "type": "main",
             "index": 0
           }
@@ -2103,6 +2101,39 @@
           }
         ]
       ]
+    },
+    "Merge Conversation Status": {
+      "main": [
+        [
+          {
+            "node": "Wait For SHIT ChatWoot API process internal things",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait For SHIT ChatWoot API process internal things": {
+      "main": [
+        [
+          {
+            "node": "Conversation Opened",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Opened": {
+      "main": [
+        [
+          {
+            "node": "If Call Request ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -2112,7 +2143,7 @@
     "executionTimeout": 30,
     "executionOrder": "v1"
   },
-  "versionId": "4f109e43-fbc2-4504-b7ee-800e7c016cef",
+  "versionId": "015f6d88-9be8-4618-b637-9df2e2b536ca",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
