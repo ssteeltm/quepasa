@@ -15,7 +15,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	whatsmeow "go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/appstate"
-	"go.mau.fi/whatsmeow/binary"
 	types "go.mau.fi/whatsmeow/types"
 	"go.mau.fi/whatsmeow/types/events"
 )
@@ -183,10 +182,12 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		return
 
 	case *events.CallOffer:
+		logger.Infof("CallOffer: %v", evt)
 		go source.CallMessage(evt.BasicCallMeta)
 		return
 
 	case *events.CallOfferNotice:
+		logger.Infof("CallOfferNotice: %v", evt)
 		go source.CallMessage(evt.BasicCallMeta)
 		return
 
@@ -215,7 +216,7 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 	case *events.Disconnected:
 		msgDisconnected := "disconnected from server"
 		if source.Client.EnableAutoReconnect {
-			logger.Info(msgDisconnected + ", dont worry, reconnecting")
+			logger.Infof("%s, dont worry, reconnecting", msgDisconnected)
 		} else {
 			logger.Warn(msgDisconnected)
 		}
@@ -465,8 +466,9 @@ func (handler *WhatsmeowHandlers) MarkRead(message *whatsapp.WhatsappMessage, re
 
 //#region EVENT CALL
 
-func (handler *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
-	handler.GetLogger().Trace("event CallMessage !")
+func (source *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
+	logentry := source.GetLogger()
+	logentry.Trace("event CallMessage !")
 
 	message := &whatsapp.WhatsappMessage{Content: evt}
 
@@ -481,19 +483,25 @@ func (handler *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
 
 	message.Type = whatsapp.CallMessageType
 
-	if handler.WAHandlers != nil {
+	if source.WAHandlers != nil {
 
 		// following to internal handlers
-		go handler.WAHandlers.Message(message)
+		go source.WAHandlers.Message(message)
 	}
 
 	// should reject this call
-	if !handler.HandleCalls() {
-		_ = handler.RejectCall(evt)
+	if !source.HandleCalls() {
+		err := source.Client.RejectCall(evt.From, evt.CallID)
+		if err != nil {
+			logentry.Errorf("error on rejecting call: %s", err.Error())
+		} else {
+			logentry.Infof("rejecting incoming call from: %s", evt.From)
+		}
 	}
 }
 
-func (source *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) error {
+/*
+func (source *WhatsmeowHandlers) AcceptCall(v types.BasicCallMeta) error {
 	if source == nil {
 		return fmt.Errorf("nil source handler")
 	}
@@ -506,7 +514,7 @@ func (source *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) error {
 		},
 		Content: []binary.Node{
 			{
-				Tag: "reject",
+				Tag: "accept",
 				Attrs: binary.Attrs{
 					"call-id":      v.CallID,
 					"call-creator": v.CallCreator,
@@ -517,9 +525,12 @@ func (source *WhatsmeowHandlers) RejectCall(v types.BasicCallMeta) error {
 		},
 	}
 
-	source.GetLogger().Infof("rejecting incoming call from: %s", v.From)
+	logentry := source.GetLogger()
+	logentry.Infof("accepting incoming call from: %s", v.From)
+
 	return source.Client.DangerousInternals().SendNode(node)
 }
+*/
 
 //#endregion
 

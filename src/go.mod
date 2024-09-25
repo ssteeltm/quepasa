@@ -55,11 +55,11 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	go.mau.fi/libsignal v0.1.1 // indirect
-	go.mau.fi/util v0.6.0 // indirect
-	go.mau.fi/whatsmeow v0.0.0-20240917093958-061c065cc1ee // indirect
-	golang.org/x/crypto v0.25.0 // indirect
-	golang.org/x/net v0.27.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	go.mau.fi/util v0.8.0 // indirect
+	go.mau.fi/whatsmeow v0.0.0-20240924123543-d5cecea9882e // indirect
+	golang.org/x/crypto v0.27.0 // indirect
+	golang.org/x/net v0.29.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
 	golang.org/x/tools v0.22.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
