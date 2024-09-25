@@ -16,7 +16,9 @@ type QpWhatsappPairing struct {
 	// Whatsapp session id
 	Wid string `db:"wid" json:"wid" validate:"max=255"`
 
-	User *QpUser `json:"user,omitempty"`
+	Username string `json:"username,omitempty"`
+
+	HistorySyncDays uint32 `json:"historysyncdays,omitempty"`
 
 	conn whatsapp.IWhatsappConnection `json:"-"`
 }
@@ -47,7 +49,7 @@ func (source *QpWhatsappPairing) OnPaired(wid string) {
 	if len(source.Token) == 0 {
 
 		// updating token if from user
-		if source.User != nil {
+		if len(source.Username) > 0 {
 			source.Token = source.GetUserToken()
 		}
 	}
@@ -86,7 +88,7 @@ func (source *QpWhatsappPairing) GetUserToken() string {
 	logentry := source.GetLogger()
 	logentry.Infof("wid to phone: %s", phone)
 
-	servers := WhatsappService.GetServersForUser(source.User.Username)
+	servers := WhatsappService.GetServersForUser(source.Username)
 	for _, item := range servers {
 		if item.GetNumber() == phone {
 			return item.Token

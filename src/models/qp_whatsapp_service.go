@@ -123,8 +123,8 @@ func (source *QPWhatsappService) AppendPaired(paired *QpWhatsappPairing) (server
 	server.Verified = true
 
 	// checking user
-	if paired.User != nil {
-		server.User = paired.User.Username
+	if len(paired.Username) > 0 {
+		server.User = paired.Username
 	}
 
 	err = server.Save("server paired")

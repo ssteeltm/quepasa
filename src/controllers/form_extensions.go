@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 	"strings"
 
 	websocket "github.com/gorilla/websocket"
@@ -212,7 +213,15 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	WebSocketStart(user, conn)
+	HSDString := models.GetRequestParameter(r, "historysyncdays")
+	historysyncdays, _ := strconv.ParseUint(HSDString, 10, 32)
+
+	pairing := &models.QpWhatsappPairing{
+		Username:        user.Username,
+		HistorySyncDays: uint32(historysyncdays),
+	}
+
+	WebSocketStart(*pairing, conn)
 }
 
 //

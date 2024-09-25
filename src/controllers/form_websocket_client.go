@@ -52,10 +52,10 @@ type Client struct {
 // The application runs readPump in a per-connection goroutine. The application
 // ensures that there is at most one reader on a connection by executing all
 // reads from this goroutine.
-func (c *Client) readPump(user *models.QpUser) {
+func (c *Client) readPump(pairing models.QpWhatsappPairing) {
 	defer func() {
 		c.hub.unregister <- c
-		// c.conn.Close() // issue on form sincronize qrcode
+		// c.conn.Close() // issue on form synchronize qrcode
 	}()
 
 	c.conn.SetReadLimit(maxMessageSize)
@@ -80,14 +80,15 @@ func (c *Client) readPump(user *models.QpUser) {
 		log.Infof("(websocket): message received: %s", normalized)
 
 		if normalized == "start" {
-			go c.QrCodeScanner(user)
+
+			go c.QrCodeScanner(pairing)
 		} else {
 			log.Warnf("(websocket): received unknown msg: %s", normalized)
 		}
 	}
 }
 
-func (c *Client) QrCodeScanner(user *models.QpUser) {
+func (c *Client) QrCodeScanner(pairing models.QpWhatsappPairing) {
 	out := make(chan []byte)
 	defer close(out)
 	go func() {
@@ -97,7 +98,7 @@ func (c *Client) QrCodeScanner(user *models.QpUser) {
 	}()
 
 	// show qrcode
-	err := models.SignInWithQRCode(c.ctx, user, out)
+	err := models.SignInWithQRCode(c.ctx, pairing, out)
 	if err != nil {
 		if strings.Contains(err.Error(), "time") {
 			c.hub.broadcast <- []byte("timeout")
@@ -157,7 +158,7 @@ func (c *Client) writePump() {
 }
 
 // serveWs handles websocket requests from the peer.
-func WebSocketStart(user *models.QpUser, conn *websocket.Conn) {
+func WebSocketStart(pairing models.QpWhatsappPairing, conn *websocket.Conn) {
 	execContext, cancel := context.WithCancel(context.Background())
 
 	hub := newHub()
@@ -172,7 +173,7 @@ func WebSocketStart(user *models.QpUser, conn *websocket.Conn) {
 	// Allow collection of memory referenced by the caller by doing all work in
 	// new goroutines.
 	go client.writePump()
-	go client.readPump(user)
+	go client.readPump(pairing)
 }
 
 func (c *Client) OnWebSocketClosed(code int, text string) error {

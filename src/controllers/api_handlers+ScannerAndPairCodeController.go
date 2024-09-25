@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	models "github.com/nocodeleaks/quepasa/models"
 	log "github.com/sirupsen/logrus"
@@ -31,7 +32,15 @@ func ScannerController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pairing := &models.QpWhatsappPairing{Token: token, User: user}
+	HSDString := models.GetRequestParameter(r, "historysyncdays")
+	historysyncdays, _ := strconv.ParseUint(HSDString, 10, 32)
+
+	pairing := &models.QpWhatsappPairing{
+		Token:           token,
+		Username:        user.Username,
+		HistorySyncDays: uint32(historysyncdays),
+	}
+
 	con, err := pairing.GetConnection()
 	if err != nil {
 		err := fmt.Errorf("cant get connection: %s", err.Error())
@@ -79,7 +88,7 @@ func PairCodeController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pairing := &models.QpWhatsappPairing{Token: token, User: user}
+	pairing := &models.QpWhatsappPairing{Token: token, Username: user.Username}
 	con, err := pairing.GetConnection()
 	if err != nil {
 		err := fmt.Errorf("can't get connection: %s", err.Error())

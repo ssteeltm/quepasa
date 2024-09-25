@@ -35,9 +35,8 @@ func TryUpdateHttpChannel(ch chan<- []byte, value []byte) (closed bool) {
 
 // Envia o QRCode para o usuário e aguarda pela resposta
 // Retorna um novo BOT
-func SignInWithQRCode(ctx context.Context, user *QpUser, out chan<- []byte) (err error) {
+func SignInWithQRCode(ctx context.Context, pairing QpWhatsappPairing, out chan<- []byte) (err error) {
 
-	pairing := &QpWhatsappPairing{User: user}
 	con, err := pairing.GetConnection()
 	if err != nil {
 		return

@@ -43,7 +43,7 @@ func main() {
 		whatsapp.WhatsappWebAppSystem = title
 	}
 
-	whatsapp.Options = whatsapp.WhatsappOptionsExtended{
+	whatsappOptions := &whatsapp.WhatsappOptionsExtended{
 		Groups:       models.ENV.Groups(),
 		Broadcasts:   models.ENV.Broadcasts(),
 		ReadReceipts: models.ENV.ReadReceipts(),
@@ -52,6 +52,8 @@ func main() {
 		HistorySync:  models.ENV.HistorySync(),
 		LogLevel:     loglevel,
 	}
+
+	whatsapp.Options = *whatsappOptions
 
 	options := whatsmeow.WhatsmeowOptions{
 		WhatsappOptionsExtended: whatsapp.Options,
