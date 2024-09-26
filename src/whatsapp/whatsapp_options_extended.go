@@ -25,6 +25,9 @@ type WhatsappOptionsExtended struct {
 
 	// default log level
 	LogLevel string `json:"loglevel,omitempty"`
+
+	// default presence status
+	Presence string `json:"presence,omitempty"`
 }
 
 func (source WhatsappOptionsExtended) IsDefault() bool {

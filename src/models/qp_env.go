@@ -42,6 +42,7 @@ const (
 	ENV_BROADCASTS      = "BROADCASTS"
 	ENV_HISTORYSYNCDAYS = "HISTORYSYNCDAYS"
 
+	ENV_PRESENCE            = "PRESENCE"
 	ENV_LOGLEVEL            = "LOGLEVEL"
 	ENV_HTTPLOGS            = "HTTPLOGS"
 	ENV_WHATSMEOWLOGLEVEL   = "WHATSMEOW_LOGLEVEL"
@@ -178,6 +179,13 @@ func (*Environment) ReadUpdate() bool {
 }
 
 //#region LOGS
+
+// forces default presence status (lower)
+func (*Environment) Presence() string {
+	result, _ := GetEnvStr(ENV_PRESENCE)
+	result = strings.ToLower(result)
+	return result
+}
 
 // Force Default Log Level (lower)
 func (*Environment) LogLevel() string {

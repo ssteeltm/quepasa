@@ -150,6 +150,9 @@
 		
 	# LOGLEVEL
 	
+	# PRESENCE
+	> Sets defaults presence state (available|unavailable), (default unavailable)
+	
 	# HTTPLOGS
 	> Log http requests. (default false)
 	

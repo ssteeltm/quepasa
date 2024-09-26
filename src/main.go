@@ -50,6 +50,7 @@ func main() {
 		Calls:        models.ENV.Calls(),
 		ReadUpdate:   models.ENV.ReadUpdate(),
 		HistorySync:  models.ENV.HistorySync(),
+		Presence:     models.ENV.Presence(),
 		LogLevel:     loglevel,
 	}
 

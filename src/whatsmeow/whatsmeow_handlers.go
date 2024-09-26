@@ -58,6 +58,17 @@ func (source *WhatsmeowHandlers) GetServiceOptions() (options whatsapp.WhatsappO
 
 //#region WHATSAPP OPTIONS
 
+func (source WhatsmeowOptions) GetPresence() types.Presence {
+	switch source.Presence {
+	case string(types.PresenceAvailable):
+		return types.PresenceAvailable
+	case string(types.PresenceUnavailable):
+		return types.PresenceUnavailable
+	default:
+		return WhatsmeowPresenceDefault
+	}
+}
+
 func (source *WhatsmeowHandlers) HandleBroadcasts() bool {
 	if source == nil {
 		return false
@@ -201,7 +212,8 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 			// importante para zerar o tempo entre tentativas em caso de erro
 			source.Client.AutoReconnectErrors = 0
 
-			source.SendPresence(WhatsmeowPresence, "'connected' event")
+			presence := source.GetPresence()
+			source.SendPresence(presence, "'connected' event")
 		}
 
 		if source.WAHandlers != nil && !source.WAHandlers.IsInterfaceNil() {
@@ -210,7 +222,9 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		return
 
 	case *events.PushNameSetting:
-		source.SendPresence(WhatsmeowPresence, "'push name setting' event")
+
+		presence := source.GetPresence()
+		source.SendPresence(presence, "'push name setting' event")
 		return
 
 	case *events.Disconnected:
@@ -238,7 +252,8 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 
 	case *events.AppStateSyncComplete:
 		if evt.Name == appstate.WAPatchCriticalBlock {
-			source.SendPresence(WhatsmeowPresence, "'app state sync complete' event")
+			presence := source.GetPresence()
+			source.SendPresence(presence, "'app state sync complete' event")
 		}
 		return
 

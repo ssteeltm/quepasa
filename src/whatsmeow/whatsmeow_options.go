@@ -1,6 +1,8 @@
 package whatsmeow
 
-import whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
+import (
+	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
+)
 
 // Whatsmeow service options, setted on start, so if want to changed then, you have to restart the entire service
 type WhatsmeowOptions struct {
