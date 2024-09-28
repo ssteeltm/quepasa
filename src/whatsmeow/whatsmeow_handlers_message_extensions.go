@@ -102,16 +102,32 @@ func HandleProtocolMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, i
 }
 
 // Msg em resposta a outra
-func HandleExtendedTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ExtendedTextMessage) {
-	log.Debug("received a text|extended message !")
+func HandleExtendedTextMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ExtendedTextMessage) {
+
+	logentry.Warnf("extended event: %v", in)
+
+	logentry.Debug("received a text|extended message !")
 	out.Type = whatsapp.TextMessageType
 
 	out.Text = in.GetText()
+	out.Url = in.GetCanonicalURL()
 
 	info := in.ContextInfo
 	if info != nil {
 		out.ForwardingScore = info.GetForwardingScore()
 		out.InReply = info.GetStanzaID()
+	}
+
+	// ads -------------------
+	adreply := info.GetExternalAdReply()
+	if adreply != nil {
+		ads := &whatsapp.WhatsappMessageAds{
+			Id:        adreply.GetCtwaClid(),
+			Title:     adreply.GetTitle(),
+			SourceId:  adreply.GetSourceID(),
+			SourceUrl: adreply.GetSourceURL(),
+		}
+		out.Ads = ads
 	}
 }
 

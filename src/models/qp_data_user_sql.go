@@ -61,7 +61,7 @@ func (source QpDataUserSql) Check(username string, password string) (result *QpU
 		return
 	}
 
-	if user == nil {
+	if len(user.Username) == 0 {
 		err = fmt.Errorf("user (%s) not found for check password", username)
 		return
 	} else {

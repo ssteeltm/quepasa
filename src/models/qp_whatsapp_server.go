@@ -777,3 +777,12 @@ func (source *QpWhatsappServer) GetContacts() (contacts []whatsapp.WhatsappChat,
 }
 
 //#endregion
+
+func (source *QpWhatsappServer) IsOnWhatsApp(phones ...string) (registered []string, err error) {
+	conn, err := source.GetValidConnection()
+	if err != nil {
+		return
+	}
+
+	return conn.IsOnWhatsApp(phones...)
+}

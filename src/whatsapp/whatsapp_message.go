@@ -52,6 +52,11 @@ type WhatsappMessage struct {
 	// Delivered, Read, Imported statuses
 	Status WhatsappMessageStatus `json:"status,omitempty"`
 
+	// Url if exists
+	Url string `json:"url,omitempty"`
+
+	Ads *WhatsappMessageAds `json:"ads,omitempty"`
+
 	// Extra information for custom messages
 	Info interface{} `json:"info,omitempty"`
 }
