@@ -192,6 +192,7 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		go source.Message(*evt)
 		return
 
+		//# region CALLS
 	case *events.CallOffer:
 		logger.Infof("CallOffer: %v", evt)
 		go source.CallMessage(evt.BasicCallMeta)
@@ -201,6 +202,13 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		logger.Infof("CallOfferNotice: %v", evt)
 		go source.CallMessage(evt.BasicCallMeta)
 		return
+
+	/*
+		case *events.CallRelayLatency:
+			logger.Infof("CallRelayLatency: %v", evt)
+			return
+	*/
+	//#endregion
 
 	case *events.Receipt:
 		go source.Receipt(*evt)
@@ -516,37 +524,27 @@ func (source *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
 }
 
 /*
-func (source *WhatsmeowHandlers) AcceptCall(v types.BasicCallMeta) error {
+func (source *WhatsmeowHandlers) AcceptCall(from types.JID) error {
 	if source == nil {
 		return fmt.Errorf("nil source handler")
 	}
 
 	var node = binary.Node{
-		Tag: "call",
+		Tag: "ack",
 		Attrs: binary.Attrs{
-			"to": v.From,
-			"id": source.Client.GenerateMessageID(),
-		},
-		Content: []binary.Node{
-			{
-				Tag: "accept",
-				Attrs: binary.Attrs{
-					"call-id":      v.CallID,
-					"call-creator": v.CallCreator,
-					"count":        0,
-				},
-				Content: nil,
-			},
+			"id":    source.Client.GenerateMessageID(),
+			"to":    from,
+			"class": "receipt",
+			"from":  source.Client.Store.ID.String(),
 		},
 	}
 
 	logentry := source.GetLogger()
-	logentry.Infof("accepting incoming call from: %s", v.From)
+	logentry.Infof("accepting incoming call from: %s", from)
 
 	return source.Client.DangerousInternals().SendNode(node)
 }
 */
-
 //#endregion
 
 // #region EVENT READ RECEIPT
