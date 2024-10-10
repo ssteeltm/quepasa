@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"sort"
 	"strconv"
@@ -121,6 +122,29 @@ func GetUser(r *http.Request) (*models.QpUser, error) {
 		return models.WhatsappService.DB.Users.Find(user)
 	}
 	return nil, nil
+}
+
+/*
+<summary>
+
+	Get User From Http Request
+	Getting from PATH => QUERY => HEADER
+	If setted look after database, and throw errors
+	If not setted does not throw errors and returns string empty
+
+</summary>
+*/
+func GetUsername(r *http.Request) (string, error) {
+	user, err := GetUser(r)
+	if err != nil {
+		return "", fmt.Errorf("username not found: %s", err.Error())
+	}
+
+	if user != nil {
+		return user.Username, nil
+	}
+
+	return "", nil
 }
 
 /*

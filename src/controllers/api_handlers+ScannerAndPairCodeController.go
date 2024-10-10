@@ -24,9 +24,8 @@ func ScannerController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := GetUser(r)
+	username, err := GetUsername(r)
 	if err != nil {
-		err := fmt.Errorf("user not found: %s", err.Error())
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
@@ -37,7 +36,7 @@ func ScannerController(w http.ResponseWriter, r *http.Request) {
 
 	pairing := &models.QpWhatsappPairing{
 		Token:           token,
-		Username:        user.Username,
+		Username:        username,
 		HistorySyncDays: uint32(historysyncdays),
 	}
 
@@ -80,15 +79,14 @@ func PairCodeController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := GetUser(r)
+	username, err := GetUsername(r)
 	if err != nil {
-		err := fmt.Errorf("user not found: %s", err.Error())
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
 	}
 
-	pairing := &models.QpWhatsappPairing{Token: token, Username: user.Username}
+	pairing := &models.QpWhatsappPairing{Token: token, Username: username}
 	con, err := pairing.GetConnection()
 	if err != nil {
 		err := fmt.Errorf("can't get connection: %s", err.Error())
