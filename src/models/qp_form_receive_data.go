@@ -1,7 +1,7 @@
 package models
 
 import (
-	. "github.com/nocodeleaks/quepasa/whatsapp"
+	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 )
 
 // Parameters to be accessed/passed on Views (receive.tmpl)
@@ -12,7 +12,7 @@ type QPFormReceiveData struct {
 	Token               string
 	DownloadPrefix      string
 	FormAccountEndpoint string
-	Messages            []WhatsappMessage
+	Messages            []whatsapp.WhatsappMessage
 }
 
 func (source QPFormReceiveData) Count() int {

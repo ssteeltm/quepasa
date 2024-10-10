@@ -137,7 +137,7 @@ func GetUser(r *http.Request) (*models.QpUser, error) {
 func GetUsername(r *http.Request) (string, error) {
 	user, err := GetUser(r)
 	if err != nil {
-		return "", fmt.Errorf("username not found: %s", err.Error())
+		return "", fmt.Errorf("user not found: %s", err.Error())
 	}
 
 	if user != nil {

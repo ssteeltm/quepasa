@@ -103,9 +103,6 @@ func HandleProtocolMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, i
 
 // Msg em resposta a outra
 func HandleExtendedTextMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ExtendedTextMessage) {
-
-	logentry.Warnf("extended event: %v", in)
-
 	logentry.Debug("received a text|extended message !")
 	out.Type = whatsapp.TextMessageType
 

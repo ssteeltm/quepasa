@@ -51,7 +51,7 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	go.mau.fi/libsignal v0.1.1 // indirect
 	go.mau.fi/util v0.8.0 // indirect
-	go.mau.fi/whatsmeow v0.0.0-20240924123543-d5cecea9882e // indirect
+	go.mau.fi/whatsmeow v0.0.0-20241009112614-70d73b690a8d // indirect
 	golang.org/x/net v0.29.0 // indirect
 	golang.org/x/sys v0.25.0 // indirect
 	golang.org/x/tools v0.22.0 // indirect
