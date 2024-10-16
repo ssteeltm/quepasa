@@ -118,6 +118,7 @@ func HandleExtendedTextMessage(logentry *log.Entry, out *whatsapp.WhatsappMessag
 
 	info := in.GetContextInfo()
 	if info != nil {
+		logentry.Warnf("handling extended text info: %v", info)
 		out.ForwardingScore = info.GetForwardingScore()
 		out.InReply = info.GetStanzaID()
 	}
@@ -167,8 +168,8 @@ func HandleButtonsResponseMessage(log *log.Entry, out *whatsapp.WhatsappMessage,
 	}
 }
 
-func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ImageMessage) {
-	log.Debug("received an image message")
+func HandleImageMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ImageMessage) {
+	logentry.Debug("received an image message")
 	out.Type = whatsapp.ImageMessageType
 
 	// in case of caption passed
@@ -182,8 +183,9 @@ func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E
 		JpegThumbnail: jpeg,
 	}
 
-	info := in.ContextInfo
+	info := in.GetContextInfo()
 	if info != nil {
+		logentry.Warnf("handling image info: %v", info)
 		out.ForwardingScore = info.GetForwardingScore()
 		out.InReply = info.GetStanzaID()
 	}

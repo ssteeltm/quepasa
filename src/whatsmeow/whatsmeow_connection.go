@@ -410,6 +410,13 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 					logentry.Warnf("message not cached, on reply to msg id: %s", msg.InReply)
 				}
 
+				/*
+					conversation := quoted.GetConversation()
+					newquoted := &waE2E.Message{
+						Conversation: proto.String(conversation),
+					}
+				*/
+
 				internal.ContextInfo = &waE2E.ContextInfo{
 					StanzaID:                  proto.String(msg.InReply),
 					Participant:               proto.String(sender),
