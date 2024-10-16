@@ -420,7 +420,7 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 				}
 
 				var participant *string
-				if (types.MessageInfo{}) == info {
+				if (types.MessageInfo{}) != info {
 					var sender string
 					if msg.FromGroup() {
 						sender = fmt.Sprint(info.Sender.User, "@", info.Sender.Server)
