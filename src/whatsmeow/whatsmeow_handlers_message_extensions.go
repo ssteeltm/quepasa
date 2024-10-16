@@ -30,6 +30,8 @@ func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMes
 		HandleVideoMessage(logentry, out, in.VideoMessage)
 	case in.ExtendedTextMessage != nil:
 		HandleExtendedTextMessage(logentry, out, in.ExtendedTextMessage)
+	case in.EphemeralMessage != nil:
+		HandleEphemeralMessage(logentry, out, in.EphemeralMessage)
 	case in.ButtonsResponseMessage != nil:
 		HandleButtonsResponseMessage(logentry, out, in.ButtonsResponseMessage)
 	case in.LocationMessage != nil:
@@ -101,6 +103,11 @@ func HandleProtocolMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, i
 	}
 }
 
+// temporary messages
+func HandleEphemeralMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.FutureProofMessage) {
+	logentry.Warnf("handling ephemeral message not implemented: %v", in)
+}
+
 // Msg em resposta a outra
 func HandleExtendedTextMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.ExtendedTextMessage) {
 	logentry.Debug("received a text|extended message !")
@@ -109,9 +116,8 @@ func HandleExtendedTextMessage(logentry *log.Entry, out *whatsapp.WhatsappMessag
 	out.Text = in.GetText()
 	out.Url = in.GetCanonicalURL()
 
-	info := in.ContextInfo
+	info := in.GetContextInfo()
 	if info != nil {
-		logentry.Warnf("extended message info: %v", info)
 		out.ForwardingScore = info.GetForwardingScore()
 		out.InReply = info.GetStanzaID()
 	}

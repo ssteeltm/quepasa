@@ -417,6 +417,8 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 					Expiration:                proto.Uint32(0),
 					EphemeralSettingTimestamp: proto.Int64(0),
 				}
+
+				logentry.Warnf("sending inreply message: %v", internal)
 			}
 			newMessage = &waE2E.Message{ExtendedTextMessage: internal}
 		}
