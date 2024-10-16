@@ -414,9 +414,12 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 					StanzaID:                  proto.String(msg.InReply),
 					Participant:               proto.String(sender),
 					QuotedMessage:             quoted,
-					Expiration:                proto.Uint32(0),
-					EphemeralSettingTimestamp: proto.Int64(0),
-					DisappearingMode:          &waE2E.DisappearingMode{Initiator: waE2E.DisappearingMode_CHANGED_IN_CHAT.Enum()},
+					Expiration:                proto.Uint32(604800),
+					EphemeralSettingTimestamp: proto.Int64(1689113187000),
+					DisappearingMode: &waE2E.DisappearingMode{
+						Initiator: waE2E.DisappearingMode_CHANGED_IN_CHAT.Enum(),
+						Trigger:   waE2E.DisappearingMode_CHAT_SETTING.Enum(),
+					},
 				}
 			}
 			newMessage = &waE2E.Message{ExtendedTextMessage: internal}

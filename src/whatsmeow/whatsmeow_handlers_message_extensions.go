@@ -111,7 +111,7 @@ func HandleExtendedTextMessage(logentry *log.Entry, out *whatsapp.WhatsappMessag
 
 	info := in.ContextInfo
 	if info != nil {
-		logentry.Warnf("extended message info: %v", info)
+		// logentry.Warnf("extended message info: %v", info)
 		out.ForwardingScore = info.GetForwardingScore()
 		out.InReply = info.GetStanzaID()
 	}
