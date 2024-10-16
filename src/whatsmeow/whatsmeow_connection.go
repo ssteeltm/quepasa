@@ -390,17 +390,20 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 			internal := &waE2E.ExtendedTextMessage{Text: &messageText}
 			if len(msg.InReply) > 0 {
 
-				// getting connection store id for use as group participant
-				storeid := source.Client.Store.ID
+				/*
+					// getting connection store id for use as group participant
+					storeid := source.Client.Store.ID
 
-				// formating sender without device and session info
-				sender := fmt.Sprintf("%s@%s", storeid.User, storeid.Server)
+					// formating sender without device and session info
+					sender := fmt.Sprintf("%s@%s", storeid.User, storeid.Server)
+				*/
 
 				// getting quoted message if available on cache
 				// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
+
 				var quoted *waE2E.Message
 				cached, _ := source.Handlers.WAHandlers.GetById(msg.InReply)
-				if cached.Content != nil {
+				if cached != nil && cached.Content != nil {
 					if internal, ok := cached.Content.(*waE2E.Message); ok {
 						quoted = internal
 					} else {
@@ -409,20 +412,20 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 				} else {
 					logentry.Warnf("message not cached, on reply to msg id: %s", msg.InReply)
 				}
-
 				/*
-					conversation := quoted.GetConversation()
+					conversation := quoted.GetExtendedTextMessage().GetText()
 					newquoted := &waE2E.Message{
 						Conversation: proto.String(conversation),
 					}
 				*/
-
 				internal.ContextInfo = &waE2E.ContextInfo{
-					StanzaID:                  proto.String(msg.InReply),
-					Participant:               proto.String(sender),
-					QuotedMessage:             quoted,
+					StanzaID: proto.String(msg.InReply),
+					//Participant:   proto.String(sender),
+					QuotedMessage: quoted,
+
 					Expiration:                proto.Uint32(0),
 					EphemeralSettingTimestamp: proto.Int64(0),
+					DisappearingMode:          &waE2E.DisappearingMode{Initiator: waE2E.DisappearingMode_CHANGED_IN_CHAT.Enum()},
 				}
 
 				logentry.Warnf("sending inreply message: %v", internal)
