@@ -390,37 +390,43 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 			internal := &waE2E.ExtendedTextMessage{Text: &messageText}
 			if len(msg.InReply) > 0 {
 
+				// default information for cached messages
+				var info types.MessageInfo
+
 				// getting quoted message if available on cache
 				// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
-
-				var info types.MessageInfo
 				var quoted *waE2E.Message
+
 				cached, _ := source.Handlers.WAHandlers.GetById(msg.InReply)
 				if cached != nil {
+
+					// update cached info
 					info, _ = cached.InfoForHistory.(types.MessageInfo)
+
 					if cached.Content != nil {
-						if internal, ok := cached.Content.(*waE2E.Message); ok {
-							quoted = internal
+						if content, ok := cached.Content.(*waE2E.Message); ok {
+
+							// update quoted message content
+							quoted = content
+
 						} else {
 							logentry.Warnf("content has an invalid type (%s), on reply to msg id: %s", reflect.TypeOf(cached.Content), msg.InReply)
 						}
+					} else {
+						logentry.Warnf("message content not cached, on reply to msg id: %s", msg.InReply)
 					}
 				} else {
 					logentry.Warnf("message not cached, on reply to msg id: %s", msg.InReply)
 				}
-				/*
-					conversation := quoted.GetExtendedTextMessage().GetText()
-					newquoted := &waE2E.Message{
-						Conversation: proto.String(conversation),
-					}
-				*/
 
 				var participant *string
-				if msg.FromGroup() {
-					sender := fmt.Sprint(info.Sender.User, "@", info.Sender.Server)
-					participant = proto.String(sender)
-				} else {
-					sender := fmt.Sprint(info.Chat.User, "@", info.Chat.Server)
+				if (types.MessageInfo{}) == info {
+					var sender string
+					if msg.FromGroup() {
+						sender = fmt.Sprint(info.Sender.User, "@", info.Sender.Server)
+					} else {
+						sender = fmt.Sprint(info.Chat.User, "@", info.Chat.Server)
+					}
 					participant = proto.String(sender)
 				}
 
@@ -433,9 +439,8 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 					EphemeralSettingTimestamp: proto.Int64(0),
 					DisappearingMode:          &waE2E.DisappearingMode{Initiator: waE2E.DisappearingMode_CHANGED_IN_CHAT.Enum()},
 				}
-
-				logentry.Warnf("sending inreply message: %v", internal)
 			}
+
 			newMessage = &waE2E.Message{ExtendedTextMessage: internal}
 		}
 	} else {
