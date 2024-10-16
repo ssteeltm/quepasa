@@ -415,7 +415,7 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 				}
 
 				internal.ContextInfo = &waE2E.ContextInfo{
-					StanzaID:      &msg.InReply,
+					StanzaID:      proto.String(msg.InReply),
 					Participant:   sender,
 					QuotedMessage: quoted,
 				}

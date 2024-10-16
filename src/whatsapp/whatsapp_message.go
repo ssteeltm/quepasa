@@ -37,6 +37,9 @@ type WhatsappMessage struct {
 	// Sended via api
 	FromInternal bool `json:"frominternal"`
 
+	// Generated from history sync
+	FromHistory bool `json:"fromhistory,omitempty"`
+
 	// Edited message
 	Edited bool `json:"edited,omitempty"`
 

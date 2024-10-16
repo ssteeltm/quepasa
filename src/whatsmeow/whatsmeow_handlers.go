@@ -189,7 +189,7 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 	switch evt := rawEvt.(type) {
 
 	case *events.Message:
-		go source.Message(*evt)
+		go source.Message(*evt, false)
 		return
 
 		//# region CALLS
@@ -346,7 +346,7 @@ func (source *WhatsmeowHandlers) OnHistorySyncEvent(evt events.HistorySync) {
 			}
 
 			// put here a logic for history sync days filter
-			source.Message(*msgevt)
+			source.Message(*msgevt, true)
 		}
 	}
 }
@@ -354,7 +354,7 @@ func (source *WhatsmeowHandlers) OnHistorySyncEvent(evt events.HistorySync) {
 //#region EVENT MESSAGE
 
 // Aqui se processar um evento de recebimento de uma mensagem genérica
-func (handler *WhatsmeowHandlers) Message(evt events.Message) {
+func (handler *WhatsmeowHandlers) Message(evt events.Message, fromhistory bool) {
 	logentry := handler.GetLogger()
 	logentry.Trace("event message received")
 
@@ -373,6 +373,7 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 	message := &whatsapp.WhatsappMessage{
 		Content:        evt.Message,
 		InfoForHistory: evt.Info,
+		FromHistory:    fromhistory,
 	}
 
 	// basic information
