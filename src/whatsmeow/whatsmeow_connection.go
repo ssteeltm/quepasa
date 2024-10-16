@@ -390,15 +390,11 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 			internal := &waE2E.ExtendedTextMessage{Text: &messageText}
 			if len(msg.InReply) > 0 {
 
-				var sender *string
-				if msg.FromGroup() {
-					// getting connection store id for use as group participant
-					storeid := source.Client.Store.ID
+				// getting connection store id for use as group participant
+				storeid := source.Client.Store.ID
 
-					// formating sender without device and session info
-					jid := fmt.Sprintf("%s@%s", storeid.User, storeid.Server)
-					sender = proto.String(jid)
-				}
+				// formating sender without device and session info
+				sender := fmt.Sprintf("%s@%s", storeid.User, storeid.Server)
 
 				// getting quoted message if available on cache
 				// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
@@ -415,9 +411,12 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 				}
 
 				internal.ContextInfo = &waE2E.ContextInfo{
-					StanzaID:      proto.String(msg.InReply),
-					Participant:   sender,
-					QuotedMessage: quoted,
+					StanzaID:                  proto.String(msg.InReply),
+					Participant:               proto.String(sender),
+					QuotedMessage:             quoted,
+					Expiration:                proto.Uint32(0),
+					EphemeralSettingTimestamp: proto.Int64(0),
+					DisappearingMode:          &waE2E.DisappearingMode{Initiator: waE2E.DisappearingMode_CHANGED_IN_CHAT.Enum()},
 				}
 			}
 			newMessage = &waE2E.Message{ExtendedTextMessage: internal}
