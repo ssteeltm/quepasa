@@ -390,24 +390,20 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 			internal := &waE2E.ExtendedTextMessage{Text: &messageText}
 			if len(msg.InReply) > 0 {
 
-				/*
-					// getting connection store id for use as group participant
-					storeid := source.Client.Store.ID
-
-					// formating sender without device and session info
-					sender := fmt.Sprintf("%s@%s", storeid.User, storeid.Server)
-				*/
-
 				// getting quoted message if available on cache
 				// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
 
+				var info types.MessageInfo
 				var quoted *waE2E.Message
 				cached, _ := source.Handlers.WAHandlers.GetById(msg.InReply)
-				if cached != nil && cached.Content != nil {
-					if internal, ok := cached.Content.(*waE2E.Message); ok {
-						quoted = internal
-					} else {
-						logentry.Warnf("content has an invalid type (%s), on reply to msg id: %s", reflect.TypeOf(cached.Content), msg.InReply)
+				if cached != nil {
+					info, _ = cached.InfoForHistory.(types.MessageInfo)
+					if cached.Content != nil {
+						if internal, ok := cached.Content.(*waE2E.Message); ok {
+							quoted = internal
+						} else {
+							logentry.Warnf("content has an invalid type (%s), on reply to msg id: %s", reflect.TypeOf(cached.Content), msg.InReply)
+						}
 					}
 				} else {
 					logentry.Warnf("message not cached, on reply to msg id: %s", msg.InReply)
@@ -418,9 +414,19 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 						Conversation: proto.String(conversation),
 					}
 				*/
+
+				var participant *string
+				if msg.FromGroup() {
+					sender := fmt.Sprint(info.Sender.User, "@", info.Sender.Server)
+					participant = proto.String(sender)
+				} else {
+					sender := fmt.Sprint(info.Chat.User, "@", info.Chat.Server)
+					participant = proto.String(sender)
+				}
+
 				internal.ContextInfo = &waE2E.ContextInfo{
-					StanzaID: proto.String(msg.InReply),
-					//Participant:   proto.String(sender),
+					StanzaID:      proto.String(msg.InReply),
+					Participant:   participant,
 					QuotedMessage: quoted,
 
 					Expiration:                proto.Uint32(0),
