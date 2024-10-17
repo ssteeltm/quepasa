@@ -52,6 +52,8 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 
 			// if was passed a filename without extension
 			if len(requestExtension) == 0 && len(attach.FileName) > 0 {
+				logentry.Infof("send request, missing extension for attachment (%s), using from content: %s :: content mime: %s", attach.FileName, contentExtension, contentMime)
+
 				attach.Mimetype = contentMime
 				attach.FileName += contentExtension
 			} else {
