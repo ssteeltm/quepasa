@@ -53,7 +53,7 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment, logentry *log
 			// validating mime information
 			if !IsValidExtensionFor(requestExtension, contentExtension) {
 				// invalid attachment
-				logentry.Warnf("send request, invalid extension for attachment, request extension: %s != content extension: %s :: content mime: %s, revalidating for security", requestExtension, contentExtension, contentMime)
+				logentry.Warnf("send request, invalid extension for attachment, request extension: %s (%s) != content extension: %s :: content mime: %s, revalidating for security", requestExtension, attach.FileName, contentExtension, contentMime)
 				attach.Mimetype = contentMime
 				attach.FileName = whatsapp.InvalidFilePrefix + library.GenerateFileNameFromMimeType(contentMime)
 			}
