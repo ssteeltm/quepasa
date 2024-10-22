@@ -166,7 +166,9 @@ func ServeSignalR(r chi.Router) {
 		//timeout := signalr.ChanReceiveTimeout(1 * time.Hour)
 
 		logger := log.New()
-		logger.SetLevel(log.TraceLevel)
+
+		// setting signalr log level
+		logger.SetLevel(log.InfoLevel)
 
 		ctx := context.Background()
 		slogger := signalr.Logger(kitlog.NewLogfmtLogger(logger.Out), true)
