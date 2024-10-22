@@ -14,7 +14,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.1) \n* forwarding error message\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.2) \n* changed execution mode\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
         "width": 395
       },
       "id": "307f281c-cc6c-44ef-aec1-9eca91b677b1",
@@ -338,9 +338,10 @@
   "settings": {
     "saveManualExecutions": false,
     "callerPolicy": "workflowsFromSameOwner",
-    "executionTimeout": 15
+    "executionTimeout": 15,
+    "executionOrder": "v1"
   },
-  "versionId": "72690a5b-d819-4a66-a212-c411e2742525",
+  "versionId": "117662cd-ef4a-4f1e-9359-0a5e5cef4495",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
