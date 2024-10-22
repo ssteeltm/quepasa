@@ -3,6 +3,7 @@ module github.com/nocodeleaks/quepasa/controllers
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-chi/chi/v5 v5.0.8
+	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/jwtauth v4.0.4+incompatible
 	github.com/go-kit/log v0.2.1
 	github.com/gorilla/websocket v1.5.0
@@ -55,7 +56,7 @@ require (
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	go.mau.fi/libsignal v0.1.1 // indirect
 	go.mau.fi/util v0.8.0 // indirect
-	go.mau.fi/whatsmeow v0.0.0-20241009112614-70d73b690a8d // indirect
+	go.mau.fi/whatsmeow v0.0.0-20241015144315-3fa42c3d6a28 // indirect
 	golang.org/x/crypto v0.27.0 // indirect
 	golang.org/x/net v0.29.0 // indirect
 	golang.org/x/sys v0.25.0 // indirect
