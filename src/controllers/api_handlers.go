@@ -44,8 +44,10 @@ func RegisterAPIControllers(r chi.Router) {
 
 		r.Post(endpoint+"/send", SendAny)
 		r.Post(endpoint+"/send/{chatid}", SendAny)
-		r.Post(endpoint+"/sendtext", SendText)
-		r.Post(endpoint+"/sendtext/{chatid}", SendText)
+
+		// obsolete, marked for remove (2024/10/22)
+		r.Post(endpoint+"/sendtext", SendAny)
+		r.Post(endpoint+"/sendtext/{chatid}", SendAny)
 
 		// SENDING MSG ATTACH ---------------------
 

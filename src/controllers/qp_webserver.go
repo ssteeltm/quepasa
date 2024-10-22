@@ -14,7 +14,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
 
 	kitlog "github.com/go-kit/log"
 	signalr "github.com/philippseith/signalr"
@@ -108,6 +107,7 @@ func ServeAPI(r chi.Router) {
 		// setting timeout for the group
 		r.Use(middleware.Timeout(30 * time.Second))
 
+		/* CORS TESTING
 		r.Use(cors.Handler(cors.Options{
 			//AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
 			//AllowedOrigins: []string{"https://*", "http://*"},
@@ -118,6 +118,7 @@ func ServeAPI(r chi.Router) {
 			//AllowCredentials: false,
 			// MaxAge: 300, // Maximum value not ignored by any of major browsers
 		}))
+		*/
 
 		r.Group(RegisterAPIControllers)
 		r.Group(RegisterAPIV2Controllers)

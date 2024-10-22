@@ -28,8 +28,10 @@ func RegisterAPIV3Controllers(r chi.Router) {
 
 	r.Post(ControllerPrefixV3+"/send", SendAny)
 	r.Post(ControllerPrefixV3+"/send/{chatid}", SendAny)
-	r.Post(ControllerPrefixV3+"/sendtext", SendText)
-	r.Post(ControllerPrefixV3+"/sendtext/{chatid}", SendText)
+
+	// obsolete, marked for remove (2024/10/22)
+	r.Post(ControllerPrefixV3+"/sendtext", SendAny)
+	r.Post(ControllerPrefixV3+"/sendtext/{chatid}", SendAny)
 
 	// SENDING MSG ATTACH ---------------------
 
