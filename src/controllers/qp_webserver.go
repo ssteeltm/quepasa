@@ -170,8 +170,11 @@ func ServeSignalR(r chi.Router) {
 		// setting signalr log level
 		logger.SetLevel(log.InfoLevel)
 
+		// should generate debug logs
+		debug := logger.Level >= log.DebugLevel
+
 		ctx := context.Background()
-		slogger := signalr.Logger(kitlog.NewLogfmtLogger(logger.Out), true)
+		slogger := signalr.Logger(kitlog.NewLogfmtLogger(logger.Out), debug)
 		server, err := signalr.NewServer(ctx, factory, slogger)
 		if err != nil {
 			log.Errorf("error on set signalr server: %s", err.Error())
