@@ -4,7 +4,7 @@
     {
       "parameters": {
         "dataType": "string",
-        "value1": "={{ $json.body.text ?? $json.payload.content ?? \"\" }}",
+        "value1": "={{ $json.body?.text ?? $json.payload.content ?? \"\" }}",
         "rules": {
           "rules": [
             {
@@ -79,8 +79,9 @@
       "parameters": {
         "baseUrl": "={{$json.qphost}}",
         "token": "={{$json.qptoken}}",
+        "method": "sendtext",
         "text": "={{$json[\"response\"]}}",
-        "chatId": "={{$json.chatid}}"
+        "chatid": "={{$json.chatid}}"
       },
       "id": "5c4c943b-5768-453f-87ec-3ed7fcbb85a9",
       "name": "Quepasa",
@@ -123,11 +124,11 @@
     },
     {
       "parameters": {
-        "baseUrl": "={{$json[\"qphost\"]}}",
-        "token": "={{$json[\"qptoken\"]}}",
+        "baseUrl": "={{$json.qphost}}",
+        "token": "={{$json.qptoken}}",
         "resource": "control",
         "operation": "invite",
-        "chatId": "={{$json[\"chatid\"]}}"
+        "chatid": "={{$json.chatid}}"
       },
       "id": "02257e61-262a-4ac6-a34f-871ca633c2dd",
       "name": "Quepasa Get Invite Link",
@@ -179,7 +180,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.6)\n* including /api to call external workflow\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.7)\n* update quepasa node\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
         "height": 205.7265251035022,
         "width": 561.5346630524019
       },
@@ -705,19 +706,13 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 15
   },
-  "versionId": "aba4e3a4-e84a-45b6-8237-0ce80b263872",
+  "versionId": "f71f58e4-2317-4e9c-9e7e-c8d209858187",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
   },
   "id": "1003",
   "tags": [
-    {
-      "createdAt": "2023-05-19T22:54:38.266Z",
-      "updatedAt": "2023-05-19T22:54:38.266Z",
-      "id": "13",
-      "name": "github.com/nocodeleaks"
-    },
     {
       "createdAt": "2022-10-13T15:26:11.519Z",
       "updatedAt": "2023-08-25T18:50:53.269Z",
@@ -729,6 +724,12 @@
       "updatedAt": "2023-08-24T21:01:00.296Z",
       "id": "6",
       "name": "chatwoot"
+    },
+    {
+      "createdAt": "2023-05-19T22:54:38.266Z",
+      "updatedAt": "2023-05-19T22:54:38.266Z",
+      "id": "13",
+      "name": "github.com/nocodeleaks"
     }
   ]
 }
