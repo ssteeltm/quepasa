@@ -14,7 +14,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.2) \n* changed execution mode\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.3) \n* update quepasa node\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
         "width": 395
       },
       "id": "307f281c-cc6c-44ef-aec1-9eca91b677b1",
@@ -218,8 +218,10 @@
       "parameters": {
         "baseUrl": "={{$json.extra.qphost}}",
         "token": "={{ $json.extra.qptoken ?? $json.extra.identifier }}",
+        "method": "sendtext",
         "text": "Por favor aguarde, estamos retornando sua chamada por telefone.",
-        "chatId": "={{$json.chat.id}}"
+        "chatid": "={{$json.chat.id}}",
+        "inreply": "="
       },
       "id": "da39cfe8-6370-496e-b83c-58a8a9db1866",
       "name": "Quepasa",
@@ -341,7 +343,7 @@
     "executionTimeout": 15,
     "executionOrder": "v1"
   },
-  "versionId": "117662cd-ef4a-4f1e-9359-0a5e5cef4495",
+  "versionId": "9c0f636a-9209-49a2-88d9-b6865034f848",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

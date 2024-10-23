@@ -650,7 +650,7 @@
         "baseUrl": "={{$json.extra.qphost}}",
         "token": "={{$json.extra.qptoken}}",
         "operation": "revoke",
-        "messageId": "={{ $json.extra.account }}-{{ $json.extra.inbox }}-{{ $json.body.id }}"
+        "messageid": "={{ $json.extra.account }}-{{ $json.extra.inbox }}-{{ $json.body.id }}"
       },
       "id": "ae0831eb-05f7-4977-9a3c-abc77fe5c109",
       "name": "Quepasa Revoke",
@@ -798,7 +798,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.35) Updates\n* responding to webhook for avoid requeue from sidequik\n\n## Recommendations \n* Remember set timeout to 30 seconds",
+        "content": "## (1.0.36) Updates\n* update quepasa node\n\n## Recommendations \n* Remember set timeout to 30 seconds",
         "height": 184.30667672289223,
         "width": 591.0097010851398
       },
@@ -953,11 +953,12 @@
       "parameters": {
         "baseUrl": "={{$json.extra.qphost}}",
         "token": "={{ $json.extra.qptoken ?? $json.extra.identifier }}",
-        "messageId": "={{ $json.extra.account }}-{{ $json.extra.inbox }}-{{ $json.payload.messageid ?? Math.random() }}",
+        "messageid": "={{ $json.extra.account }}-{{ $json.extra.inbox }}-{{ $json.payload.messageid ?? Math.random() }}",
+        "method": "sendtext",
         "text": "={{$json.payload.content}}",
-        "chatId": "={{$json.payload.chatid}}",
-        "trackId": "chatwoot",
-        "inReply": "={{$json.payload.inreply }}"
+        "chatid": "={{$json.payload.chatid}}",
+        "trackid": "chatwoot",
+        "inreply": "={{$json.payload.inreply }}"
       },
       "id": "6d8d11e6-fa53-46ce-98cb-63b9e7c291d8",
       "name": "Quepasa Send Text",
@@ -1246,14 +1247,15 @@
       "parameters": {
         "baseUrl": "={{$json.extra.qphost}}",
         "token": "={{ $json.extra.qptoken ?? $json.extra.identifier }}",
-        "messageId": "={{ $json.extra.account }}-{{ $json.extra.inbox }}-{{ $json.payload.messageid ?? Math.random() }}",
+        "messageid": "={{ $json.extra.account }}-{{ $json.extra.inbox }}-{{ $json.payload.messageid ?? Math.random() }}",
         "method": "sendurl",
         "text": "={{$json.payload.content}}",
-        "chatId": "={{$json.payload.chatid}}",
+        "chatid": "={{$json.payload.chatid}}",
         "url": "={{$json.payload.attachment}}",
         "filename": "={{decodeURI($json.payload.attachment.split('/').at(-1))}}",
-        "trackId": "chatwoot",
-        "inReply": "={{$json.payload.inreply}}"
+        "filelength": 0,
+        "trackid": "chatwoot",
+        "inreply": "={{$json.payload.inreply}}"
       },
       "id": "3f2dfb00-069c-4147-8ceb-98e80f81635b",
       "name": "Quepasa Send Attach",
@@ -2969,7 +2971,7 @@
     "executionTimeout": 50,
     "executionOrder": "v1"
   },
-  "versionId": "6e69e52d-5934-4aa0-95b4-668876d49b95",
+  "versionId": "199285d9-1ae1-40aa-a8fe-6bf786503a2c",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

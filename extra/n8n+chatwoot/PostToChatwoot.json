@@ -47,7 +47,7 @@
         "baseUrl": "={{$json.extra.qphost}}",
         "token": "={{$json.extra.qptoken}}",
         "operation": "download",
-        "messageId": "={{ $json.payload.content_attributes?.items?.quepasa?.msgid ?? $json.payload.echo_id }}",
+        "messageid": "={{ $json.payload.content_attributes?.items?.quepasa?.msgid ?? $json.payload.echo_id }}",
         "fileName": "={{$json.attachment.filename}}"
       },
       "id": "1df2c4ba-bbe1-456e-bf4f-924fd3c11234",
@@ -183,7 +183,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.20) Updates\n* improve vcard compatibility\n\n## Recommendations \n* Remember set timeout to 10 seconds",
+        "content": "## (1.0.21) Updates\n* update quepasa node\n\n## Recommendations \n* Remember set timeout to 10 seconds",
         "height": 262.55904520292785,
         "width": 489.8474320052134
       },
@@ -1873,7 +1873,7 @@
     "executionTimeout": 10,
     "executionOrder": "v1"
   },
-  "versionId": "04f6ebac-3142-49f0-bce1-df9876995688",
+  "versionId": "9697586e-5a95-49a4-86d7-9572f8ac3bc5",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
