@@ -1,9 +1,18 @@
 package whatsapp
 
-import "strings"
+import (
+	"strings"
+
+	library "github.com/nocodeleaks/quepasa/library"
+)
 
 type WhatsappChat struct {
-	Id    string `json:"id"`
+	// whatsapp contact id, based on phone number or timestamp
+	Id string `json:"id"`
+
+	// new whatsapp unique contact id
+	Lid string `json:"lid,omitempty"`
+
 	Title string `json:"title,omitempty"`
 }
 
@@ -16,4 +25,10 @@ func (source *WhatsappChat) FormatContact() {
 		suffix := strings.Split(source.Id, "@")[1]
 		source.Id = prefix + "@" + suffix
 	}
+}
+
+// get phone number if exists
+func (source *WhatsappChat) GetPhone() string {
+	phone, _ := library.ExtractPhoneIfValid(source.Id)
+	return phone
 }

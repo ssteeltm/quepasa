@@ -178,10 +178,10 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		return
 	}
 
-	logger := source.GetLogger()
+	logentry := source.GetLogger()
 
 	if source.unregisterRequestedToken {
-		logger.Info("unregister event handler requested")
+		logentry.Info("unregister event handler requested")
 		source.Client.RemoveEventHandler(source.eventHandlerID)
 		return
 	}
@@ -194,18 +194,18 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 
 		//# region CALLS
 	case *events.CallOffer:
-		logger.Infof("CallOffer: %v", evt)
+		logentry.Infof("CallOffer: %v", evt)
 		go source.CallMessage(evt.BasicCallMeta)
 		return
 
 	case *events.CallOfferNotice:
-		logger.Infof("CallOfferNotice: %v", evt)
+		logentry.Infof("CallOfferNotice: %v", evt)
 		go source.CallMessage(evt.BasicCallMeta)
 		return
 
 	/*
 		case *events.CallRelayLatency:
-			logger.Infof("CallRelayLatency: %v", evt)
+			logentry.Infof("CallRelayLatency: %v", evt)
 			return
 	*/
 	//#endregion
@@ -238,9 +238,9 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 	case *events.Disconnected:
 		msgDisconnected := "disconnected from server"
 		if source.Client.EnableAutoReconnect {
-			logger.Infof("%s, dont worry, reconnecting", msgDisconnected)
+			logentry.Infof("%s, dont worry, reconnecting", msgDisconnected)
 		} else {
-			logger.Warn(msgDisconnected)
+			logentry.Warn(msgDisconnected)
 		}
 
 		if source.WAHandlers != nil && !source.WAHandlers.IsInterfaceNil() {
@@ -269,10 +269,13 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		source.JoinedGroup(*evt)
 		return
 
+	case *events.Contact:
+		go OnEventContact(source, *evt)
+		return
+
 	case
 		*events.AppState,
 		*events.CallTerminate,
-		*events.Contact,
 		*events.DeleteChat,
 		*events.DeleteForMe,
 		*events.MarkChatAsRead,
@@ -284,11 +287,11 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 		*events.PushName,
 		*events.GroupInfo,
 		*events.QR:
-		logger.Tracef("event ignored: %v", reflect.TypeOf(evt))
+		logentry.Tracef("event ignored: %v", reflect.TypeOf(evt))
 		return // ignoring not implemented yet
 
 	default:
-		logger.Debugf("event not handled: %v", reflect.TypeOf(evt))
+		logentry.Debugf("event not handled: %v", reflect.TypeOf(evt))
 		return
 	}
 }
