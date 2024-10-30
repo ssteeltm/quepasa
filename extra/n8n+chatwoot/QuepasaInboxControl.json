@@ -8,7 +8,7 @@
         "resource": "webhook",
         "operation": "setup",
         "url": "={{ $json.extra.n8nhost?.replace(/\\/+$/, '') ?? \"https://\" + $json.headers.host }}/webhook/to-chatwoot",
-        "trackId": "chatwoot",
+        "trackid": "chatwoot",
         "extraAttributes": {
           "attribute": [
             {
@@ -787,7 +787,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.10) Updates\n* trim content for commands\n\n## Recommendations \n* Remember set timeout to 15 seconds \n* string empty for switch\n* getting identifier from postgres",
+        "content": "## (1.0.11) Updates\n* missing trackid\n\n## Recommendations \n* Remember set timeout to 15 seconds \n* string empty for switch\n* getting identifier from postgres",
         "height": 221.8901373993275,
         "width": 444.914796845942
       },
@@ -924,7 +924,7 @@
       "parameters": {
         "content": "## Main Flow\n",
         "height": 577.449009853676,
-        "width": 2082.865769000268
+        "width": 2231.9274311986587
       },
       "id": "5c273573-7ad5-4039-89b5-06943f59eb98",
       "name": "Sticky Note1",
@@ -2158,7 +2158,7 @@
     "executionTimeout": 15,
     "executionOrder": "v1"
   },
-  "versionId": "386d3993-f486-4079-a732-54caa8d858ae",
+  "versionId": "d89f589f-43cb-4800-90a6-073c1f48d910",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

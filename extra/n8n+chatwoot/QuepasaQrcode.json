@@ -92,7 +92,7 @@
         "resource": "webhook",
         "operation": "setup",
         "url": "={{$json.extra.n8nhost}}/webhook/to-chatwoot",
-        "trackId": "chatwoot",
+        "trackid": "chatwoot",
         "extraAttributes": {
           "attribute": [
             {
@@ -208,7 +208,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.1) Updates\n* new workflow",
+        "content": "## (1.0.2) Updates\n* missing trackid after the quepasa node update",
         "height": 203.09211018757583,
         "width": 641.796471588546
       },
@@ -1145,7 +1145,7 @@
     "executionTimeout": 60,
     "executionOrder": "v1"
   },
-  "versionId": "7aaf05ab-5607-4ca1-ae6f-ff576d9c238c",
+  "versionId": "f002916f-d623-4cea-8867-5a82ddf5bf2a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
