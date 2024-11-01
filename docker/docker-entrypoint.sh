@@ -9,7 +9,7 @@ cp -rf /builder/views ./
 cp -rf /builder/service ./
 
 # cleanup builded service for avoid cache on updates
-rm /builder/service &>/dev/null
+rm /builder/service 2>/dev/null
 
 ./service
 exec "$@"
