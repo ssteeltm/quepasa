@@ -89,6 +89,7 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment) (extra []stri
 	}
 
 	if strings.HasPrefix(attach.Mimetype, "application/pdf;") {
+		extra = append(extra, fmt.Sprintf("[info][SecureAndCustomizeAttach] removing extra information from pdf mime type: %s", attach.Mimetype))
 		attach.Mimetype = strings.Split(attach.Mimetype, ";")[0]
 	}
 
