@@ -6,10 +6,9 @@ echo "Working dir: `pwd`"
 
 cp -rf /builder/assets ./
 cp -rf /builder/views ./
-cp -rf /builder/service ./
 
-# cleanup builded service for avoid cache on updates
-rm /builder/service
+# moving builded service for avoid cache on updates
+mv -f /builder/service ./
 
 ./service
 exec "$@"
