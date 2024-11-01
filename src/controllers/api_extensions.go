@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"mime"
 	"net/http"
 	"sort"
 	"strconv"
@@ -174,7 +175,16 @@ func GetMessageId(r *http.Request) string {
 </summary>
 */
 func GetFileName(r *http.Request) string {
-	return models.GetRequestParameter(r, "filename")
+	filename := models.GetRequestParameter(r, "filename")
+	if len(filename) == 0 {
+		mediatype := r.Header.Get("Content-Disposition")
+		_, params, err := mime.ParseMediaType(mediatype)
+		if err == nil {
+			filename = params["filename"]
+		}
+	}
+
+	return filename
 }
 
 /*
