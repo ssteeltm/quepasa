@@ -14,6 +14,8 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment) (extra []stri
 		return
 	}
 
+	extra = append(extra, fmt.Sprintf("[trace][SecureAndCustomizeAttach] initial mime type: %s, filename: ", attach.Mimetype, attach.FileName))
+
 	var contentMime string
 	content := attach.GetContent()
 	if content != nil {
@@ -36,7 +38,7 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment) (extra []stri
 
 	if len(contentMime) > 0 {
 
-		// downloaded pdf
+		// downloaded pdf, issue by @Marcelo
 		if contentMime == "application/x-www-form-urlencoded" && contentMime == "application/pdf" {
 			attach.Mimetype = contentMime
 			extra = append(extra, fmt.Sprintf("[info][SecureAndCustomizeAttach] updating downloaded mime type from content: %s", contentMime))
