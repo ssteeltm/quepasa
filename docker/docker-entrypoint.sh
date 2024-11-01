@@ -8,7 +8,7 @@ cp -rf /builder/assets ./
 cp -rf /builder/views ./
 
 # moving builded service for avoid cache on updates
-mv -f /builder/service ./
+mv -f /builder/service ./ 2> /dev/null
 
 ./service
 exec "$@"
