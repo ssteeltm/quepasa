@@ -129,7 +129,10 @@ func GetAttachFromUploadedFile(r *http.Request, logentry *log.Entry) (attach *Wh
 	}
 
 	attach.FileName = reader.Filename
-	models.SecureAndCustomizeAttach(attach, logentry)
+	extra := models.SecureAndCustomizeAttach(attach)
+	for _, debug := range extra {
+		logentry.Debug(debug)
+	}
 
 	return
 }

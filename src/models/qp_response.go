@@ -3,6 +3,8 @@ package models
 type QpResponse struct {
 	Success bool   `json:"success"`
 	Status  string `json:"status,omitempty"`
+
+	Extra interface{} `json:"extra,omitempty"`
 }
 
 func (source *QpResponse) Error() (message string) {

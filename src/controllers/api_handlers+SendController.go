@@ -94,20 +94,14 @@ func SendRequest(w http.ResponseWriter, r *http.Request, request *models.QpSendR
 	response := &models.QpSendResponse{}
 	var err error
 
-	attach, err := request.ToWhatsappAttachment()
-	if err != nil {
-		metrics.MessageSendErrors.Inc()
-		response.ParseError(err)
-		RespondInterface(w, response)
-		return
-	}
+	att := request.ToWhatsappAttachment()
 
 	// if not set, try to recover text from url
 	if len(request.Text) == 0 && r.URL.Query().Has("text") {
 		request.Text = r.URL.Query().Get("text")
 	}
 
-	if attach == nil && len(request.Text) == 0 {
+	if att.Attach == nil && len(request.Text) == 0 {
 		metrics.MessageSendErrors.Inc()
 		err = fmt.Errorf("text not found, do not send empty messages")
 		response.ParseError(err)
@@ -120,7 +114,8 @@ func SendRequest(w http.ResponseWriter, r *http.Request, request *models.QpSendR
 		request.TrackId = GetTrackId(r)
 	}
 
-	Send(server, response, request, w, attach)
+	response.Extra = att.Extra
+	Send(server, response, request, w, att.Attach)
 }
 
 // finally sends to the whatsapp server

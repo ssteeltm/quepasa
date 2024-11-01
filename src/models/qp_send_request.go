@@ -104,7 +104,7 @@ func (source *QpSendRequest) ToWhatsappMessage() (msg *whatsapp.WhatsappMessage,
 	return
 }
 
-func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAttachment, err error) {
+func (source *QpSendRequest) ToWhatsappAttachment() (result QpToWhatsappAttachment) {
 	contentLength := len(source.Content)
 	if contentLength == 0 {
 		return
@@ -112,7 +112,7 @@ func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAt
 
 	logentry := source.GetLogger()
 
-	attach = &whatsapp.WhatsappAttachment{
+	attach := &whatsapp.WhatsappAttachment{
 		CanDownload: false,
 		Mimetype:    source.Mimetype,
 		FileLength:  source.FileLength,
@@ -130,6 +130,8 @@ func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAt
 	// end source use and set content
 	attach.SetContent(&source.Content)
 
-	SecureAndCustomizeAttach(attach, logentry)
+	extra := SecureAndCustomizeAttach(attach)
+	result.Attach = attach
+	result.Extra = extra
 	return
 }
