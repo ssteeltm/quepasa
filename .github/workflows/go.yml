@@ -14,7 +14,7 @@ permissions:
     packages: write
 
 env:
-  GOVERSION: "1.20"
+  GOVERSION: "1.21"
   
 jobs:
 
