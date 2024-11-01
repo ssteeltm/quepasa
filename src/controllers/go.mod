@@ -3,7 +3,6 @@ module github.com/nocodeleaks/quepasa/controllers
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-chi/chi/v5 v5.0.8
-	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/jwtauth v4.0.4+incompatible
 	github.com/go-kit/log v0.2.1
 	github.com/gorilla/websocket v1.5.0
