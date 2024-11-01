@@ -32,4 +32,4 @@ replace github.com/nocodeleaks/quepasa/whatsapp => ../whatsapp
 
 replace github.com/nocodeleaks/quepasa/library => ../library
 
-go 1.19
+go 1.22
