@@ -36,6 +36,12 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment) (extra []stri
 
 	if len(contentMime) > 0 {
 
+		// downloaded pdf
+		if contentMime == "application/x-www-form-urlencoded" && contentMime == "application/pdf" {
+			attach.Mimetype = contentMime
+			extra = append(extra, fmt.Sprintf("[info][SecureAndCustomizeAttach] updating downloaded mime type from content: %s", contentMime))
+		}
+
 		if strings.HasPrefix(contentMime, "text/xml") && requestExtension == ".svg" {
 			contentMime = "image/svg+xml"
 		}
