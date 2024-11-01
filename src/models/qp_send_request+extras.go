@@ -88,6 +88,10 @@ func SecureAndCustomizeAttach(attach *whatsapp.WhatsappAttachment) (extra []stri
 		extra = append(extra, fmt.Sprintf("[debug][SecureAndCustomizeAttach] empty file name, generating a new one based on mime type: %s, file name: %s", attach.Mimetype, attach.FileName))
 	}
 
+	if strings.HasPrefix(attach.Mimetype, "application/pdf;") {
+		attach.Mimetype = strings.Split(attach.Mimetype, ";")[0]
+	}
+
 	extra = append(extra, fmt.Sprintf("[debug][SecureAndCustomizeAttach] resolved mime type: %s, filename: %s", attach.Mimetype, attach.FileName))
 	return
 }
