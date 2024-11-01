@@ -8,5 +8,8 @@ cp -rf /builder/assets ./
 cp -rf /builder/views ./
 cp -rf /builder/service ./
 
+# cleanup builder folder for avoid cache on updates
+rm -fr /builder
+
 ./service
 exec "$@"
