@@ -82,6 +82,11 @@ func DownloadController(w http.ResponseWriter, r *http.Request) {
 	// setting header filename
 	w.Header().Set("Content-Disposition", fmt.Sprint("attachment", filename))
 
+	// setting custom header content type
+	if len(att.Mimetype) > 0 {
+		w.Header().Set("Content-Type", att.Mimetype)
+	}
+
 	w.WriteHeader(http.StatusOK)
 	w.Write(*att.GetContent())
 }
