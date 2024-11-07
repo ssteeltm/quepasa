@@ -55,6 +55,7 @@ func OnEventContact(source *WhatsmeowHandlers, evt events.Contact) {
 		Type:        whatsapp.ContactMessageType,
 		Chat:        chat,
 		Text:        title,
+		Edited:      true,
 	}
 
 	filename := message.Chat.Title
