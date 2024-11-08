@@ -1,6 +1,6 @@
 #!/bin/bash
-MINGOVERSION=1.20
-GOVERSIONTOINSTALL=1.20.3
+MINGOVERSION=1.22
+GOVERSIONTOINSTALL=1.22.9
 
 echo 'Installation tested on fresh Ubuntu (20.04|22.04) (ARM64|AMD64)'
 
