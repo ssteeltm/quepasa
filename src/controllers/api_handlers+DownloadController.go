@@ -65,22 +65,26 @@ func DownloadController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var filename string
+	filename := att.FileName
 
 	// If filename not setted
-	if len(att.FileName) == 0 {
+	if len(filename) == 0 {
 		exten, ok := library.TryGetExtensionFromMimeType(att.Mimetype)
 		if ok {
-
 			// Generate from mime type and message id
-			filename = fmt.Sprint("; filename=", messageid, exten)
+			filename = messageid + exten
 		}
+	}
+
+	var disposition string
+	if len(filename) > 0 {
+		disposition = fmt.Sprintf("attachment; filename=%s", filename)
 	} else {
-		filename = fmt.Sprint("; filename=", att.FileName)
+		disposition = "attachment"
 	}
 
 	// setting header filename
-	w.Header().Set("Content-Disposition", fmt.Sprint("attachment", filename))
+	w.Header().Set("Content-Disposition", disposition)
 
 	// setting custom header content type
 	if len(att.Mimetype) > 0 {

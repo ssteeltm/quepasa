@@ -354,14 +354,5 @@ func HandleContactMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE
 	filename = fmt.Sprintf("%s.vcf", slug.Make(filename))
 
 	content := []byte(in.GetVcard())
-	length := uint64(len(content))
-
-	out.Attachment = &whatsapp.WhatsappAttachment{
-		CanDownload: false,
-		Mimetype:    "text/x-vcard",
-		FileName:    filename,
-		FileLength:  length,
-	}
-
-	out.Attachment.SetContent(&content)
+	out.Attachment = whatsapp.GenerateVCardAttachment(content, filename)
 }

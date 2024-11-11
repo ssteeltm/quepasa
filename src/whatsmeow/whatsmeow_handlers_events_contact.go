@@ -70,16 +70,7 @@ func OnEventContact(source *WhatsmeowHandlers, evt events.Contact) {
 	filename = fmt.Sprintf("%s.vcf", slug.Make(filename))
 
 	content := vcardtext.Bytes()
-	length := uint64(len(content))
-
-	message.Attachment = &whatsapp.WhatsappAttachment{
-		CanDownload: false,
-		Mimetype:    "text/x-vcard",
-		FileName:    filename,
-		FileLength:  length,
-	}
-
-	message.Attachment.SetContent(&content)
+	message.Attachment = whatsapp.GenerateVCardAttachment(content, filename)
 
 	// dispatching to internal handlers
 	source.Follow(message)
