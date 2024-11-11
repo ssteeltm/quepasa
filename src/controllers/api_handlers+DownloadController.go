@@ -78,7 +78,7 @@ func DownloadController(w http.ResponseWriter, r *http.Request) {
 
 	var disposition string
 	if len(filename) > 0 {
-		disposition = fmt.Sprintf("attachment; filename=%s", filename)
+		disposition = fmt.Sprintf("attachment; filename=%q", filename)
 	} else {
 		disposition = "attachment"
 	}
