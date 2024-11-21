@@ -2,9 +2,7 @@ package controllers
 
 import (
 	"fmt"
-	"io"
 	"net/http"
-	"strconv"
 	"time"
 
 	metrics "github.com/nocodeleaks/quepasa/metrics"
@@ -110,30 +108,13 @@ func SendDocumentFromBinary(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	content, err := io.ReadAll(r.Body)
+	err = request.GenerateBodyContent(r)
 	if err != nil {
 		metrics.MessageSendErrors.Inc()
-		response.ParseError(fmt.Errorf("attachment content missing or read error"))
+		response.ParseError(err)
 		RespondInterface(w, response)
 		return
 	}
-
-	request.Content = content
-	request.Mimetype = r.Header.Get("Content-Type")
-
-	InformedLength := r.Header.Get("Content-Length")
-	if len(InformedLength) > 0 {
-		length, err := strconv.ParseUint(InformedLength, 10, 64)
-		if err == nil {
-			request.FileLength = length
-		}
-	}
-
-	// Getting FileName
-	request.FileName = GetFileName(r)
-
-	// Getting Text Label
-	request.Text = GetTextParameter(r)
 
 	SendRequest(w, r, request, server)
 }

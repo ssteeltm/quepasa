@@ -3,7 +3,9 @@ package models
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
+	"strconv"
 	"strings"
 
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
@@ -133,5 +135,27 @@ func (source *QpSendRequest) ToWhatsappAttachment() (result QpToWhatsappAttachme
 	extra := SecureAndCustomizeAttach(attach)
 	result.Attach = attach
 	result.Extra = extra
+	return
+}
+
+// From "body" content (sendbinary)
+func (source *QpSendRequest) GenerateBodyContent(r *http.Request) (err error) {
+	content, err := io.ReadAll(r.Body)
+	if err != nil {
+		return
+	}
+
+	source.Content = content
+	source.Mimetype = r.Header.Get("Content-Type")
+
+	InformedLength := r.Header.Get("Content-Length")
+	if len(InformedLength) > 0 {
+		length, err := strconv.ParseUint(InformedLength, 10, 64)
+		if err == nil {
+			source.FileLength = length
+		}
+	}
+
+	source.FileName = GetFileName(r)
 	return
 }

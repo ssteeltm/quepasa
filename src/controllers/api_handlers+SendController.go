@@ -96,9 +96,14 @@ func SendRequest(w http.ResponseWriter, r *http.Request, request *models.QpSendR
 
 	att := request.ToWhatsappAttachment()
 
-	// if not set, try to recover text from url
-	if len(request.Text) == 0 && r.URL.Query().Has("text") {
-		request.Text = r.URL.Query().Get("text")
+	// if not set, try to recover "text"
+	if len(request.Text) == 0 {
+		request.Text = GetTextParameter(r)
+	}
+
+	// if not set, try to recover "in reply"
+	if len(request.InReply) == 0 {
+		request.InReply = GetInReplyParameter(r)
 	}
 
 	if att.Attach == nil && len(request.Text) == 0 {

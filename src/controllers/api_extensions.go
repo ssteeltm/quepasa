@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"mime"
 	"net/http"
 	"sort"
 	"strconv"
@@ -169,29 +168,8 @@ func GetMessageId(r *http.Request) string {
 /*
 <summary>
 
-	Get File Name From Http Request
-	Getting from PATH => QUERY => HEADER
-
-</summary>
-*/
-func GetFileName(r *http.Request) string {
-	filename := models.GetRequestParameter(r, "filename")
-	if len(filename) == 0 {
-		mediatype := r.Header.Get("Content-Disposition")
-		_, params, err := mime.ParseMediaType(mediatype)
-		if err == nil {
-			filename = params["filename"]
-		}
-	}
-
-	return filename
-}
-
-/*
-<summary>
-
 	Get Text Label From Http Request
-	Getting from PATH => QUERY => HEADER
+	Getting from PATH => QUERY => FROM => HEADER
 
 </summary>
 */
@@ -202,8 +180,20 @@ func GetTextParameter(r *http.Request) string {
 /*
 <summary>
 
+	Get In Reply From Http Request
+	Getting from PATH => QUERY => FROM => HEADER
+
+</summary>
+*/
+func GetInReplyParameter(r *http.Request) string {
+	return models.GetRequestParameter(r, "inreply")
+}
+
+/*
+<summary>
+
 	Get a boolean indicating that cache should be used, From Http Request
-	Getting from PATH => QUERY => HEADER
+	Getting from PATH => QUERY => FROM => HEADER
 
 </summary>
 */
@@ -215,7 +205,7 @@ func GetCache(r *http.Request) bool {
 <summary>
 
 	Get a boolean indicating that message id should be used as a prefix, defaults true
-	Getting from PATH => QUERY => HEADER
+	Getting from PATH => QUERY => FROM => HEADER
 
 </summary>
 */

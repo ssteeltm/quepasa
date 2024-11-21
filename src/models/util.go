@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"mime"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -30,10 +31,32 @@ func GetFormUser(r *http.Request) (*QpUser, error) {
 /*
 <summary>
 
+	Get File Name From Http Request
+	Getting from PATH => QUERY => HEADER
+
+</summary>
+*/
+func GetFileName(r *http.Request) string {
+	filename := GetRequestParameter(r, "filename")
+	if len(filename) == 0 {
+		mediatype := r.Header.Get("Content-Disposition")
+		_, params, err := mime.ParseMediaType(mediatype)
+		if err == nil {
+			filename = params["filename"]
+		}
+	}
+
+	return filename
+}
+
+/*
+<summary>
+
 	Get a parameter from http.Request
 	1º Url Param (/:parameter/)
 	2º Url Query (?parameter=)
-	3º Header (X-QUEPASA-PARAMETER)
+	3º Form
+	4º Header (X-QUEPASA-PARAMETER)
 
 </summary>
 */
