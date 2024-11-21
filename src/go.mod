@@ -1,6 +1,7 @@
 module github.com/nocodeleaks/quepasa/main
 
 require (
+	github.com/cettoana/go-waveform v0.0.0-20210107122202-35aaec2de427
 	github.com/joho/godotenv v1.5.1
 	github.com/nocodeleaks/quepasa/controllers v0.0.0-00010101000000-000000000000
 	github.com/nocodeleaks/quepasa/models v0.0.0-00010101000000-000000000000

@@ -134,7 +134,7 @@ func (source *QpSendRequest) ToWhatsappAttachment() (result QpToWhatsappAttachme
 
 	extra := SecureAndCustomizeAttach(attach)
 	result.Attach = attach
-	result.Extra = extra
+	result.Debug = append(result.Debug, extra...)
 	return
 }
 

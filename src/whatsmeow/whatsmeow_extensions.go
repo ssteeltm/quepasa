@@ -44,7 +44,7 @@ func ToWhatsmeowMessage(source whatsapp.IWhatsappMessage) (msg *waE2E.Message, e
 	return
 }
 
-func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg whatsapp.WhatsappMessage, media whatsmeow.MediaType) (msg *waE2E.Message) {
+func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg whatsapp.WhatsappMessage, media whatsmeow.MediaType, inreplycontext *waE2E.ContextInfo) (msg *waE2E.Message) {
 	attach := waMsg.Attachment
 
 	var seconds *uint32
@@ -57,6 +57,8 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 		mimetype = proto.String(attach.Mimetype)
 	}
 
+	// waMsg.InReply
+
 	switch media {
 	case whatsmeow.MediaImage:
 		internal := &waE2E.ImageMessage{
@@ -66,9 +68,9 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			FileEncSHA256: response.FileEncSHA256,
 			FileSHA256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
-
-			Mimetype: mimetype,
-			Caption:  proto.String(waMsg.Text),
+			Mimetype:      mimetype,
+			Caption:       proto.String(waMsg.Text),
+			ContextInfo:   inreplycontext,
 		}
 		msg = &waE2E.Message{ImageMessage: internal}
 		return
@@ -92,6 +94,7 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			Seconds:       seconds,
 			Mimetype:      mimetype,
 			PTT:           ptt,
+			ContextInfo:   inreplycontext,
 		}
 		msg = &waE2E.Message{AudioMessage: internal}
 		return
@@ -106,6 +109,7 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			Seconds:       seconds,
 			Mimetype:      mimetype,
 			Caption:       proto.String(waMsg.Text),
+			ContextInfo:   inreplycontext,
 		}
 		msg = &waE2E.Message{VideoMessage: internal}
 		return
@@ -118,9 +122,10 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			FileSHA256:    response.FileSHA256,
 			FileLength:    proto.Uint64(response.FileLength),
 
-			Mimetype: mimetype,
-			FileName: proto.String(attach.FileName),
-			Caption:  proto.String(waMsg.Text),
+			Mimetype:    mimetype,
+			FileName:    proto.String(attach.FileName),
+			Caption:     proto.String(waMsg.Text),
+			ContextInfo: inreplycontext,
 		}
 		msg = &waE2E.Message{DocumentMessage: internal}
 		return

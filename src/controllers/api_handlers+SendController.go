@@ -99,11 +99,17 @@ func SendRequest(w http.ResponseWriter, r *http.Request, request *models.QpSendR
 	// if not set, try to recover "text"
 	if len(request.Text) == 0 {
 		request.Text = GetTextParameter(r)
+		if len(request.Text) > 0 {
+			response.Debug = append(response.Debug, "[debug][SendRequest] 'text' found in parameters")
+		}
 	}
 
 	// if not set, try to recover "in reply"
 	if len(request.InReply) == 0 {
 		request.InReply = GetInReplyParameter(r)
+		if len(request.InReply) > 0 {
+			response.Debug = append(response.Debug, "[debug][SendRequest] 'inreply' found in parameters")
+		}
 	}
 
 	if att.Attach == nil && len(request.Text) == 0 {
@@ -119,7 +125,7 @@ func SendRequest(w http.ResponseWriter, r *http.Request, request *models.QpSendR
 		request.TrackId = GetTrackId(r)
 	}
 
-	response.Extra = att.Extra
+	response.Debug = append(response.Debug, att.Debug...)
 	Send(server, response, request, w, att.Attach)
 }
 

@@ -4,7 +4,8 @@ type QpResponse struct {
 	Success bool   `json:"success"`
 	Status  string `json:"status,omitempty"`
 
-	Extra interface{} `json:"extra,omitempty"`
+	//Extra interface{} `json:"extra,omitempty"`
+	Debug []string `json:"debug,omitempty"`
 }
 
 func (source *QpResponse) Error() (message string) {

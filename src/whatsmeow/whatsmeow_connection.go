@@ -356,6 +356,64 @@ func isASCII(s string) bool {
 	return true
 }
 
+func (source *WhatsmeowConnection) GetInReplyContextInfo(msg whatsapp.WhatsappMessage) *waE2E.ContextInfo {
+	logentry := source.GetLogger()
+	if len(msg.InReply) > 0 {
+
+		// default information for cached messages
+		var info types.MessageInfo
+
+		// getting quoted message if available on cache
+		// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
+		var quoted *waE2E.Message
+
+		cached, _ := source.Handlers.WAHandlers.GetById(msg.InReply)
+		if cached != nil {
+
+			// update cached info
+			info, _ = cached.InfoForHistory.(types.MessageInfo)
+
+			if cached.Content != nil {
+				if content, ok := cached.Content.(*waE2E.Message); ok {
+
+					// update quoted message content
+					quoted = content
+
+				} else {
+					logentry.Warnf("content has an invalid type (%s), on reply to msg id: %s", reflect.TypeOf(cached.Content), msg.InReply)
+				}
+			} else {
+				logentry.Warnf("message content not cached, on reply to msg id: %s", msg.InReply)
+			}
+		} else {
+			logentry.Warnf("message not cached, on reply to msg id: %s", msg.InReply)
+		}
+
+		var participant *string
+		if (types.MessageInfo{}) != info {
+			var sender string
+			if msg.FromGroup() {
+				sender = fmt.Sprint(info.Sender.User, "@", info.Sender.Server)
+			} else {
+				sender = fmt.Sprint(info.Chat.User, "@", info.Chat.Server)
+			}
+			participant = proto.String(sender)
+		}
+
+		return &waE2E.ContextInfo{
+			StanzaID:      proto.String(msg.InReply),
+			Participant:   participant,
+			QuotedMessage: quoted,
+
+			Expiration:                proto.Uint32(0),
+			EphemeralSettingTimestamp: proto.Int64(0),
+			DisappearingMode:          &waE2E.DisappearingMode{Initiator: waE2E.DisappearingMode_CHANGED_IN_CHAT.Enum()},
+		}
+	}
+
+	return nil
+}
+
 // Default SEND method using WhatsappMessage Interface
 func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.IWhatsappSendResponse, error) {
 	logentry := source.GetLogger()
@@ -388,58 +446,7 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 			newMessage = &waE2E.Message{ButtonsMessage: internal}
 		} else {
 			internal := &waE2E.ExtendedTextMessage{Text: &messageText}
-			if len(msg.InReply) > 0 {
-
-				// default information for cached messages
-				var info types.MessageInfo
-
-				// getting quoted message if available on cache
-				// (optional) another devices will process anyway, but our devices will show quoted only if it exists on cache
-				var quoted *waE2E.Message
-
-				cached, _ := source.Handlers.WAHandlers.GetById(msg.InReply)
-				if cached != nil {
-
-					// update cached info
-					info, _ = cached.InfoForHistory.(types.MessageInfo)
-
-					if cached.Content != nil {
-						if content, ok := cached.Content.(*waE2E.Message); ok {
-
-							// update quoted message content
-							quoted = content
-
-						} else {
-							logentry.Warnf("content has an invalid type (%s), on reply to msg id: %s", reflect.TypeOf(cached.Content), msg.InReply)
-						}
-					} else {
-						logentry.Warnf("message content not cached, on reply to msg id: %s", msg.InReply)
-					}
-				} else {
-					logentry.Warnf("message not cached, on reply to msg id: %s", msg.InReply)
-				}
-
-				var participant *string
-				if (types.MessageInfo{}) != info {
-					var sender string
-					if msg.FromGroup() {
-						sender = fmt.Sprint(info.Sender.User, "@", info.Sender.Server)
-					} else {
-						sender = fmt.Sprint(info.Chat.User, "@", info.Chat.Server)
-					}
-					participant = proto.String(sender)
-				}
-
-				internal.ContextInfo = &waE2E.ContextInfo{
-					StanzaID:      proto.String(msg.InReply),
-					Participant:   participant,
-					QuotedMessage: quoted,
-
-					Expiration:                proto.Uint32(0),
-					EphemeralSettingTimestamp: proto.Int64(0),
-					DisappearingMode:          &waE2E.DisappearingMode{Initiator: waE2E.DisappearingMode_CHANGED_IN_CHAT.Enum()},
-				}
-			}
+			internal.ContextInfo = source.GetInReplyContextInfo(*msg)
 
 			newMessage = &waE2E.Message{ExtendedTextMessage: internal}
 		}
@@ -488,7 +495,7 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 }
 
 // func (cli *Client) Upload(ctx context.Context, plaintext []byte, appInfo MediaType) (resp UploadResponse, err error)
-func (conn *WhatsmeowConnection) UploadAttachment(msg whatsapp.WhatsappMessage) (result *waE2E.Message, err error) {
+func (source *WhatsmeowConnection) UploadAttachment(msg whatsapp.WhatsappMessage) (result *waE2E.Message, err error) {
 
 	content := *msg.Attachment.GetContent()
 	if len(content) == 0 {
@@ -497,12 +504,13 @@ func (conn *WhatsmeowConnection) UploadAttachment(msg whatsapp.WhatsappMessage) 
 	}
 
 	mediaType := GetMediaTypeFromWAMsgType(msg.Type)
-	response, err := conn.Client.Upload(context.Background(), content, mediaType)
+	response, err := source.Client.Upload(context.Background(), content, mediaType)
 	if err != nil {
 		return
 	}
 
-	result = NewWhatsmeowMessageAttachment(response, msg, mediaType)
+	inreplycontext := source.GetInReplyContextInfo(msg)
+	result = NewWhatsmeowMessageAttachment(response, msg, mediaType, inreplycontext)
 	return
 }
 
