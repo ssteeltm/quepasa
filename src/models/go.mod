@@ -1,5 +1,7 @@
 module github.com/nocodeleaks/quepasa/models
 
+replace github.com/nocodeleaks/quepasa/audio => ../audio
+
 replace github.com/nocodeleaks/quepasa/library => ../library
 
 replace github.com/nocodeleaks/quepasa/whatsmeow => ../whatsmeow
@@ -16,6 +18,7 @@ require (
 	github.com/joncalhoun/migrate v0.0.2
 	github.com/lib/pq v1.10.8
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible
+	github.com/nocodeleaks/quepasa/audio v0.0.0-00010101000000-000000000000
 	github.com/nocodeleaks/quepasa/library v0.0.0-00010101000000-000000000000
 	github.com/nocodeleaks/quepasa/whatsapp v0.0.0-00010101000000-000000000000
 	github.com/nocodeleaks/quepasa/whatsmeow v0.0.0-00010101000000-000000000000
@@ -29,10 +32,12 @@ require (
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
+	github.com/cettoana/go-waveform v0.0.0-20210107122202-35aaec2de427 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/goccy/go-json v0.3.5 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/gopxl/beep/v2 v2.1.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/gosimple/slug v1.13.1 // indirect
 	github.com/gosimple/unidecode v1.0.1 // indirect
@@ -42,6 +47,7 @@ require (
 	github.com/lestrrat-go/iter v1.0.0 // indirect
 	github.com/lestrrat-go/jwx v1.1.0 // indirect
 	github.com/lestrrat-go/option v1.0.0 // indirect
+	github.com/mattetti/audio v0.0.0-20240411020228-c5379f9b5b61 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

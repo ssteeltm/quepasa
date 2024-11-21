@@ -34,6 +34,8 @@ type WhatsappAttachment struct {
 
 	// Public access url helper content
 	Url string `json:"url,omitempty"`
+
+	WaveForm []byte `json:"waveform,omitempty"`
 }
 
 func (source *WhatsappAttachment) GetContent() *[]byte {

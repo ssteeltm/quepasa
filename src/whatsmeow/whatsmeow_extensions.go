@@ -94,6 +94,7 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 			Seconds:       seconds,
 			Mimetype:      mimetype,
 			PTT:           ptt,
+			Waveform:      attach.WaveForm,
 			ContextInfo:   inreplycontext,
 		}
 		msg = &waE2E.Message{AudioMessage: internal}

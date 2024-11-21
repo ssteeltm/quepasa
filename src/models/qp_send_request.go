@@ -125,16 +125,20 @@ func (source *QpSendRequest) ToWhatsappAttachment() (result QpToWhatsappAttachme
 	// validating content length
 	uIntContentLength := uint64(contentLength)
 	if attach.FileLength != uIntContentLength {
-		logentry.Warnf("invalid attachment length, request length: %v != content length: %v, revalidating for security", attach.FileLength, contentLength)
 		attach.FileLength = uIntContentLength
+
+		warn := fmt.Sprintf("invalid attachment length, request length: %v != content length: %v, revalidating for security", attach.FileLength, contentLength)
+		result.Debug = append(result.Debug, "[warn][ToWhatsappAttachment] "+warn)
+		logentry.Warnf(warn)
 	}
 
 	// end source use and set content
 	attach.SetContent(&source.Content)
 
-	extra := SecureAndCustomizeAttach(attach)
 	result.Attach = attach
-	result.Debug = append(result.Debug, extra...)
+	result.AttachSecureAndCustomize()
+	result.AttachAudioTreatment()
+
 	return
 }
 
