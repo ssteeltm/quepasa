@@ -225,6 +225,7 @@
         "qpresponse",
         "readtime",
         "rejectcalls",
+        "sendattach",
         "sendbinary",
         "sendencoded",
         "serv",

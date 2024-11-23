@@ -116,7 +116,9 @@ func (source *QpToWhatsappAttachment) AttachAudioTreatment() {
 	}
 
 	if IsCompatibleWithPTT(attach.Mimetype) || attach.IsValidAudio() {
-		source.AudioDetails()
+		if ENV.Testing() {
+			source.AudioDetails()
+		}
 	}
 }
 

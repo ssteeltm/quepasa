@@ -2,6 +2,7 @@ package models
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -23,6 +24,23 @@ type QpWebhook struct {
 	Failure         *time.Time  `json:"failure,omitempty"`                              // first failure timestamp
 	Success         *time.Time  `json:"success,omitempty"`                              // last success timestamp
 	Timestamp       *time.Time  `db:"timestamp" json:"timestamp,omitempty"`
+
+	// just for logging and response headers
+	Wid string `json:"-"`
+}
+
+// get default log entry, never nil
+func (source *QpWebhook) GetLogger() *log.Entry {
+	logentry := log.WithContext(context.Background())
+	if len(source.Wid) > 0 {
+		logentry.WithField("wid", source.Wid)
+	}
+
+	if len(source.Url) > 0 {
+		logentry.WithField("url", source.Url)
+	}
+
+	return logentry
 }
 
 //#region VIEWS TRICKS
@@ -67,8 +85,10 @@ func (source QpWebhook) IsSetExtra() bool {
 
 var ErrInvalidResponse error = errors.New("the requested url do not return 200 status code")
 
-func (source *QpWebhook) Post(wid string, message *whatsapp.WhatsappMessage) (err error) {
-	log.Infof("posting webhook from: %s, id: %s, to: %s", wid, message.Id, source.Url)
+func (source *QpWebhook) Post(message *whatsapp.WhatsappMessage) (err error) {
+	logentry := source.GetLogger()
+	logentry = logentry.WithField(LogFields.MessageId, message.Id)
+	logentry.Infof("posting webhook")
 
 	payload := &QpWebhookPayload{
 		WhatsappMessage: message,
@@ -82,14 +102,14 @@ func (source *QpWebhook) Post(wid string, message *whatsapp.WhatsappMessage) (er
 
 	req, err := http.NewRequest("POST", source.Url, bytes.NewBuffer(payloadJson))
 	req.Header.Set("User-Agent", "Quepasa")
-	req.Header.Set("X-QUEPASA-WID", wid)
+	req.Header.Set("X-QUEPASA-WID", source.Wid)
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	client.Timeout = time.Second * 10
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Warnf("(%s) error at post webhook: %s", wid, err.Error())
+		logentry.Warnf("error at post webhook: %s", err.Error())
 	}
 
 	if resp != nil {

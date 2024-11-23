@@ -56,6 +56,9 @@ func WebhookController(w http.ResponseWriter, r *http.Request) {
 		webhook = &models.QpWebhook{}
 	}
 
+	// updating wid for logging and response headers
+	webhook.Wid = server.Wid
+
 	switch os := r.Method; os {
 	case http.MethodPost:
 		affected, err := server.WebhookAddOrUpdate(webhook)

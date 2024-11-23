@@ -4,7 +4,7 @@ package whatsapp
 type IWhatsappHandlers interface {
 
 	// Process a single message
-	Message(*WhatsappMessage)
+	Message(*WhatsappMessage, string)
 
 	// Update message status information
 	MessageStatusUpdate(id string, status WhatsappMessageStatus) bool

@@ -1,6 +1,7 @@
 package whatsmeow
 
 import (
+	library "github.com/nocodeleaks/quepasa/library"
 	"github.com/sirupsen/logrus"
 	types "go.mau.fi/whatsmeow/types"
 )
@@ -11,3 +12,6 @@ const WhatsmeowDBLogLevel = "WARN"         // default log level for whatsmeow da
 
 // default service presence state
 const WhatsmeowPresenceDefault = types.PresenceUnavailable
+
+// copying log fields names
+var LogFields = library.LogFields

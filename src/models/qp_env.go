@@ -47,6 +47,8 @@ const (
 	ENV_HTTPLOGS            = "HTTPLOGS"
 	ENV_WHATSMEOWLOGLEVEL   = "WHATSMEOW_LOGLEVEL"
 	ENV_WHATSMEOWDBLOGLEVEL = "WHATSMEOW_DBLOGLEVEL"
+
+	ENV_TESTING = "TESTING"
 )
 
 type Environment struct{}
@@ -258,4 +260,15 @@ func (*Environment) CacheLength() uint64 {
 func (*Environment) MasterKey() string {
 	result, _ := GetEnvStr(ENV_MASTER_KEY)
 	return result
+}
+
+// Testing => Apply Testing Methods (not stable)
+func (*Environment) Testing() bool {
+	text, _ := GetEnvStr(ENV_TESTING)
+	value, err := strconv.ParseBool(text)
+	if err == nil {
+		return value
+	} else {
+		return false // default return
+	}
 }

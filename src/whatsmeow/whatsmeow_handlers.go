@@ -448,7 +448,7 @@ func (handler *WhatsmeowHandlers) Follow(message *whatsapp.WhatsappMessage) {
 	if handler.WAHandlers != nil {
 
 		// following to internal handlers
-		go handler.WAHandlers.Message(message)
+		go handler.WAHandlers.Message(message, "follow")
 
 	} else {
 		handler.GetLogger().Warn("no internal handler registered")
@@ -513,7 +513,7 @@ func (source *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
 	if source.WAHandlers != nil {
 
 		// following to internal handlers
-		go source.WAHandlers.Message(message)
+		go source.WAHandlers.Message(message, "call")
 	}
 
 	// should reject this call
@@ -555,7 +555,8 @@ func (source *WhatsmeowHandlers) AcceptCall(from types.JID) error {
 
 func (source *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 	eventid := atomic.AddUint64(&source.Counter, 1)
-	logentry := source.GetLogger().WithField("eventid", eventid)
+	logentry := source.GetLogger()
+	logentry = logentry.WithField(LogFields.EventId, eventid)
 
 	logentry.Trace("event Receipt !")
 
@@ -570,7 +571,9 @@ func (source *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 	for _, id := range evt.MessageIDs {
 		last := statuses[id]
 		current := GetWhatsappMessageStatus(evt.Type)
-		logentry.Tracef("reading receipt event for msg id: %s, from: %s, type: %s, status: %s", id, evt.SourceString(), evt.Type, current)
+
+		sublogentry := logentry.WithField(LogFields.MessageId, id)
+		sublogentry.Tracef("reading receipt event, from: %s, type: %s, status: %s", evt.SourceString(), evt.Type, current)
 
 		if current.Uint32() > last.Uint32() {
 			statuses[id] = current
@@ -587,7 +590,8 @@ func (source *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 			continue
 		}
 
-		logentry.Debugf("updated status for msg id: %s, status: %s", id, status)
+		sublogentry := logentry.WithField(LogFields.MessageId, id)
+		sublogentry.Debugf("updated status: %s", status)
 
 		if status.Uint32() != whatsapp.WhatsappMessageStatusRead.Uint32() {
 			continue
@@ -597,7 +601,7 @@ func (source *WhatsmeowHandlers) Receipt(evt events.Receipt) {
 			continue
 		}
 
-		logentry.Debugf("dispatching read receipt event for msg id: %s, status: %s", id, status)
+		sublogentry.Debugf("dispatching read receipt event, status: %s", status)
 
 		message := &whatsapp.WhatsappMessage{Content: evt}
 		message.Id = "readreceipt"

@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 
@@ -304,10 +304,10 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger := server.GetLogger()
+	logentry := server.GetLogger()
 
 	// reading body to avoid converting to json if empty
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		response.ParseError(err)
 		RespondInterface(w, response)
@@ -335,6 +335,9 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 		webhook = &models.QpWebhook{}
 	}
 
+	// updating wid for logging and response headers
+	webhook.Wid = server.Wid
+
 	switch os := r.Method; os {
 	case http.MethodPost:
 		affected, err := server.WebhookAddOrUpdate(webhook)
@@ -346,7 +349,7 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 			response.ParseSuccess("updated with success")
 			RespondSuccess(w, response)
 			if affected > 0 {
-				logger.Infof("updating webhook url: %s, items affected: %v", webhook.Url, affected)
+				logentry.Infof("updating webhook url: %s, items affected: %v", webhook.Url, affected)
 			}
 		}
 		return
@@ -360,7 +363,7 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 			response.ParseSuccess("deleted with success")
 			RespondSuccess(w, response)
 			if affected > 0 {
-				logger.Infof("removing webhook url: %s, items affected: %v", webhook.Url, affected)
+				logentry.Infof("removing webhook url: %s, items affected: %v", webhook.Url, affected)
 			}
 		}
 		return

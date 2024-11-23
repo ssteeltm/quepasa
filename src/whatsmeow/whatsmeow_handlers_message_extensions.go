@@ -14,7 +14,8 @@ import (
 
 func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMessage, in *waE2E.Message) {
 	logentry := handler.GetLogger()
-	logentry = logentry.WithField("chatid", out.Chat.Id)
+	logentry = logentry.WithField(LogFields.ChatId, out.Chat.Id)
+	logentry = logentry.WithField(LogFields.MessageId, out.Id)
 	logentry.Tracef("handling knowing message: %v", in)
 
 	switch {

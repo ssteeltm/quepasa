@@ -713,7 +713,7 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 			if err != nil {
 				return
 			} else {
-				source.Handler.Message(&textMsg)
+				source.Handler.Message(&textMsg, "attach")
 			}
 		}
 	}
@@ -721,7 +721,7 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 	// sending default msg
 	response, err = conn.Send(msg)
 	if err == nil {
-		source.Handler.Message(msg)
+		source.Handler.Message(msg, "send")
 	}
 	return
 }

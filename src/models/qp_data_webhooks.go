@@ -15,9 +15,9 @@ type QpDataWebhooks struct {
 }
 
 // Fill start memory cache
-func (source *QpDataWebhooks) WebhookFill(context string, db QpDataWebhooksInterface) (err error) {
+func (source *QpDataWebhooks) WebhookFill(info *QpServer, db QpDataWebhooksInterface) (err error) {
 	source.Webhooks = []*QpWebhook{}
-	source.context = context
+	source.context = info.Token
 	source.db = db
 
 	whooks, err := source.db.FindAll(source.context)
@@ -27,6 +27,7 @@ func (source *QpDataWebhooks) WebhookFill(context string, db QpDataWebhooksInter
 	}
 
 	for _, element := range whooks {
+		element.Wid = info.Wid
 		source.Webhooks = append(source.Webhooks, element.QpWebhook)
 	}
 

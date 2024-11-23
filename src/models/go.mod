@@ -41,6 +41,9 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/gosimple/slug v1.13.1 // indirect
 	github.com/gosimple/unidecode v1.0.1 // indirect
+	github.com/hajimehoshi/go-mp3 v0.3.4 // indirect
+	github.com/jfreymuth/oggvorbis v1.0.5 // indirect
+	github.com/jfreymuth/vorbis v1.0.2 // indirect
 	github.com/klauspost/compress v1.16.6 // indirect
 	github.com/lestrrat-go/backoff/v2 v2.0.7 // indirect
 	github.com/lestrrat-go/httpcc v1.0.0 // indirect
@@ -52,6 +55,7 @@ require (
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rs/zerolog v1.33.0 // indirect
+	github.com/tcolgate/mp3 v0.0.0-20170426193717-e79c5a46d300 // indirect
 	github.com/teivah/onecontext v1.3.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect

@@ -55,7 +55,7 @@ func (source *QPWhatsappHandlers) HandleBroadcasts() bool {
 //#region EVENTS FROM WHATSAPP SERVICE
 
 // Process messages received from whatsapp service
-func (source *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
+func (source *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage, event string) {
 
 	// should skip groups ?
 	if !source.HandleGroups() && msg.FromGroup() {
@@ -84,8 +84,10 @@ func (source *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
 		}
 	}
 
-	logger := source.GetLogger()
-	logger.Debugf("appending to cache, received|sended from another app, id: %s, chatid: %s", msg.Id, msg.Chat.Id)
+	logentry := source.GetLogger()
+	logentry = logentry.WithField(LogFields.MessageId, msg.Id)
+	logentry = logentry.WithField(LogFields.ChatId, msg.Chat.Id)
+	logentry.Debugf("appending message to cache, from: %s", event)
 	source.appendMsgToCache(msg)
 }
 
