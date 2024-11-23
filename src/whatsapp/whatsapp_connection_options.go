@@ -1,6 +1,10 @@
 package whatsapp
 
-import log "github.com/sirupsen/logrus"
+import (
+	"context"
+
+	log "github.com/sirupsen/logrus"
+)
 
 // Used only as parameters for start a new connection, wont propagate
 type WhatsappConnectionOptions struct {
@@ -25,6 +29,14 @@ func (source *WhatsappConnectionOptions) GetReconnect() bool {
 	return source.Reconnect
 }
 
+// get default log entry, never nil
 func (source *WhatsappConnectionOptions) GetLogger() *log.Entry {
+	if source.LogEntry == nil {
+		logger := log.New()
+		logger.SetLevel(log.ErrorLevel)
+
+		source.LogEntry = logger.WithContext(context.Background())
+	}
+
 	return source.LogEntry
 }

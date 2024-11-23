@@ -26,10 +26,10 @@ func (source *QPWhatsappHandlers) GetLogger() *log.Entry {
 		return source.server.GetLogger()
 	}
 
-	logger := log.StandardLogger()
-	logger.SetLevel(log.ErrorLevel)
+	logentry := log.StandardLogger()
+	logentry.SetLevel(log.ErrorLevel)
 
-	return logger.WithContext(context.Background())
+	return logentry.WithContext(context.Background())
 }
 
 func (source *QPWhatsappHandlers) HandleGroups() bool {

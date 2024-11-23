@@ -32,14 +32,8 @@ type QpWebhook struct {
 // get default log entry, never nil
 func (source *QpWebhook) GetLogger() *log.Entry {
 	logentry := log.WithContext(context.Background())
-	if len(source.Wid) > 0 {
-		logentry.WithField("wid", source.Wid)
-	}
-
-	if len(source.Url) > 0 {
-		logentry.WithField("url", source.Url)
-	}
-
+	logentry = logentry.WithField("wid", source.Wid)
+	logentry = logentry.WithField("url", source.Url)
 	return logentry
 }
 

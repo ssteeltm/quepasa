@@ -45,9 +45,7 @@ type QpSendRequest struct {
 // get default log entry, never nil
 func (source *QpSendRequest) GetLogger() *log.Entry {
 	logentry := log.WithContext(context.Background())
-	if len(source.ChatId) > 0 {
-		logentry.WithField("chatid", source.ChatId)
-	}
+	logentry = logentry.WithField(LogFields.ChatId, source.ChatId)
 
 	return logentry
 }

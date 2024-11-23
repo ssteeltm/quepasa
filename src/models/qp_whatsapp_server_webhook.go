@@ -14,17 +14,19 @@ type QpWhatsappServerWebhook struct {
 	server *QpWhatsappServer
 }
 
+// get default log entry, never nil
 func (source *QpWhatsappServerWebhook) GetLogger() *log.Entry {
+	var logentry *log.Entry
 	if source != nil && source.server != nil {
-		logentry := source.server.GetLogger()
+		logentry = source.server.GetLogger()
 		if source.QpWebhook != nil {
-			return logentry.WithField("url", source.QpWebhook.Url)
+			logentry = source.QpWebhook.GetLogger()
 		}
-		return logentry
+	} else {
+		logentry = log.New().WithContext(context.Background())
 	}
 
-	logger := log.New()
-	return logger.WithContext(context.Background())
+	return logentry
 }
 
 //#region IMPLEMENTING WHATSAPP OPTIONS INTERFACE

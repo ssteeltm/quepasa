@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"sync"
@@ -41,6 +42,13 @@ type QpWhatsappServer struct {
 
 // get default log entry, never nil
 func (source *QpWhatsappServer) GetLogger() *log.Entry {
+	if source.Logger == nil {
+		logger := log.New()
+		logger.SetLevel(log.ErrorLevel)
+
+		source.Logger = logger.WithContext(context.Background())
+	}
+
 	return source.Logger
 }
 

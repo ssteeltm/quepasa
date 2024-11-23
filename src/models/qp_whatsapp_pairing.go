@@ -28,17 +28,10 @@ func (source *QpWhatsappPairing) GetLogger() *log.Entry {
 		return source.conn.GetLogger()
 	}
 
-	logger := log.WithContext(context.Background())
-
-	if len(source.Token) > 0 {
-		logger = logger.WithField("token", source.Token)
-	}
-
-	if len(source.Wid) > 0 {
-		logger = logger.WithField("wid", source.Wid)
-	}
-
-	return logger
+	logentry := log.WithContext(context.Background())
+	logentry = logentry.WithField(LogFields.Token, source.Token)
+	logentry = logentry.WithField(LogFields.WId, source.Wid)
+	return logentry
 }
 
 func (source *QpWhatsappPairing) OnPaired(wid string) {

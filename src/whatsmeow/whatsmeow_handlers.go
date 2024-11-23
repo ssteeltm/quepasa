@@ -41,11 +41,14 @@ type WhatsmeowHandlers struct {
 
 // get default log entry, never nil
 func (source *WhatsmeowHandlers) GetLogger() *log.Entry {
-	if source.LogEntry != nil {
-		return source.LogEntry
+	if source.LogEntry == nil {
+		logger := log.New()
+		logger.SetLevel(log.ErrorLevel)
+
+		source.LogEntry = logger.WithContext(context.Background())
 	}
 
-	return log.WithContext(context.Background())
+	return source.LogEntry
 }
 
 func (source *WhatsmeowHandlers) GetServiceOptions() (options whatsapp.WhatsappOptionsExtended) {

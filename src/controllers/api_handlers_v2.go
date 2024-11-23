@@ -349,7 +349,7 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 			response.ParseSuccess("updated with success")
 			RespondSuccess(w, response)
 			if affected > 0 {
-				logentry.Infof("updating webhook url: %s, items affected: %v", webhook.Url, affected)
+				logentry.Infof("updating webhook url=%s, items affected: %v", webhook.Url, affected)
 			}
 		}
 		return
@@ -363,7 +363,7 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 			response.ParseSuccess("deleted with success")
 			RespondSuccess(w, response)
 			if affected > 0 {
-				logentry.Infof("removing webhook url: %s, items affected: %v", webhook.Url, affected)
+				logentry.Infof("removing webhook url=%s, items affected: %v", webhook.Url, affected)
 			}
 		}
 		return
@@ -371,7 +371,7 @@ func WebHookAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 		url := r.Header.Get("X-QUEPASA-WHURL")
 		response.Webhooks = server.GetWebHooksByUrl(url)
 		if len(url) > 0 {
-			response.ParseSuccess(fmt.Sprintf("getting with filter: %s", url))
+			response.ParseSuccess(fmt.Sprintf("getting with filter, url=%s", url))
 		} else {
 			response.ParseSuccess("getting without filter")
 		}

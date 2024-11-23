@@ -57,7 +57,7 @@ func (source *WhatsmeowConnection) GetLogger() *log.Entry {
 
 		wid, err := source.GetWidInternal()
 		if err == nil && len(wid) > 0 {
-			logentry = logentry.WithField("wid", wid)
+			logentry = logentry.WithField(LogFields.WId, wid)
 		}
 
 		source.LogEntry = logentry
