@@ -417,6 +417,7 @@ func (source *WhatsmeowConnection) GetInReplyContextInfo(msg whatsapp.WhatsappMe
 // Default SEND method using WhatsappMessage Interface
 func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.IWhatsappSendResponse, error) {
 	logentry := source.GetLogger()
+	logentry = logentry.WithField(LogFields.MessageId, msg.Id)
 
 	var err error
 
@@ -481,9 +482,9 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 	msg.Timestamp = resp.Timestamp
 
 	if msg.Id != resp.ID {
-		logentry.Warnf("send success but msg id: %s, differs from response id: %s, type: %v, on: %s", msg.Id, resp.ID, msg.Type, msg.Timestamp)
+		logentry.Warnf("send success but msg id differs from response id: %s, type: %v, on: %s", resp.ID, msg.Type, msg.Timestamp)
 	} else {
-		logentry.Infof("send success, msg id: %s, type: %v, on: %s", msg.Id, msg.Type, msg.Timestamp)
+		logentry.Infof("send success, type: %v, on: %s", msg.Type, msg.Timestamp)
 	}
 
 	// testing, mark read function
