@@ -83,7 +83,7 @@ func (source *QpToWhatsappAttachment) AttachSecureAndCustomize() {
 		}
 	}
 
-	// Defining a filename if not found before
+	// setting a filename if not found before
 	if len(attach.FileName) == 0 {
 		attach.FileName = library.GenerateFileNameFromMimeType(attach.Mimetype)
 		source.Debug = append(source.Debug, fmt.Sprintf("[debug][AttachSecureAndCustomize] empty file name, generating a new one based on mime type: %s, file name: %s", attach.Mimetype, attach.FileName))
