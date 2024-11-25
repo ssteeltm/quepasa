@@ -101,7 +101,7 @@
             },
             {
               "key": "cwhost",
-              "value": "={{$josn.extra.cwhost}}"
+              "value": "={{$json.extra.cwhost}}"
             },
             {
               "key": "inbox",
@@ -208,7 +208,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.2) Updates\n* missing trackid after the quepasa node update",
+        "content": "## (1.0.3) Updates\n* chatwoot host issue on webhook update",
         "height": 203.09211018757583,
         "width": 641.796471588546
       },
@@ -1145,7 +1145,7 @@
     "executionTimeout": 60,
     "executionOrder": "v1"
   },
-  "versionId": "f002916f-d623-4cea-8867-5a82ddf5bf2a",
+  "versionId": "c3d3121e-2b0c-47ac-9f2a-033510c8e48a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
