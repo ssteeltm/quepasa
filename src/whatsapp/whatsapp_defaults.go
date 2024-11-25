@@ -24,7 +24,7 @@ var WhatsappMIMEAudio = [...]string{"audio/oga", "audio/ogx", "audio/x-mpeg-3", 
 var WhatsappMIMEVideo = [...]string{"video/mp4"}
 
 // Mime types for image messages, tested 3º
-var WhatsappMIMEImage = [...]string{"image/png", "image/jpeg", "image/webp"}
+var WhatsappMIMEImage = [...]string{"image/png", "image/jpeg", "image/jpg", "image/webp"}
 
 // Mime types for document messages, tested 4º
 var WhatsappMIMEDocument = [...]string{
