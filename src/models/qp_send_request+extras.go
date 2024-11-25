@@ -10,6 +10,7 @@ func IsValidExtensionFor(request string, content string) bool {
 	switch {
 	case
 		request == ".jpg" && content == ".jpeg", // used for correct old windows 3 characters extensions
+		request == ".jpeg" && content == ".jpg", // inverse is even true
 		request == ".csv" && content == ".txt",
 		request == ".json" && content == ".txt",
 		request == ".sql" && content == ".txt",
