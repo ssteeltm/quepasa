@@ -18,13 +18,13 @@ type QpWhatsappMessages struct {
 
 //#region MESSAGES
 
-func (source *QpWhatsappMessages) Append(value *whatsapp.WhatsappMessage) {
+func (source *QpWhatsappMessages) Append(value *whatsapp.WhatsappMessage, from string) {
 
 	// ensure that is an uppercase string before save
 	normalizedId := strings.ToUpper(value.Id)
 
 	item := QpCacheItem{normalizedId, value, time.Now().Add(DEFAULTEXPIRATION)}
-	source.SetCacheItem(item)
+	source.SetCacheItem(item, "message-"+from)
 }
 
 func (source *QpWhatsappMessages) GetSlice() (items []*whatsapp.WhatsappMessage) {
@@ -102,7 +102,7 @@ func (source *QpWhatsappMessages) SetStatusById(id string, status whatsapp.Whats
 	normalizedId := strings.ToUpper(id)
 
 	item := QpCacheItem{normalizedId, status, time.Now().Add(DEFAULTEXPIRATION)}
-	source.statuses.SetCacheItem(item)
+	source.statuses.SetCacheItem(item, "status")
 }
 
 func (source *QpWhatsappMessages) GetStatusById(id string) (status whatsapp.WhatsappMessageStatus) {

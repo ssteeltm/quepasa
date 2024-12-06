@@ -88,7 +88,7 @@ func (source *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage, event s
 	logentry = logentry.WithField(LogFields.MessageId, msg.Id)
 	logentry = logentry.WithField(LogFields.ChatId, msg.Chat.Id)
 	logentry.Debugf("appending message to cache, from: %s", event)
-	source.appendMsgToCache(msg)
+	source.appendMsgToCache(msg, event)
 }
 
 // region STATUS AND RECEIPTS
@@ -174,10 +174,10 @@ func (source *QPWhatsappHandlers) OnDisconnected() {
 //region MESSAGE CONTROL REGION HANDLE A LOCK
 
 // Salva em cache e inicia gatilhos assíncronos
-func (source *QPWhatsappHandlers) appendMsgToCache(msg *whatsapp.WhatsappMessage) {
+func (source *QPWhatsappHandlers) appendMsgToCache(msg *whatsapp.WhatsappMessage, from string) {
 
 	// saving on local normalized cache, do not affect remote msgs
-	source.QpWhatsappMessages.Append(msg)
+	source.QpWhatsappMessages.Append(msg, from)
 
 	// should cleanup old messages ?
 	length := ENV.CacheLength()

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"reflect"
 	"sort"
 	"sync"
 	"sync/atomic"
@@ -20,15 +21,16 @@ func (source *QpCache) Count() uint64 {
 
 func (source *QpCache) SetAny(key string, value interface{}, expiration time.Duration) {
 	item := QpCacheItem{key, value, time.Now().Add(expiration)}
-	source.SetCacheItem(item)
+	source.SetCacheItem(item, "any")
 }
 
-func (source *QpCache) SetCacheItem(item QpCacheItem) {
+func (source *QpCache) SetCacheItem(item QpCacheItem, from string) {
 	previous, loaded := source.cacheMap.Swap(item.Key, item)
 	if loaded {
-		log.Warnf("[%s] appending to cache a message that previous exists ...", item.Key)
-		log.Warnf("[%s] old: %v", item.Key, previous)
-		log.Warnf("[%s] new: %v", item.Key, item)
+		prevItem := previous.(QpCacheItem)
+		log.Warnf("[%s][%s] updating cache item ...", item.Key, from)
+		log.Warnf("[%s][%s] old type: %s, %v", item.Key, from, reflect.TypeOf(prevItem.Value), prevItem.Value)
+		log.Warnf("[%s][%s] new type: %s, %v", item.Key, from, reflect.TypeOf(item.Value), item.Value)
 	} else {
 		source.counter.Add(1)
 	}
