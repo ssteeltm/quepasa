@@ -62,7 +62,7 @@ func SendAnyWithServer(w http.ResponseWriter, r *http.Request, server *models.Qp
 		isInGroup := server.GetConnection().HasChat(request.ChatId)
 		if !isInGroup {
 			metrics.MessageSendErrors.Inc()
-			err = fmt.Errorf("it seams that you don't belongs to this group")
+			err = fmt.Errorf("it seams that you don't belongs to this group: %s", request.ChatId)
 			response.ParseError(err)
 			RespondInterface(w, response)
 			return
