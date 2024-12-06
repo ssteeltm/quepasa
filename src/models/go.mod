@@ -25,8 +25,8 @@ require (
 	github.com/philippseith/signalr v0.6.3
 	github.com/sirupsen/logrus v1.9.3
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
-	golang.org/x/crypto v0.27.0
-	google.golang.org/protobuf v1.34.2
+	golang.org/x/crypto v0.29.0
+	google.golang.org/protobuf v1.35.2
 )
 
 require (
@@ -60,10 +60,10 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	go.mau.fi/libsignal v0.1.1 // indirect
-	go.mau.fi/util v0.8.0 // indirect
-	go.mau.fi/whatsmeow v0.0.0-20241015144315-3fa42c3d6a28 // indirect
-	golang.org/x/net v0.29.0 // indirect
-	golang.org/x/sys v0.25.0 // indirect
+	go.mau.fi/util v0.8.2 // indirect
+	go.mau.fi/whatsmeow v0.0.0-20241202173457-b2dd543e5721 // indirect
+	golang.org/x/net v0.31.0 // indirect
+	golang.org/x/sys v0.27.0 // indirect
 	golang.org/x/tools v0.22.0 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 )
