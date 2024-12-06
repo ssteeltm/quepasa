@@ -495,6 +495,21 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 	return msg, err
 }
 
+// useful to check if is a member of a group before send a msg
+func (source *WhatsmeowConnection) HasChat(chat string) bool {
+	jid, err := types.ParseJID(chat)
+	if err != nil {
+		return false
+	}
+
+	info, err := source.Client.Store.ChatSettings.GetChatSettings(jid)
+	if err != nil {
+		return false
+	}
+
+	return info.Found
+}
+
 // func (cli *Client) Upload(ctx context.Context, plaintext []byte, appInfo MediaType) (resp UploadResponse, err error)
 func (source *WhatsmeowConnection) UploadAttachment(msg whatsapp.WhatsappMessage) (result *waE2E.Message, err error) {
 

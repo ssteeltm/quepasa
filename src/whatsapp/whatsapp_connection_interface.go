@@ -40,6 +40,10 @@ type IWhatsappConnection interface {
 	// Default send message method
 	Send(*WhatsappMessage) (IWhatsappSendResponse, error)
 
+	// Useful to check if is a member of a group before send a msg.
+	// Indicates if has an open or archived chat.
+	HasChat(string) bool
+
 	GetLogger() *log.Entry
 
 	/*
