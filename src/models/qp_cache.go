@@ -5,6 +5,8 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type QpCache struct {
@@ -22,8 +24,12 @@ func (source *QpCache) SetAny(key string, value interface{}, expiration time.Dur
 }
 
 func (source *QpCache) SetCacheItem(item QpCacheItem) {
-	_, loaded := source.cacheMap.Swap(item.Key, item)
-	if !loaded {
+	previous, loaded := source.cacheMap.Swap(item.Key, item)
+	if loaded {
+		log.Warnf("[%s] appending to cache a message that previous exists ...", item.Key)
+		log.Warnf("[%s] old: %v", item.Key, previous)
+		log.Warnf("[%s] new: %v", item.Key, item)
+	} else {
 		source.counter.Add(1)
 	}
 }
