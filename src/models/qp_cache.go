@@ -46,6 +46,9 @@ func (source *QpCache) SetCacheItem(item QpCacheItem, from string) {
 				log.Warnf("[%s][%s] new as json: %s", item.Key, from, b)
 			}
 		}
+
+		log.Warnf("[%s][%s] equals: %v", item.Key, from, item.Value == prevItem.Value)
+
 	} else {
 		source.counter.Add(1)
 	}
