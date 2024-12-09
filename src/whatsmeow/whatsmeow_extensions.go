@@ -57,8 +57,6 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, waMsg what
 		mimetype = proto.String(attach.Mimetype)
 	}
 
-	// waMsg.InReply
-
 	switch media {
 	case whatsmeow.MediaImage:
 		internal := &waE2E.ImageMessage{

@@ -55,7 +55,7 @@ func (source *QPWhatsappHandlers) HandleBroadcasts() bool {
 //#region EVENTS FROM WHATSAPP SERVICE
 
 // Process messages received from whatsapp service
-func (source *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage, event string) {
+func (source *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage, from string) {
 
 	// should skip groups ?
 	if !source.HandleGroups() && msg.FromGroup() {
@@ -87,8 +87,8 @@ func (source *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage, event s
 	logentry := source.GetLogger()
 	logentry = logentry.WithField(LogFields.MessageId, msg.Id)
 	logentry = logentry.WithField(LogFields.ChatId, msg.Chat.Id)
-	logentry.Debugf("appending message to cache, from: %s", event)
-	source.appendMsgToCache(msg, event)
+	logentry.Debugf("appending message to cache, from: %s", from)
+	source.appendMsgToCache(msg, from)
 }
 
 // region STATUS AND RECEIPTS

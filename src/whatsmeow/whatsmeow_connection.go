@@ -285,22 +285,24 @@ func (conn *WhatsmeowConnection) Download(imsg whatsapp.IWhatsappMessage, cache 
 }
 
 func (source *WhatsmeowConnection) Revoke(msg whatsapp.IWhatsappMessage) error {
+	logentry := source.GetLogger()
+
 	jid, err := types.ParseJID(msg.GetChatId())
 	if err != nil {
-		source.GetLogger().Infof("revoke error on get jid: %s", err)
+		logentry.Infof("revoke error on get jid: %s", err)
 		return err
 	}
 
 	participantJid, err := types.ParseJID(msg.GetParticipantId())
 	if err != nil {
-		source.GetLogger().Infof("revoke error on get jid: %s", err)
+		logentry.Infof("revoke error on get jid: %s", err)
 		return err
 	}
 
 	newMessage := source.Client.BuildRevoke(jid, participantJid, msg.GetId())
 	_, err = source.Client.SendMessage(context.Background(), jid, newMessage)
 	if err != nil {
-		source.GetLogger().Infof("revoke error: %s", err)
+		logentry.Infof("revoke error: %s", err)
 		return err
 	}
 
@@ -495,7 +497,9 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 	return msg, err
 }
 
-// useful to check if is a member of a group before send a msg
+// useful to check if is a member of a group before send a msg.
+// fails on recently added groups.
+// pending a more efficient code !!!!!!!!!!!!!!
 func (source *WhatsmeowConnection) HasChat(chat string) bool {
 	jid, err := types.ParseJID(chat)
 	if err != nil {

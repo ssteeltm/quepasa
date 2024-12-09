@@ -192,7 +192,7 @@ func (source *WhatsmeowHandlers) EventsHandler(rawEvt interface{}) {
 	switch evt := rawEvt.(type) {
 
 	case *events.Message:
-		go source.Message(*evt, false)
+		go source.Message(*evt, "live")
 		return
 
 		//# region CALLS
@@ -352,7 +352,7 @@ func (source *WhatsmeowHandlers) OnHistorySyncEvent(evt events.HistorySync) {
 			}
 
 			// put here a logic for history sync days filter
-			source.Message(*msgevt, true)
+			source.Message(*msgevt, "history")
 		}
 	}
 }
@@ -360,7 +360,7 @@ func (source *WhatsmeowHandlers) OnHistorySyncEvent(evt events.HistorySync) {
 //#region EVENT MESSAGE
 
 // Aqui se processar um evento de recebimento de uma mensagem genérica
-func (handler *WhatsmeowHandlers) Message(evt events.Message, fromhistory bool) {
+func (handler *WhatsmeowHandlers) Message(evt events.Message, from string) {
 	logentry := handler.GetLogger()
 	logentry.Trace("event message received")
 
@@ -379,7 +379,7 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message, fromhistory bool) 
 	message := &whatsapp.WhatsappMessage{
 		Content:        evt.Message,
 		InfoForHistory: evt.Info,
-		FromHistory:    fromhistory,
+		FromHistory:    from == "history",
 	}
 
 	// basic information
@@ -421,11 +421,10 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message, fromhistory bool) 
 
 	// unknown and continue
 	if message.Type == whatsapp.UnknownMessageType {
-		JsonMsg := ToJson(evt)
-		logentry.Infof("debugging an unknown message :: %s", JsonMsg)
+		message.Text += " :: " + ToJson(evt)
 	}
 
-	handler.Follow(message)
+	handler.Follow(message, from)
 }
 
 func ToJson(in interface{}) string {
@@ -447,11 +446,11 @@ func ToJson(in interface{}) string {
 */
 
 // Append to cache handlers if exists, and then webhook
-func (handler *WhatsmeowHandlers) Follow(message *whatsapp.WhatsappMessage) {
+func (handler *WhatsmeowHandlers) Follow(message *whatsapp.WhatsappMessage, from string) {
 	if handler.WAHandlers != nil {
 
 		// following to internal handlers
-		go handler.WAHandlers.Message(message, "follow")
+		go handler.WAHandlers.Message(message, from)
 
 	} else {
 		handler.GetLogger().Warn("no internal handler registered")
@@ -646,7 +645,7 @@ func (handler *WhatsmeowHandlers) OnLoggedOutEvent(evt events.LoggedOut) {
 		Text:      reason,
 	}
 
-	handler.Follow(message)
+	handler.Follow(message, "logout")
 	handler.UnRegister()
 }
 
@@ -679,7 +678,7 @@ func (handler *WhatsmeowHandlers) JoinedGroup(evt events.JoinedGroup) {
 		},
 	}
 
-	handler.Follow(message)
+	handler.Follow(message, "group")
 }
 
 //#endregion

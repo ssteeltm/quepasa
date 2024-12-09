@@ -1,12 +1,14 @@
 package models
 
 import (
+	"encoding/json"
 	"reflect"
 	"sort"
 	"sync"
 	"sync/atomic"
 	"time"
 
+	"github.com/nocodeleaks/quepasa/whatsapp"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -31,6 +33,19 @@ func (source *QpCache) SetCacheItem(item QpCacheItem, from string) {
 		log.Warnf("[%s][%s] updating cache item ...", item.Key, from)
 		log.Warnf("[%s][%s] old type: %s, %v", item.Key, from, reflect.TypeOf(prevItem.Value), prevItem.Value)
 		log.Warnf("[%s][%s] new type: %s, %v", item.Key, from, reflect.TypeOf(item.Value), item.Value)
+
+		if oldJson, ok := prevItem.Value.(*whatsapp.WhatsappMessage); ok {
+			b, err := json.Marshal(oldJson)
+			if err == nil {
+				log.Warnf("[%s][%s] old as json: %s", item.Key, from, b)
+			}
+		}
+		if newJson, ok := item.Value.(*whatsapp.WhatsappMessage); ok {
+			b, err := json.Marshal(newJson)
+			if err == nil {
+				log.Warnf("[%s][%s] new as json: %s", item.Key, from, b)
+			}
+		}
 	} else {
 		source.counter.Add(1)
 	}

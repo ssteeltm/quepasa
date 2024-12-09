@@ -73,5 +73,5 @@ func OnEventContact(source *WhatsmeowHandlers, evt events.Contact) {
 	message.Attachment = whatsapp.GenerateVCardAttachment(content, filename)
 
 	// dispatching to internal handlers
-	source.Follow(message)
+	source.Follow(message, "vcard")
 }

@@ -68,7 +68,7 @@ func HandleTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.
 }
 
 func HandleEditTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *waE2E.FutureProofMessage) {
-	// never throws , obs !!!!
+	// never throws, obs !!!!
 	// it came as a single text msg
 	log.Debug("received a edited text message !")
 	out.Type = whatsapp.TextMessageType
