@@ -50,7 +50,10 @@ func (source *QpCache) SetCacheItem(item QpCacheItem, from string) bool {
 			}
 
 			if prevContent != nil && newContent != nil {
-				if reflect.TypeOf(prevContent) == reflect.TypeOf(newContent) {
+				prevContentType := reflect.TypeOf(prevContent)
+				newContentType := reflect.TypeOf(newContent)
+				log.Warnf("[%s][%s] prev content type: %s, new content type: %s", item.Key, from, prevContentType, newContentType)
+				if prevContentType == newContentType {
 
 					b, err := json.Marshal(prevContent)
 					if err == nil {
