@@ -127,10 +127,13 @@ func HandleExtendedTextMessage(logentry *log.Entry, out *whatsapp.WhatsappMessag
 	adreply := info.GetExternalAdReply()
 	if adreply != nil {
 		ads := &whatsapp.WhatsappMessageAds{
-			Id:        adreply.GetCtwaClid(),
-			Title:     adreply.GetTitle(),
-			SourceId:  adreply.GetSourceID(),
-			SourceUrl: adreply.GetSourceURL(),
+			Id:         adreply.GetCtwaClid(),
+			Title:      adreply.GetTitle(),
+			SourceId:   adreply.GetSourceID(),
+			SourceUrl:  adreply.GetSourceURL(),
+			Thumbnail:  string(adreply.GetThumbnail()),
+			SourceApp:  adreply.GetSourceApp(),
+			SourceType: adreply.GetSourceType(),
 		}
 		out.Ads = ads
 	}
