@@ -133,6 +133,10 @@ func (source *WhatsappMessage) FromGroup() bool {
 	return strings.HasSuffix(source.Chat.Id, "@g.us")
 }
 
+func (source *WhatsappMessage) FromAds() bool {
+	return source.Ads != nil
+}
+
 func (source *WhatsappMessage) FromBroadcast() bool {
 	if source.Chat.Id == "status" {
 		return true

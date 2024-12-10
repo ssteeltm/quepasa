@@ -19,21 +19,21 @@ type QPWhatsappService struct {
 	DB          *QpDatabase                  `json:"-"`
 	Initialized bool                         `json:"-"`
 
-	Logger     *log.Entry  `json:"-"`
+	LogEntry   *log.Entry  `json:"-"`
 	initlock   *sync.Mutex `json:"-"`
 	appendlock *sync.Mutex `json:"-"`
 }
 
 // get default log entry, never nil
 func (source *QPWhatsappService) GetLogger() *log.Entry {
-	if source.Logger == nil {
+	if source.LogEntry == nil {
 		logger := log.New()
 		logger.SetLevel(log.ErrorLevel)
 
-		source.Logger = logger.WithContext(context.Background())
+		source.LogEntry = logger.WithContext(context.Background())
 	}
 
-	return source.Logger
+	return source.LogEntry
 }
 
 var WhatsappService *QPWhatsappService
@@ -142,7 +142,6 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 	}
 
 	serviceLogLevel := service.GetLogger().Level
-
 	var serverLogLevel log.Level
 	if info.Devel {
 		serverLogLevel = log.DebugLevel
@@ -155,7 +154,8 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 
 	logger := log.New()
 	logger.SetLevel(serverLogLevel)
-	logentry := logger.WithField("token", info.Token)
+	logentry := logger.WithContext(context.Background())
+	logentry = logentry.WithField("token", info.Token)
 
 	if len(info.Wid) > 0 {
 		logentry = logentry.WithField("wid", info.Wid)
