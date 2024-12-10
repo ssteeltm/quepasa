@@ -1,8 +1,6 @@
 package main
 
 import (
-	"strings"
-
 	"github.com/joho/godotenv"
 	controllers "github.com/nocodeleaks/quepasa/controllers"
 	models "github.com/nocodeleaks/quepasa/models"
@@ -18,14 +16,11 @@ import (
 // @BasePath /
 func main() {
 
-	// Carregando variaveis de ambiente apartir de arquivo .env
+	// loading environment variables from .env file
 	godotenv.Load()
 
 	loglevel := models.ENV.LogLevel()
-	if len(loglevel) == 0 {
-		log.Infof("current log level: %v", log.GetLevel())
-	} else {
-		loglevel := strings.TrimSpace(loglevel) // trim white spaces
+	if len(loglevel) > 0 {
 		logruslevel, err := log.ParseLevel(loglevel)
 		if err != nil {
 			log.Errorf("trying parse an invalid loglevel: %s, current: %v", loglevel, log.GetLevel())
@@ -33,6 +28,8 @@ func main() {
 			log.SetLevel(logruslevel)
 		}
 	}
+
+	log.Infof("current log level: %v", log.GetLevel())
 
 	// checks for pending database migrations
 	err := models.MigrateToLatest()

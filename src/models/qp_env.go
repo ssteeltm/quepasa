@@ -192,7 +192,8 @@ func (*Environment) Presence() string {
 // Force Default Log Level (lower)
 func (*Environment) LogLevel() string {
 	result, _ := GetEnvStr(ENV_LOGLEVEL)
-	result = strings.ToLower(result)
+	result = strings.ToLower(result)   // to lower
+	result = strings.TrimSpace(result) // trim white spaces
 	return result
 }
 
