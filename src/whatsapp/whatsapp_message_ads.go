@@ -46,11 +46,11 @@ package whatsapp
 */
 
 type WhatsappMessageAds struct {
-	Id         string `json:"id"`
-	Title      string `json:"title"`
-	SourceId   string `json:"sourceid,omitempty"`
-	SourceUrl  string `json:"sourceurl,omitempty"`
-	Thumbnail  string `json:"thumbnail,omitempty"` // base64 thumbnail
-	SourceApp  string `json:"sourceapp,omitempty"`
-	SourceType string `json:"sourcetype,omitempty"`
+	Id        string `json:"id"`
+	Title     string `json:"title"`
+	SourceId  string `json:"sourceid,omitempty"`
+	SourceUrl string `json:"sourceurl,omitempty"`
+	Thumbnail string `json:"thumbnail,omitempty"` // base64 thumbnail
+	App       string `json:"app,omitempty"`
+	Type      string `json:"type,omitempty"`
 }
