@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/joho/godotenv"
 	controllers "github.com/nocodeleaks/quepasa/controllers"
 	models "github.com/nocodeleaks/quepasa/models"
@@ -23,6 +25,7 @@ func main() {
 	if len(loglevel) == 0 {
 		log.Infof("current log level: %v", log.GetLevel())
 	} else {
+		loglevel := strings.TrimSpace(loglevel) // trim white spaces
 		logruslevel, err := log.ParseLevel(loglevel)
 		if err != nil {
 			log.Errorf("trying parse an invalid loglevel: %s, current: %v", loglevel, log.GetLevel())
