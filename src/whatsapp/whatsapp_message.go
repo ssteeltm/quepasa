@@ -113,6 +113,12 @@ func (source *WhatsappMessage) HasStatus() bool {
 	return source != nil && len(source.Status) > 0
 }
 
+// Indicates if the message has url information
+// *Trick to help in Views
+func (source *WhatsappMessage) HasUrl() bool {
+	return source != nil && len(source.Url) > 0
+}
+
 func (source *WhatsappMessage) HasAttachment() bool {
 	// this attachment is a pointer to correct show info on deserialized
 	attach := source.Attachment
