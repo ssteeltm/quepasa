@@ -177,14 +177,16 @@ func (source *QPWhatsappHandlers) OnDisconnected() {
 func (source *QPWhatsappHandlers) appendMsgToCache(msg *whatsapp.WhatsappMessage, from string) {
 
 	// saving on local normalized cache, do not affect remote msgs
-	source.QpWhatsappMessages.Append(msg, from)
+	valid := source.QpWhatsappMessages.Append(msg, from)
 
 	// should cleanup old messages ?
 	length := ENV.CacheLength()
 	source.QpWhatsappMessages.CleanUp(length)
 
 	// continue to external dispatchers
-	source.Trigger(msg)
+	if valid {
+		source.Trigger(msg)
+	}
 }
 
 func (source *QPWhatsappHandlers) GetById(id string) (*whatsapp.WhatsappMessage, error) {

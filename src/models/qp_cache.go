@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"reflect"
 	"sort"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -26,32 +27,52 @@ func (source *QpCache) SetAny(key string, value interface{}, expiration time.Dur
 	source.SetCacheItem(item, "any")
 }
 
-func (source *QpCache) SetCacheItem(item QpCacheItem, from string) {
+// returns if it is a valid object, testing for now, it will not be necessary after debug
+func (source *QpCache) SetCacheItem(item QpCacheItem, from string) bool {
 	previous, loaded := source.cacheMap.Swap(item.Key, item)
 	if loaded {
-		prevItem := previous.(QpCacheItem)
-		log.Warnf("[%s][%s] updating cache item ...", item.Key, from)
-		log.Warnf("[%s][%s] old type: %s, %v", item.Key, from, reflect.TypeOf(prevItem.Value), prevItem.Value)
-		log.Warnf("[%s][%s] new type: %s, %v", item.Key, from, reflect.TypeOf(item.Value), item.Value)
+		// debugging messages in cache
+		if strings.HasPrefix(from, "message") {
+			prevItem := previous.(QpCacheItem)
+			log.Warnf("[%s][%s] updating cache item ...", item.Key, from)
+			log.Warnf("[%s][%s] old type: %s, %v", item.Key, from, reflect.TypeOf(prevItem.Value), prevItem.Value)
+			log.Warnf("[%s][%s] new type: %s, %v", item.Key, from, reflect.TypeOf(item.Value), item.Value)
+			log.Warnf("[%s][%s] equals: %v, deep equals: %v", item.Key, from, item.Value == prevItem.Value, reflect.DeepEqual(item.Value, prevItem.Value))
 
-		if oldJson, ok := prevItem.Value.(*whatsapp.WhatsappMessage); ok {
-			b, err := json.Marshal(oldJson)
-			if err == nil {
-				log.Warnf("[%s][%s] old as json: %s", item.Key, from, b)
+			var prevContent interface{}
+			if prevWaMsg, ok := prevItem.Value.(*whatsapp.WhatsappMessage); ok {
+				prevContent = prevWaMsg.Content
+			}
+
+			var newContent interface{}
+			if newWaMsg, ok := item.Value.(*whatsapp.WhatsappMessage); ok {
+				newContent = newWaMsg.Content
+			}
+
+			if prevContent != nil && newContent != nil {
+				if reflect.TypeOf(prevContent) == reflect.TypeOf(newContent) {
+
+					b, err := json.Marshal(prevContent)
+					if err == nil {
+						log.Warnf("[%s][%s] old content as json: %s", item.Key, from, b)
+					}
+
+					b, err = json.Marshal(newContent)
+					if err == nil {
+						log.Warnf("[%s][%s] new content as json: %s", item.Key, from, b)
+					}
+
+					log.Warnf("[%s][%s] content equals: %v, content deep equals: %v", item.Key, from, prevContent == newContent, reflect.DeepEqual(prevContent, newContent))
+
+					return false
+				}
 			}
 		}
-		if newJson, ok := item.Value.(*whatsapp.WhatsappMessage); ok {
-			b, err := json.Marshal(newJson)
-			if err == nil {
-				log.Warnf("[%s][%s] new as json: %s", item.Key, from, b)
-			}
-		}
-
-		log.Warnf("[%s][%s] equals: %v", item.Key, from, item.Value == prevItem.Value)
-
 	} else {
 		source.counter.Add(1)
 	}
+
+	return true
 }
 
 func (source *QpCache) GetAny(key string) (interface{}, bool) {
