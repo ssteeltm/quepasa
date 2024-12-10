@@ -26,6 +26,18 @@ type WhatsmeowServiceModel struct {
 	LogEntry *log.Entry `json:"-"` // log entry
 }
 
+// get default log entry, never nil
+func (source *WhatsmeowServiceModel) GetLogger() *log.Entry {
+	if source.LogEntry == nil {
+		logger := log.New()
+		logger.SetLevel(log.ErrorLevel)
+
+		source.LogEntry = logger.WithContext(context.Background())
+	}
+
+	return source.LogEntry
+}
+
 var WhatsmeowService *WhatsmeowServiceModel
 
 func Start(options WhatsmeowOptions) {
@@ -123,8 +135,10 @@ func (source *WhatsmeowServiceModel) GetHistorySync() *uint32 {
 // Used for scan QR Codes
 // Dont forget to attach handlers after success login
 func (source *WhatsmeowServiceModel) CreateEmptyConnection() (conn *WhatsmeowConnection, err error) {
+	logentry := source.GetLogger()
 	options := &whatsapp.WhatsappConnectionOptions{
 		Reconnect: false,
+		LogEntry:  logentry,
 	}
 	return source.CreateConnection(options)
 }

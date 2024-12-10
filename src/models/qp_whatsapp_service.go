@@ -141,9 +141,14 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 		return
 	}
 
+	serviceLogLevel := service.GetLogger().Level
+
 	var serverLogLevel log.Level
 	if info.Devel {
 		serverLogLevel = log.DebugLevel
+		if serviceLogLevel > serverLogLevel {
+			serverLogLevel = serviceLogLevel
+		}
 	} else {
 		serverLogLevel = log.InfoLevel
 	}

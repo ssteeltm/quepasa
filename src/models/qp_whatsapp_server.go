@@ -284,16 +284,16 @@ func (source *QpWhatsappServer) EnsureUnderlying() (err error) {
 
 	// conectar dispositivo
 	if source.connection == nil {
-		logger := source.GetLogger()
+		logentry := source.GetLogger()
 
 		options := &whatsapp.WhatsappConnectionOptions{
 			WhatsappOptions: &source.WhatsappOptions,
 			Wid:             source.Wid,
 			Reconnect:       true,
-			LogEntry:        logger,
+			LogEntry:        logentry,
 		}
 
-		logger.Infof("trying to create new whatsapp connection, auto reconnect: %v ...", options.Reconnect)
+		logentry.Infof("trying to create new whatsapp connection, auto reconnect: %v ...", options.Reconnect)
 
 		connection, err := NewConnection(options)
 		if err != nil {
