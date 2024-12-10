@@ -168,12 +168,12 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 		syncMessages:   &sync.Mutex{},
 		StartTime:      time.Now().UTC(),
 
-		Logger:        logentry,
+		LogEntry:      logentry,
 		StopRequested: false, // setting initial state
 		db:            service.DB.Servers,
 	}
 
-	logentry.Info("server created")
+	logentry.Infof("server created, log level: %s", logentry.Level)
 
 	server.HandlerEnsure()
 	server.WebHookEnsure()

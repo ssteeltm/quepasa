@@ -35,7 +35,9 @@ func (source *WhatsappConnectionOptions) GetLogger() *log.Entry {
 		logger := log.New()
 		logger.SetLevel(log.ErrorLevel)
 
-		source.LogEntry = logger.WithContext(context.Background())
+		logentry := logger.WithContext(context.Background())
+		logentry = logentry.WithField("wid", source.Wid)
+		source.LogEntry = logentry
 	}
 
 	return source.LogEntry

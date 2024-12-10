@@ -30,7 +30,7 @@ type QpWhatsappServer struct {
 	StartTime time.Time `json:"starttime,omitempty"`
 
 	// log entry
-	Logger *log.Entry `json:"-"`
+	LogEntry *log.Entry `json:"-"`
 
 	Handler *QPWhatsappHandlers `json:"-"`
 	WebHook *QPWebhookHandler   `json:"-"`
@@ -42,14 +42,16 @@ type QpWhatsappServer struct {
 
 // get default log entry, never nil
 func (source *QpWhatsappServer) GetLogger() *log.Entry {
-	if source.Logger == nil {
+	if source.LogEntry == nil {
 		logger := log.New()
 		logger.SetLevel(log.ErrorLevel)
 
-		source.Logger = logger.WithContext(context.Background())
+		logentry := logger.WithContext(context.Background())
+		logentry = logentry.WithField("wid", source.Wid)
+		source.LogEntry = logentry
 	}
 
-	return source.Logger
+	return source.LogEntry
 }
 
 func (source *QpWhatsappServer) GetValidConnection() (whatsapp.IWhatsappConnection, error) {
@@ -293,7 +295,7 @@ func (source *QpWhatsappServer) EnsureUnderlying() (err error) {
 			LogEntry:        logentry,
 		}
 
-		logentry.Infof("trying to create new whatsapp connection, auto reconnect: %v ...", options.Reconnect)
+		logentry.Infof("trying to create new whatsapp connection, auto reconnect: %v, log level: %s", options.Reconnect, logentry.Level)
 
 		connection, err := NewConnection(options)
 		if err != nil {
