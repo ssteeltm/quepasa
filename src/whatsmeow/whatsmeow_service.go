@@ -23,16 +23,15 @@ type WhatsmeowServiceModel struct {
 	Container *sqlstore.Container
 	Options   WhatsmeowOptions
 
-	LogEntry *log.Entry `json:"-"` // log entry
+	library.LogStruct
 }
 
 // get default log entry, never nil
 func (source *WhatsmeowServiceModel) GetLogger() *log.Entry {
 	if source.LogEntry == nil {
-		logger := log.New()
-		logger.SetLevel(log.ErrorLevel)
-
-		source.LogEntry = logger.WithContext(context.Background())
+		logentry := log.WithContext(context.Background())
+		logentry.Level = log.ErrorLevel
+		source.LogEntry = logentry
 	}
 
 	return source.LogEntry
@@ -46,16 +45,17 @@ func Start(options WhatsmeowOptions) {
 		panic(err)
 	}
 
-	logger := log.New()
-	loglevel, err := log.ParseLevel(options.LogLevel)
-	if err == nil {
-		logger.SetLevel(loglevel)
+	logentry := log.New().WithContext(context.Background())
+	if len(options.LogLevel) > 0 {
+		loglevel, err := log.ParseLevel(options.LogLevel)
+		if err == nil {
+			logentry.Level = loglevel
+		}
 	} else {
-		logger.SetLevel(WhatsmeowLogLevel)
+		logentry.Level = WhatsmeowLogLevel
 	}
 
-	logentry := logger.WithContext(context.Background())
-	logentry.Info("Starting Whatsmeow Service ....")
+	logentry.Infof("starting Whatsmeow Service, with log level: %s", logentry.Level)
 
 	dbloglevel := WhatsmeowDBLogLevel
 	if len(options.DBLogLevel) > 0 {
@@ -80,8 +80,7 @@ func Start(options WhatsmeowOptions) {
 	WhatsmeowService = &WhatsmeowServiceModel{
 		Container: container,
 		Options:   options,
-
-		LogEntry: logentry,
+		LogStruct: library.LogStruct{LogEntry: logentry},
 	}
 
 	showing := whatsapp.WhatsappWebAppName
@@ -138,7 +137,7 @@ func (source *WhatsmeowServiceModel) CreateEmptyConnection() (conn *WhatsmeowCon
 	logentry := source.GetLogger()
 	options := &whatsapp.WhatsappConnectionOptions{
 		Reconnect: false,
-		LogEntry:  logentry,
+		LogStruct: library.LogStruct{LogEntry: logentry},
 	}
 	return source.CreateConnection(options)
 }
@@ -152,15 +151,17 @@ func (source *WhatsmeowServiceModel) CreateConnection(options *whatsapp.Whatsapp
 	logentry := options.GetLogger()
 	client.EnableAutoReconnect = options.GetReconnect()
 
-	logentry = logentry.WithField("wid", options.Wid)
-	logentry.Debugf("creating whatsmeow connection with log level: %s", logentry.Level)
+	loglevel := logentry.Level
+	logentry = logentry.WithField(LogFields.WId, options.Wid)
+	logentry.Level = loglevel
+	logentry.Infof("creating whatsmeow connection with log level: %s", logentry.Level)
 	handlers := &WhatsmeowHandlers{
 		WhatsappOptions:  options.WhatsappOptions,
 		WhatsmeowOptions: source.Options,
 		Client:           client,
 		service:          source,
 
-		LogEntry: logentry,
+		LogStruct: library.LogStruct{LogEntry: logentry},
 	}
 
 	err = handlers.Register()
@@ -172,7 +173,7 @@ func (source *WhatsmeowServiceModel) CreateConnection(options *whatsapp.Whatsapp
 		Client:   client,
 		Handlers: handlers,
 
-		LogEntry: logentry,
+		LogStruct: library.LogStruct{LogEntry: logentry},
 	}
 
 	client.PrePairCallback = conn.PairedCallBack

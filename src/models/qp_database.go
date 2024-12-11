@@ -90,14 +90,14 @@ func GetDBConfig() QpDatabaseConfig {
 }
 
 // MigrateToLatest updates the database to the latest schema
-func MigrateToLatest() (err error) {
+func MigrateToLatest(logentry *log.Entry) (err error) {
 	if !ENV.Migrate() {
 		return
 	}
 
 	fullPath := ENV.MigrationPath()
 
-	log.Info("migrating database (if necessary)")
+	logentry.Info("migrating database (if necessary)")
 	if len(fullPath) == 0 {
 		workDir, err := os.Getwd()
 		if err != nil {
@@ -105,7 +105,7 @@ func MigrateToLatest() (err error) {
 		}
 
 		if runtime.GOOS == "windows" {
-			log.Info("migrating database on windows operational system")
+			logentry.Info("migrating database on windows operational system")
 
 			// windows ===================
 			leadingWindowsUnit, _ := filepath.Rel("z:\\", workDir)
@@ -118,18 +118,21 @@ func MigrateToLatest() (err error) {
 		}
 	}
 
-	log.Debugf("full path database: %s", fullPath)
+	logentry.Debugf("full path database: %s", fullPath)
 
 	migrations := Migrations(fullPath)
 	config := GetDBConfig()
 	db := GetDB().DB
-	migrator := &QpMigrator{Migrations: migrations}
+	migrator := &QpMigrator{
+		Migrations: migrations,
+		LogStruct:  library.LogStruct{LogEntry: logentry},
+	}
 	err = migrator.Migrate(db, config.Driver)
 	if err != nil {
-		log.Fatal(err)
+		logentry.Fatal(err)
 	}
 
-	log.Debug("migrating finished")
+	logentry.Debug("migrating finished")
 	return nil
 }
 
@@ -235,12 +238,15 @@ func GetBase() migrate.SqlxMigration {
 
 type QpMigrator struct {
 	Migrations []migrate.SqlxMigration
+	library.LogStruct
 }
 
 func (source *QpMigrator) Printf(format string, args ...interface{}) (int, error) {
 	format = strings.ToLower(format)
 	format = strings.ReplaceAll(format, "\n", "")
-	log.Debugf(format, args)
+
+	logentry := source.GetLogger()
+	logentry.Debugf(format, args)
 
 	if len(args) > 0 && strings.Contains(format, "running") {
 		str := fmt.Sprintf("%s", args[0])

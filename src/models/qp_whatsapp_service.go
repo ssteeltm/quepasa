@@ -19,28 +19,17 @@ type QPWhatsappService struct {
 	DB          *QpDatabase                  `json:"-"`
 	Initialized bool                         `json:"-"`
 
-	LogEntry   *log.Entry  `json:"-"`
 	initlock   *sync.Mutex `json:"-"`
 	appendlock *sync.Mutex `json:"-"`
-}
 
-// get default log entry, never nil
-func (source *QPWhatsappService) GetLogger() *log.Entry {
-	if source.LogEntry == nil {
-		logger := log.New()
-		logger.SetLevel(log.ErrorLevel)
-
-		source.LogEntry = logger.WithContext(context.Background())
-	}
-
-	return source.LogEntry
+	library.LogStruct
 }
 
 var WhatsappService *QPWhatsappService
 
-func QPWhatsappStart() error {
+func QPWhatsappStart(logentry *log.Entry) error {
 	if WhatsappService == nil {
-		log.Trace("whatsapp service starting ...")
+		logentry.Infof("whatsapp service starting, with log level: %s", logentry.Level)
 
 		db := GetDatabase()
 		WhatsappService = &QPWhatsappService{
@@ -48,6 +37,7 @@ func QPWhatsappStart() error {
 			DB:         db,
 			initlock:   &sync.Mutex{},
 			appendlock: &sync.Mutex{},
+			LogStruct:  library.LogStruct{LogEntry: logentry},
 		}
 
 		// seeding database
@@ -58,7 +48,7 @@ func QPWhatsappStart() error {
 		// iniciando servidores e cada bot individualmente
 		return WhatsappService.Initialize()
 	} else {
-		log.Debug("attempt to start whatsapp service, already started ...")
+		logentry.Debug("attempt to start whatsapp service, already started ...")
 	}
 	return nil
 }
@@ -67,25 +57,25 @@ func QPWhatsappStart() error {
 // *Usado quando se passa pela verificação do QRCode
 // *Usado quando se inicializa o sistema
 func (source *QPWhatsappService) AppendNewServer(info *QpServer) (server *QpWhatsappServer, err error) {
-	logger := source.GetLogger()
+	logentry := source.GetLogger()
 
 	// checking if it is cached already
 	server, ok := source.Servers[info.Token]
 	if !ok {
 		// adding to cache
-		logger.Infof("adding new server on cache: %s, wid: %s", info.Token, info.Wid)
+		logentry.Infof("adding new server on cache: %s, wid: %s", info.Token, info.Wid)
 
 		// Creating a new instance
 		server, err = source.NewQpWhatsappServer(info)
 		if err != nil {
-			logger.Errorf("error on append new server: %s, :: %s", info.Wid, err.Error())
+			logentry.Errorf("error on append new server: %s, :: %s", info.Wid, err.Error())
 			return
 		}
 
 		source.Servers[info.Token] = server
 	} else {
 		// updating cached item
-		logger.Infof("updating new server on cache: %s, wid: %s", info.Token, info.Wid)
+		logentry.Infof("updating new server on cache: %s, wid: %s", info.Token, info.Wid)
 
 		server.QpServer = info
 	}
@@ -141,26 +131,27 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 		return
 	}
 
-	serviceLogLevel := service.GetLogger().Level
-	var serverLogLevel log.Level
+	serviceLogEntry := service.GetLogger()
+	serviceLogEntry.Infof("service log level: %s", serviceLogEntry.Level)
+
+	var loglevel log.Level
 	if info.Devel {
-		serverLogLevel = log.DebugLevel
-		if serviceLogLevel > serverLogLevel {
-			serverLogLevel = serviceLogLevel
+		loglevel = log.DebugLevel
+		if serviceLogEntry.Level > loglevel {
+			loglevel = serviceLogEntry.Level
 		}
 	} else {
-		serverLogLevel = log.InfoLevel
+		loglevel = log.InfoLevel
 	}
 
-	logger := log.New()
-	logger.SetLevel(serverLogLevel)
-	logentry := logger.WithContext(context.Background())
-	logentry = logentry.WithField("token", info.Token)
+	logentry := log.New().WithContext(context.Background())
+	logentry = logentry.WithField(LogFields.Token, info.Token)
 
 	if len(info.Wid) > 0 {
-		logentry = logentry.WithField("wid", info.Wid)
+		logentry = logentry.WithField(LogFields.WId, info.Wid)
 	}
 
+	logentry.Level = loglevel
 	server = &QpWhatsappServer{
 		QpServer:       info,
 		Reconnect:      true,
@@ -168,9 +159,9 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 		syncMessages:   &sync.Mutex{},
 		StartTime:      time.Now().UTC(),
 
-		LogEntry:      logentry,
 		StopRequested: false, // setting initial state
 		db:            service.DB.Servers,
+		LogStruct:     library.LogStruct{LogEntry: logentry},
 	}
 
 	logentry.Infof("server created, log level: %s", logentry.Level)

@@ -165,19 +165,19 @@ func ServeSignalR(r chi.Router) {
 		//keepalive := signalr.KeepAliveInterval(2 * time.Second)
 		//timeout := signalr.ChanReceiveTimeout(1 * time.Hour)
 
-		logger := log.New()
+		ctx := context.Background()
+		logentry := log.New().WithContext(ctx)
 
 		// setting signalr log level
-		logger.SetLevel(log.InfoLevel)
+		logentry.Level = log.InfoLevel
 
 		// should generate debug logs
-		debug := logger.Level >= log.DebugLevel
+		debug := logentry.Level >= log.DebugLevel
 
-		ctx := context.Background()
-		slogger := signalr.Logger(kitlog.NewLogfmtLogger(logger.Out), debug)
+		slogger := signalr.Logger(kitlog.NewLogfmtLogger(logentry.Writer()), debug)
 		server, err := signalr.NewServer(ctx, factory, slogger)
 		if err != nil {
-			log.Errorf("error on set signalr server: %s", err.Error())
+			logentry.Errorf("error on set signalr server: %s", err.Error())
 		}
 
 		mappable := WithChiRouter(r)

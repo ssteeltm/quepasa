@@ -1,9 +1,9 @@
 package models
 
 import (
-	"context"
 	"sync"
 
+	"github.com/nocodeleaks/quepasa/library"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	log "github.com/sirupsen/logrus"
 )
@@ -11,6 +11,7 @@ import (
 // Serviço que controla os servidores / bots individuais do whatsapp
 type QPWhatsappHandlers struct {
 	QpWhatsappMessages
+	library.LogStruct // logging
 
 	server *QpWhatsappServer
 
@@ -26,10 +27,7 @@ func (source *QPWhatsappHandlers) GetLogger() *log.Entry {
 		return source.server.GetLogger()
 	}
 
-	logentry := log.StandardLogger()
-	logentry.SetLevel(log.ErrorLevel)
-
-	return logentry.WithContext(context.Background())
+	return source.LogStruct.GetLogger()
 }
 
 func (source *QPWhatsappHandlers) HandleGroups() bool {

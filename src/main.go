@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+
 	"github.com/joho/godotenv"
 	controllers "github.com/nocodeleaks/quepasa/controllers"
 	models "github.com/nocodeleaks/quepasa/models"
@@ -19,22 +21,25 @@ func main() {
 	// loading environment variables from .env file
 	godotenv.Load()
 
+	logger := log.New()
+	logentry := logger.WithContext(context.Background())
+
 	loglevel := models.ENV.LogLevel()
 	if len(loglevel) > 0 {
 		logruslevel, err := log.ParseLevel(loglevel)
 		if err != nil {
-			log.Errorf("trying parse an invalid loglevel: %s, current: %v", loglevel, log.GetLevel())
+			logger.Errorf("trying parse an invalid loglevel: %s", loglevel)
 		} else {
-			log.SetLevel(logruslevel)
+			logentry.Level = logruslevel
 		}
 	}
 
-	log.Infof("current log level: %v", log.GetLevel())
+	logentry.Infof("current log level: %v", logentry.Level)
 
 	// checks for pending database migrations
-	err := models.MigrateToLatest()
+	err := models.MigrateToLatest(logentry)
 	if err != nil {
-		log.Fatalf("database migration error: %s", err.Error())
+		logentry.Fatalf("database migration error: %s", err.Error())
 	}
 
 	// should became before whatsmeow start
@@ -51,7 +56,7 @@ func main() {
 		ReadUpdate:   models.ENV.ReadUpdate(),
 		HistorySync:  models.ENV.HistorySync(),
 		Presence:     models.ENV.Presence(),
-		LogLevel:     loglevel,
+		LogLevel:     logentry.Level.String(),
 	}
 
 	whatsapp.Options = *whatsappOptions
@@ -73,15 +78,15 @@ func main() {
 
 	// Inicializando serviço de controle do whatsapp
 	// De forma assíncrona
-	err = models.QPWhatsappStart()
+	err = models.QPWhatsappStart(logentry)
 	if err != nil {
-		log.Fatalf("whatsapp service starting error: %s", err.Error())
+		logentry.Fatalf("whatsapp service starting error: %s", err.Error())
 	}
 
 	err = controllers.QPWebServerStart()
 	if err != nil {
-		log.Info("end with errors")
+		logentry.Info("end with errors")
 	} else {
-		log.Info("end")
+		logentry.Info("end")
 	}
 }

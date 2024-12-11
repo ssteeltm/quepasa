@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
@@ -15,6 +16,7 @@ import (
 )
 
 type QpWhatsappServer struct {
+	library.LogStruct // logging
 	*QpServer
 	QpDataWebhooks
 
@@ -29,9 +31,6 @@ type QpWhatsappServer struct {
 
 	StartTime time.Time `json:"starttime,omitempty"`
 
-	// log entry
-	LogEntry *log.Entry `json:"-"`
-
 	Handler *QPWhatsappHandlers `json:"-"`
 	WebHook *QPWebhookHandler   `json:"-"`
 
@@ -42,16 +41,20 @@ type QpWhatsappServer struct {
 
 // get default log entry, never nil
 func (source *QpWhatsappServer) GetLogger() *log.Entry {
-	if source.LogEntry == nil {
-		logger := log.New()
-		logger.SetLevel(log.ErrorLevel)
+	if source != nil && source.LogEntry != nil {
+		return source.LogEntry
+	}
 
-		logentry := logger.WithContext(context.Background())
+	logentry := log.WithContext(context.Background())
+	logentry.Level = log.ErrorLevel
+	logentry.Infof("generating new log entry for %s, with level: %s", reflect.TypeOf(source), logentry.Level)
+
+	if source != nil {
 		logentry = logentry.WithField("wid", source.Wid)
 		source.LogEntry = logentry
 	}
 
-	return source.LogEntry
+	return logentry
 }
 
 func (source *QpWhatsappServer) GetValidConnection() (whatsapp.IWhatsappConnection, error) {
@@ -292,7 +295,7 @@ func (source *QpWhatsappServer) EnsureUnderlying() (err error) {
 			WhatsappOptions: &source.WhatsappOptions,
 			Wid:             source.Wid,
 			Reconnect:       true,
-			LogEntry:        logentry,
+			LogStruct:       library.LogStruct{LogEntry: logentry},
 		}
 
 		logentry.Infof("trying to create new whatsapp connection, auto reconnect: %v, log level: %s", options.Reconnect, logentry.Level)
@@ -316,20 +319,20 @@ func (source *QpWhatsappServer) EnsureUnderlying() (err error) {
 
 // called from service started, after retrieve servers from database
 func (source *QpWhatsappServer) Start() (err error) {
-	logger := source.GetLogger()
+	logentry := source.GetLogger()
 
-	logger.Info("starting whatsapp server")
+	logentry.Infof("starting whatsapp server, with log level: %s", logentry.Level)
 	err = source.EnsureUnderlying()
 	if err != nil {
 		return
 	}
 
 	state := source.GetStatus()
-	logger.Debugf("starting whatsapp server ... on %s state", state)
+	logentry.Debugf("starting whatsapp server ... on %s state", state)
 
 	if !IsValidToStart(state) {
 		err = fmt.Errorf("trying to start a server on an invalid state :: %s", state)
-		logger.Warnf(err.Error())
+		logentry.Warnf(err.Error())
 		return
 	}
 
@@ -345,14 +348,14 @@ func (source *QpWhatsappServer) Start() (err error) {
 	// Atualizando manipuladores de eventos
 	source.connection.UpdateHandler(source.Handler)
 
-	logger.Infof("requesting connection ...")
+	logentry.Infof("requesting connection ...")
 	err = source.connection.Connect()
 	if err != nil {
 		return source.StartConnectionError(err)
 	}
 
 	if !source.connection.IsConnected() {
-		logger.Infof("requesting connection again ...")
+		logentry.Infof("requesting connection again ...")
 		err = source.connection.Connect()
 		if err != nil {
 			return source.StartConnectionError(err)
@@ -648,11 +651,11 @@ func (server *QpWhatsappServer) MarkVerified(value bool) (err error) {
 func (source *QpWhatsappServer) ToggleDevel() (handle bool, err error) {
 	source.Devel = !source.Devel
 
-	logger := source.GetLogger()
+	logentry := source.GetLogger()
 	if source.Devel {
-		logger.Logger.SetLevel(log.DebugLevel)
+		logentry.Level = log.DebugLevel
 	} else {
-		logger.Logger.SetLevel(log.InfoLevel)
+		logentry.Level = log.InfoLevel
 	}
 
 	reason := fmt.Sprintf("toggle devel: %v", source.Devel)

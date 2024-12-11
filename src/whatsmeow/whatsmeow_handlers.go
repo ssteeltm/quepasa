@@ -1,7 +1,6 @@
 package whatsmeow
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -20,6 +19,8 @@ import (
 )
 
 type WhatsmeowHandlers struct {
+	library.LogStruct // logging
+
 	// particular whatsapp options for this handler
 	*whatsapp.WhatsappOptions
 
@@ -35,20 +36,6 @@ type WhatsmeowHandlers struct {
 
 	// events counter
 	Counter uint64
-
-	LogEntry *log.Entry
-}
-
-// get default log entry, never nil
-func (source *WhatsmeowHandlers) GetLogger() *log.Entry {
-	if source.LogEntry == nil {
-		logger := log.New()
-		logger.SetLevel(log.ErrorLevel)
-
-		source.LogEntry = logger.WithContext(context.Background())
-	}
-
-	return source.LogEntry
 }
 
 func (source *WhatsmeowHandlers) GetServiceOptions() (options whatsapp.WhatsappOptionsExtended) {

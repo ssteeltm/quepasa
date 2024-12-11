@@ -13,6 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/proto"
 
+	"github.com/nocodeleaks/quepasa/library"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	whatsmeow "go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/proto/waE2E"
@@ -21,13 +22,12 @@ import (
 
 // Must Implement IWhatsappConnection
 type WhatsmeowConnection struct {
-	Client   *whatsmeow.Client
-	Handlers *WhatsmeowHandlers
+	library.LogStruct // logging
+	Client            *whatsmeow.Client
+	Handlers          *WhatsmeowHandlers
 
 	failedToken bool
 	paired      func(string)
-
-	LogEntry *log.Entry `json:"-"` // log entry
 }
 
 //#region IMPLEMENT WHATSAPP CONNECTION OPTIONS INTERFACE
@@ -45,25 +45,23 @@ func (conn *WhatsmeowConnection) GetWid() string {
 
 // get default log entry, never nil
 func (source *WhatsmeowConnection) GetLogger() *log.Entry {
-	if source == nil {
-		return log.WithContext(context.Background())
+	if source != nil && source.LogEntry != nil {
+		return source.LogEntry
 	}
 
-	if source.LogEntry == nil {
-		logger := log.StandardLogger()
-		logger.SetLevel(log.DebugLevel)
+	logentry := log.WithContext(context.Background())
+	logentry.Level = log.ErrorLevel
+	logentry.Infof("generating new log entry for %s, with level: %s", reflect.TypeOf(source), logentry.Level)
 
-		logentry := logger.WithContext(context.Background())
-
-		wid, err := source.GetWidInternal()
-		if err == nil && len(wid) > 0 {
+	if source != nil {
+		wid, _ := source.GetWidInternal()
+		if len(wid) > 0 {
 			logentry = logentry.WithField(LogFields.WId, wid)
 		}
-
 		source.LogEntry = logentry
 	}
 
-	return source.LogEntry
+	return logentry
 }
 
 func (conn *WhatsmeowConnection) SetReconnect(value bool) {

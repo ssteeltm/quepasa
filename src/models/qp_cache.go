@@ -1,7 +1,6 @@
 package models
 
 import (
-	"encoding/json"
 	"reflect"
 	"sort"
 	"strings"
@@ -45,7 +44,8 @@ func (source *QpCache) SetCacheItem(item QpCacheItem, from string) bool {
 				prevContent = prevWaMsg.Content
 
 				if nee, ok := prevContent.(*waE2E.Message); ok {
-					prevContent = nee.ProtoReflect()
+					prevContent = nee.String()
+					log.Warnf("[%s][%s] old content as string: %s", item.Key, from, prevContent)
 				}
 			}
 
@@ -54,31 +54,16 @@ func (source *QpCache) SetCacheItem(item QpCacheItem, from string) bool {
 				newContent = newWaMsg.Content
 
 				if nee, ok := newContent.(*waE2E.Message); ok {
-					newContent = nee.ProtoReflect()
+					newContent = nee.String()
+					log.Warnf("[%s][%s] new content as string: %s", item.Key, from, newContent)
 				}
 			}
 
 			if prevContent != nil && newContent != nil {
-				prevContentType := reflect.TypeOf(prevContent)
-				newContentType := reflect.TypeOf(newContent)
-				log.Warnf("[%s][%s] prev content type: %s, new content type: %s", item.Key, from, prevContentType, newContentType)
-				if prevContentType == newContentType {
+				log.Warnf("[%s][%s] content equals: %v, content deep equals: %v", item.Key, from, prevContent == newContent, reflect.DeepEqual(prevContent, newContent))
 
-					b, err := json.Marshal(prevContent)
-					if err == nil {
-						log.Warnf("[%s][%s] old content as json: %s", item.Key, from, b)
-					}
-
-					b, err = json.Marshal(newContent)
-					if err == nil {
-						log.Warnf("[%s][%s] new content as json: %s", item.Key, from, b)
-					}
-
-					log.Warnf("[%s][%s] content equals: %v, content deep equals: %v", item.Key, from, prevContent == newContent, reflect.DeepEqual(prevContent, newContent))
-
-					// if equals, deny triggers
-					return !reflect.DeepEqual(prevContent, newContent)
-				}
+				// if equals, deny triggers
+				return !reflect.DeepEqual(prevContent, newContent)
 			}
 		}
 	} else {
