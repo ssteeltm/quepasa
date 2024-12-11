@@ -11,6 +11,7 @@ import (
 
 	"github.com/nocodeleaks/quepasa/whatsapp"
 	log "github.com/sirupsen/logrus"
+	"go.mau.fi/whatsmeow/proto/waE2E"
 )
 
 type QpCache struct {
@@ -42,11 +43,19 @@ func (source *QpCache) SetCacheItem(item QpCacheItem, from string) bool {
 			var prevContent interface{}
 			if prevWaMsg, ok := prevItem.Value.(*whatsapp.WhatsappMessage); ok {
 				prevContent = prevWaMsg.Content
+
+				if nee, ok := prevContent.(*waE2E.Message); ok {
+					prevContent = nee.ProtoReflect()
+				}
 			}
 
 			var newContent interface{}
 			if newWaMsg, ok := item.Value.(*whatsapp.WhatsappMessage); ok {
 				newContent = newWaMsg.Content
+
+				if nee, ok := newContent.(*waE2E.Message); ok {
+					newContent = nee.ProtoReflect()
+				}
 			}
 
 			if prevContent != nil && newContent != nil {
@@ -67,7 +76,8 @@ func (source *QpCache) SetCacheItem(item QpCacheItem, from string) bool {
 
 					log.Warnf("[%s][%s] content equals: %v, content deep equals: %v", item.Key, from, prevContent == newContent, reflect.DeepEqual(prevContent, newContent))
 
-					return false
+					// if equals, deny triggers
+					return !reflect.DeepEqual(prevContent, newContent)
 				}
 			}
 		}
