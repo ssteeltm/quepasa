@@ -18,7 +18,7 @@ package whatsapp
 	"ctwaClid": "ARACGmmFDy48IyrcMV2igjacnY39gcMjcUUlc_WBbfSBaoJU5Kxb7WjxI7j03Dx8Vtkf-o7D8sxvM1eZcVEEa6a7eN4rfUWtMXcU_TlGYA7jHtruvMaXGovdYqobnxLL_uN4kQ2NGA"
 }
 
-{
+{ // 2024/12/10
    "text":"Olá! Tenho interesse e queria mais informações, por favor.",
    "contextInfo":{
       "conversionSource":"FB_Post",
