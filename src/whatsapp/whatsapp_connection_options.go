@@ -1,7 +1,6 @@
 package whatsapp
 
 import (
-	"context"
 	"reflect"
 
 	"github.com/nocodeleaks/quepasa/library"
@@ -36,14 +35,14 @@ func (source *WhatsappConnectionOptions) GetLogger() *log.Entry {
 		return source.LogEntry
 	}
 
-	logentry := log.WithContext(context.Background())
-	logentry.Level = log.ErrorLevel
-	logentry.Infof("generating new log entry for %s, with level: %s", reflect.TypeOf(source), logentry.Level)
-
+	logentry := library.NewLogEntry(source)
 	if source != nil {
 		logentry = logentry.WithField(library.LogFields.WId, source.Wid)
 		source.LogEntry = logentry
 	}
+
+	logentry.Level = log.ErrorLevel
+	logentry.Infof("generating new log entry for %s, with level: %s", reflect.TypeOf(source), logentry.Level)
 
 	return logentry
 }

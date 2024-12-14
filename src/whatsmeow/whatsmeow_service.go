@@ -39,23 +39,12 @@ func (source *WhatsmeowServiceModel) GetLogger() *log.Entry {
 
 var WhatsmeowService *WhatsmeowServiceModel
 
-func Start(options WhatsmeowOptions) {
+func Start(options WhatsmeowOptions, logentry *log.Entry) {
+	logentry.Infof("starting Whatsmeow Service, with log level: %s", logentry.Level)
 	if WhatsmeowService != nil {
 		err := fmt.Errorf("whatsmeow service is already started, if you wanna change options, restart the service")
 		panic(err)
 	}
-
-	logentry := log.New().WithContext(context.Background())
-	if len(options.LogLevel) > 0 {
-		loglevel, err := log.ParseLevel(options.LogLevel)
-		if err == nil {
-			logentry.Level = loglevel
-		}
-	} else {
-		logentry.Level = WhatsmeowLogLevel
-	}
-
-	logentry.Infof("starting Whatsmeow Service, with log level: %s", logentry.Level)
 
 	dbloglevel := WhatsmeowDBLogLevel
 	if len(options.DBLogLevel) > 0 {
@@ -80,8 +69,21 @@ func Start(options WhatsmeowOptions) {
 	WhatsmeowService = &WhatsmeowServiceModel{
 		Container: container,
 		Options:   options,
-		LogStruct: library.LogStruct{LogEntry: logentry},
 	}
+
+	// logging
+	logentry = library.NewLogEntry(WhatsmeowService)
+	if len(options.LogLevel) > 0 {
+		loglevel, err := log.ParseLevel(options.LogLevel)
+		if err == nil {
+			logentry.Level = loglevel
+		}
+	} else {
+		logentry.Level = WhatsmeowLogLevel
+	}
+
+	WhatsmeowService.LogEntry = logentry
+	logentry.Infof("new Whatsmeow Service created, with log level: %s", logentry.Level)
 
 	showing := whatsapp.WhatsappWebAppName
 

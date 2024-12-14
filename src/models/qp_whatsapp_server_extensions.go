@@ -21,7 +21,12 @@ func PostToWebHookFromServer(server *QpWhatsappServer, message *whatsapp.Whatsap
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
 	for _, element := range server.Webhooks {
+
+		// updating log
 		logentry := element.GetLogger()
+		loglevel := logentry.Level
+		logentry = logentry.WithField(LogFields.MessageId, message.Id)
+		logentry.Level = loglevel
 
 		if message.Id == "readreceipt" && element.IsSetReadReceipts() && !element.ReadReceipts.Boolean() {
 			logentry.Debugf("ignoring read receipt message: %s", message.Text)
@@ -29,17 +34,17 @@ func PostToWebHookFromServer(server *QpWhatsappServer, message *whatsapp.Whatsap
 		}
 
 		if message.FromGroup() && element.IsSetGroups() && !element.Groups.Boolean() {
-			logentry.Debugf("ignoring group message: %s", message.Id)
+			logentry.Debug("ignoring group message")
 			continue
 		}
 
 		if message.FromBroadcast() && element.IsSetBroadcasts() && !element.Broadcasts.Boolean() {
-			logentry.Debugf("ignoring broadcast message: %s", message.Id)
+			logentry.Debug("ignoring broadcast message")
 			continue
 		}
 
 		if message.Type == whatsapp.CallMessageType && element.IsSetCalls() && !element.Calls.Boolean() {
-			logentry.Debugf("ignoring call message: %s", message.Id)
+			logentry.Debug("ignoring call message")
 			continue
 		}
 

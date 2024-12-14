@@ -22,7 +22,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
-func QPWebServerStart() error {
+func QPWebServerStart(logentry *log.Entry) error {
 	r := newRouter()
 	webAPIPort := os.Getenv(models.ENV_WEBAPIPORT)
 	webAPIHost := os.Getenv(models.ENV_WEBAPIHOST)
@@ -38,7 +38,7 @@ func QPWebServerStart() error {
 		Handler:      r,
 	}
 
-	log.Infof("starting web server on port: %s", webAPIPort)
+	logentry.Infof("starting web server on port: %s", webAPIPort)
 	err := server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)

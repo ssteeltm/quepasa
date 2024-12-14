@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"reflect"
 	"sort"
 	"strings"
@@ -33,11 +34,18 @@ func (source *QpCache) SetCacheItem(item QpCacheItem, from string) bool {
 	if loaded {
 		// debugging messages in cache
 		if strings.HasPrefix(from, "message") {
+
 			prevItem := previous.(QpCacheItem)
-			log.Warnf("[%s][%s] updating cache item ...", item.Key, from)
-			log.Warnf("[%s][%s] old type: %s, %v", item.Key, from, reflect.TypeOf(prevItem.Value), prevItem.Value)
-			log.Warnf("[%s][%s] new type: %s, %v", item.Key, from, reflect.TypeOf(item.Value), item.Value)
-			log.Warnf("[%s][%s] equals: %v, deep equals: %v", item.Key, from, item.Value == prevItem.Value, reflect.DeepEqual(item.Value, prevItem.Value))
+
+			logentry := log.New().WithContext(context.Background())
+			logentry = logentry.WithField(LogFields.MessageId, item.Key)
+			logentry = logentry.WithField("from", from)
+			logentry.Level = log.DebugLevel
+
+			logentry.Debug("updating cache item ...")
+			logentry.Debugf("old type: %s, %v", reflect.TypeOf(prevItem.Value), prevItem.Value)
+			logentry.Debugf("new type: %s, %v", reflect.TypeOf(item.Value), item.Value)
+			logentry.Debugf("equals: %v, deep equals: %v", item.Value == prevItem.Value, reflect.DeepEqual(item.Value, prevItem.Value))
 
 			var prevContent interface{}
 			if prevWaMsg, ok := prevItem.Value.(*whatsapp.WhatsappMessage); ok {
@@ -45,7 +53,7 @@ func (source *QpCache) SetCacheItem(item QpCacheItem, from string) bool {
 
 				if nee, ok := prevContent.(*waE2E.Message); ok {
 					prevContent = nee.String()
-					log.Warnf("[%s][%s] old content as string: %s", item.Key, from, prevContent)
+					logentry.Debugf("old content as string: %s", prevContent)
 				}
 			}
 
@@ -55,12 +63,12 @@ func (source *QpCache) SetCacheItem(item QpCacheItem, from string) bool {
 
 				if nee, ok := newContent.(*waE2E.Message); ok {
 					newContent = nee.String()
-					log.Warnf("[%s][%s] new content as string: %s", item.Key, from, newContent)
+					logentry.Debugf("new content as string: %s", newContent)
 				}
 			}
 
 			if prevContent != nil && newContent != nil {
-				log.Warnf("[%s][%s] content equals: %v, content deep equals: %v", item.Key, from, prevContent == newContent, reflect.DeepEqual(prevContent, newContent))
+				logentry.Infof("content equals: %v, content deep equals: %v", prevContent == newContent, reflect.DeepEqual(prevContent, newContent))
 
 				// if equals, deny triggers
 				return !reflect.DeepEqual(prevContent, newContent)

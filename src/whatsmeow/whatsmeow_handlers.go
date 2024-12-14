@@ -440,7 +440,8 @@ func (handler *WhatsmeowHandlers) Follow(message *whatsapp.WhatsappMessage, from
 		go handler.WAHandlers.Message(message, from)
 
 	} else {
-		handler.GetLogger().Warn("no internal handler registered")
+		logentry := handler.GetLogger()
+		logentry.Warn("no internal handler registered")
 	}
 
 	// testing, mark read function

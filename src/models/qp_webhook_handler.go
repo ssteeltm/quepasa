@@ -1,24 +1,16 @@
 package models
 
 import (
-	"context"
 	"reflect"
 	"strings"
 
+	"github.com/nocodeleaks/quepasa/library"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
-	log "github.com/sirupsen/logrus"
 )
 
 type QPWebhookHandler struct {
-	server *QpWhatsappServer
-}
-
-func (source QPWebhookHandler) GetLogger() *log.Entry {
-	if source.server != nil {
-		return source.server.GetLogger()
-	}
-
-	return log.WithContext(context.Background())
+	library.LogStruct // logging
+	server            *QpWhatsappServer
 }
 
 func (source *QPWebhookHandler) HandleWebHook(payload *whatsapp.WhatsappMessage) {
@@ -26,20 +18,25 @@ func (source *QPWebhookHandler) HandleWebHook(payload *whatsapp.WhatsappMessage)
 		return
 	}
 
-	logger := source.GetLogger()
+	// updating log
+	logentry := source.GetLogger()
+	loglevel := logentry.Level
+	logentry = logentry.WithField(LogFields.MessageId, payload.Id)
+	logentry.Level = loglevel
+
 	if payload.Type == whatsapp.DiscardMessageType || payload.Type == whatsapp.UnknownMessageType {
-		logger.Debugf("ignoring discard|unknown message type on webhook request: %v", reflect.TypeOf(&payload))
+		logentry.Debugf("ignoring discard|unknown message type on webhook request: %v", reflect.TypeOf(&payload))
 		return
 	}
 
 	if payload.Type == whatsapp.TextMessageType && len(strings.TrimSpace(payload.Text)) <= 0 {
-		logger.Debugf("ignoring empty text message on webhook request: %s", payload.Id)
+		logentry.Debugf("ignoring empty text message on webhook request: %s", payload.Id)
 		return
 	}
 
 	err := PostToWebHookFromServer(source.server, payload)
 	if err != nil {
-		logger.Errorf("error on handle webhook distributions: %s", err.Error())
+		logentry.Errorf("error on handle webhook distributions: %s", err.Error())
 	}
 }
 

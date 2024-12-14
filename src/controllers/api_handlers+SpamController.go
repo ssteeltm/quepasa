@@ -11,6 +11,7 @@ import (
 //region TYPES OF SPAMMING
 
 // SendAPIHandler renders route "/v4/bot/{token}/spam"
+// Returns 423 STATUS if no server available
 func Spam(w http.ResponseWriter, r *http.Request) {
 	server, err := GetServerFromMaster(r)
 	if err != nil {
@@ -18,7 +19,7 @@ func Spam(w http.ResponseWriter, r *http.Request) {
 
 		response := &models.QpSendResponse{}
 		response.ParseError(err)
-		RespondInterface(w, response)
+		RespondInterfaceCode(w, response, http.StatusLocked)
 		return
 	}
 

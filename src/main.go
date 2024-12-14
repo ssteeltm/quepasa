@@ -1,10 +1,9 @@
 package main
 
 import (
-	"context"
-
 	"github.com/joho/godotenv"
 	controllers "github.com/nocodeleaks/quepasa/controllers"
+	"github.com/nocodeleaks/quepasa/library"
 	models "github.com/nocodeleaks/quepasa/models"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	whatsmeow "github.com/nocodeleaks/quepasa/whatsmeow"
@@ -21,14 +20,13 @@ func main() {
 	// loading environment variables from .env file
 	godotenv.Load()
 
-	logger := log.New()
-	logentry := logger.WithContext(context.Background())
+	logentry := library.NewLogEntry("main")
 
 	loglevel := models.ENV.LogLevel()
 	if len(loglevel) > 0 {
 		logruslevel, err := log.ParseLevel(loglevel)
 		if err != nil {
-			logger.Errorf("trying parse an invalid loglevel: %s", loglevel)
+			logentry.Errorf("trying parse an invalid loglevel: %s", loglevel)
 		} else {
 			logentry.Level = logruslevel
 		}
@@ -67,7 +65,7 @@ func main() {
 		DBLogLevel:              models.ENV.WhatsmeowDBLogLevel(),
 	}
 
-	whatsmeow.Start(options)
+	whatsmeow.Start(options, logentry)
 
 	// must execute after whatsmeow started
 	for _, element := range models.Running {
@@ -83,7 +81,7 @@ func main() {
 		logentry.Fatalf("whatsapp service starting error: %s", err.Error())
 	}
 
-	err = controllers.QPWebServerStart()
+	err = controllers.QPWebServerStart(logentry)
 	if err != nil {
 		logentry.Info("end with errors")
 	} else {

@@ -6,13 +6,17 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"reflect"
 	"time"
 
+	"github.com/nocodeleaks/quepasa/library"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	log "github.com/sirupsen/logrus"
 )
 
 type QpWebhook struct {
+	library.LogStruct // logging
+
 	// Optional whatsapp options
 	// ------------------------
 	whatsapp.WhatsappOptions
@@ -29,11 +33,23 @@ type QpWebhook struct {
 	Wid string `json:"-"`
 }
 
-// get default log entry, never nil
+// custom log entry with fields: wid & url
 func (source *QpWebhook) GetLogger() *log.Entry {
+	if source != nil && source.LogEntry != nil {
+		return source.LogEntry
+	}
+
 	logentry := log.WithContext(context.Background())
-	logentry = logentry.WithField("wid", source.Wid)
-	logentry = logentry.WithField("url", source.Url)
+
+	if source != nil {
+		logentry = logentry.WithField(LogFields.WId, source.Wid)
+		logentry = logentry.WithField(LogFields.Url, source.Url)
+		source.LogEntry = logentry
+	}
+
+	logentry.Level = log.ErrorLevel
+	logentry.Infof("generating new log entry for %s, with level: %s", reflect.TypeOf(source), logentry.Level)
+
 	return logentry
 }
 
@@ -80,8 +96,9 @@ func (source QpWebhook) IsSetExtra() bool {
 var ErrInvalidResponse error = errors.New("the requested url do not return 200 status code")
 
 func (source *QpWebhook) Post(message *whatsapp.WhatsappMessage) (err error) {
-	logentry := source.GetLogger()
-	logentry = logentry.WithField(LogFields.MessageId, message.Id)
+
+	// updating log
+	logentry := source.LogWithField(LogFields.MessageId, message.Id)
 	logentry.Infof("posting webhook")
 
 	payload := &QpWebhookPayload{

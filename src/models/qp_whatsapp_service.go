@@ -1,7 +1,6 @@
 package models
 
 import (
-	"context"
 	"fmt"
 	"strings"
 	"sync"
@@ -37,8 +36,12 @@ func QPWhatsappStart(logentry *log.Entry) error {
 			DB:         db,
 			initlock:   &sync.Mutex{},
 			appendlock: &sync.Mutex{},
-			LogStruct:  library.LogStruct{LogEntry: logentry},
 		}
+
+		loglevel := logentry.Level
+		logentry = library.NewLogEntry(WhatsappService)
+		logentry.Level = loglevel
+		WhatsappService.LogEntry = logentry
 
 		// seeding database
 		err := InitialSeed()
@@ -124,34 +127,16 @@ func (source *QPWhatsappService) AppendPaired(paired *QpWhatsappPairing) (server
 //region CONSTRUCTORS
 
 // Instance a new quepasa whatsapp server control
-func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *QpWhatsappServer, err error) {
+func (source *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *QpWhatsappServer, err error) {
+
+	logentry := source.GetLogger()
+	logentry.Debug("creating a new QP Whatsapp Server")
 
 	if info == nil {
 		err = fmt.Errorf("missing server information")
 		return
 	}
 
-	serviceLogEntry := service.GetLogger()
-	serviceLogEntry.Infof("service log level: %s", serviceLogEntry.Level)
-
-	var loglevel log.Level
-	if info.Devel {
-		loglevel = log.DebugLevel
-		if serviceLogEntry.Level > loglevel {
-			loglevel = serviceLogEntry.Level
-		}
-	} else {
-		loglevel = log.InfoLevel
-	}
-
-	logentry := log.New().WithContext(context.Background())
-	logentry = logentry.WithField(LogFields.Token, info.Token)
-
-	if len(info.Wid) > 0 {
-		logentry = logentry.WithField(LogFields.WId, info.Wid)
-	}
-
-	logentry.Level = loglevel
 	server = &QpWhatsappServer{
 		QpServer:       info,
 		Reconnect:      true,
@@ -160,15 +145,33 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 		StartTime:      time.Now().UTC(),
 
 		StopRequested: false, // setting initial state
-		db:            service.DB.Servers,
-		LogStruct:     library.LogStruct{LogEntry: logentry},
+		db:            source.DB.Servers,
 	}
 
-	logentry.Infof("server created, log level: %s", logentry.Level)
+	var loglevel log.Level
+	if info.Devel {
+		loglevel = log.DebugLevel
+		if logentry.Level > loglevel {
+			loglevel = logentry.Level
+		}
+	} else {
+		loglevel = log.InfoLevel
+	}
+
+	serverLogEntry := library.NewLogEntry(server)
+	serverLogEntry = serverLogEntry.WithField(LogFields.Token, info.Token)
+
+	if len(info.Wid) > 0 {
+		serverLogEntry = serverLogEntry.WithField(LogFields.WId, info.Wid)
+	}
+
+	serverLogEntry.Level = loglevel
+	server.LogEntry = serverLogEntry
+	logentry.Infof("server created, log level: %s", serverLogEntry.Level)
 
 	server.HandlerEnsure()
 	server.WebHookEnsure()
-	server.WebhookFill(info, service.DB.Webhooks)
+	server.WebhookFill(info, source.DB.Webhooks)
 	return
 }
 
@@ -272,16 +275,16 @@ func (source *QPWhatsappService) Initialize() (err error) {
 				return err
 			}
 
-			logger := source.GetLogger()
+			logentry := source.GetLogger()
 
 			state := server.GetStatus()
 			if state == whatsapp.UnPrepared || IsValidToStart(state) {
 
 				// initialize individual server
-				logger.Debugf("starting whatsapp server ... on %s state", state)
+				logentry.Debugf("starting whatsapp server ... on %s state", state)
 				go server.Initialize()
 			} else {
-				logger.Debugf("not auto starting cause state: %s", state)
+				logentry.Debugf("not auto starting cause state: %s", state)
 			}
 		}
 

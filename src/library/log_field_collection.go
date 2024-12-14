@@ -7,6 +7,7 @@ type LogFieldCollection struct {
 	WId       string
 	Token     string
 	Url       string
+	Entry     string // source object that generated the log entry
 }
 
 var LogFields = LogFieldCollection{
@@ -16,4 +17,5 @@ var LogFields = LogFieldCollection{
 	WId:       "wid",
 	Token:     "token",
 	Url:       "url",
+	Entry:     "entry",
 }

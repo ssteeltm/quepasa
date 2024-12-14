@@ -5,7 +5,6 @@ import (
 
 	"github.com/nocodeleaks/quepasa/library"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
-	log "github.com/sirupsen/logrus"
 )
 
 // Serviço que controla os servidores / bots individuais do whatsapp
@@ -19,15 +18,6 @@ type QPWhatsappHandlers struct {
 
 	// Appended events handler
 	aeh []QpWebhookHandlerInterface
-}
-
-// get default log entry, never nil
-func (source *QPWhatsappHandlers) GetLogger() *log.Entry {
-	if source.server != nil {
-		return source.server.GetLogger()
-	}
-
-	return source.LogStruct.GetLogger()
 }
 
 func (source *QPWhatsappHandlers) HandleGroups() bool {
@@ -83,8 +73,11 @@ func (source *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage, from st
 	}
 
 	logentry := source.GetLogger()
+	loglevel := logentry.Level
 	logentry = logentry.WithField(LogFields.MessageId, msg.Id)
 	logentry = logentry.WithField(LogFields.ChatId, msg.Chat.Id)
+	logentry.Level = loglevel
+
 	logentry.Debugf("appending message to cache, from: %s", from)
 	source.appendMsgToCache(msg, from)
 }
@@ -171,18 +164,19 @@ func (source *QPWhatsappHandlers) OnDisconnected() {
 //#endregion
 //region MESSAGE CONTROL REGION HANDLE A LOCK
 
-// Salva em cache e inicia gatilhos assíncronos
+// caches and triggers async hooks
 func (source *QPWhatsappHandlers) appendMsgToCache(msg *whatsapp.WhatsappMessage, from string) {
 
 	// saving on local normalized cache, do not affect remote msgs
 	valid := source.QpWhatsappMessages.Append(msg, from)
 
-	// should cleanup old messages ?
-	length := ENV.CacheLength()
-	source.QpWhatsappMessages.CleanUp(length)
-
-	// continue to external dispatchers
+	// cache changed, continue to external dispatchers
 	if valid {
+
+		// should cleanup old messages ?
+		length := ENV.CacheLength()
+		source.QpWhatsappMessages.CleanUp(length)
+
 		source.Trigger(msg)
 	}
 }

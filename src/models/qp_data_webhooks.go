@@ -3,8 +3,6 @@ package models
 import (
 	"fmt"
 	"strings"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // Webhook model
@@ -16,21 +14,34 @@ type QpDataWebhooks struct {
 
 // Fill start memory cache
 func (source *QpDataWebhooks) WebhookFill(info *QpServer, db QpDataWebhooksInterface) (err error) {
-	source.Webhooks = []*QpWebhook{}
+	webhooks := []*QpWebhook{}
 	source.context = info.Token
 	source.db = db
 
+	logentry := info.NewLogEntry(source)
+	logentry.Debug("getting webhooks from database")
+
 	whooks, err := source.db.FindAll(source.context)
 	if err != nil {
-		log.Errorf("cannot find webhooks: %s", err.Error())
+		logentry.Errorf("cannot find webhooks: %s", err.Error())
 		return
 	}
 
 	for _, element := range whooks {
+
+		// logging for running webhooks
+		webHookLogEntry := info.NewLogEntry(element)
+		webHookLogEntry = webHookLogEntry.WithField(LogFields.Url, element.Url)
+		element.LogEntry = webHookLogEntry
+
 		element.Wid = info.Wid
-		source.Webhooks = append(source.Webhooks, element.QpWebhook)
+		webhooks = append(webhooks, element.QpWebhook)
 	}
 
+	logentry.Debugf("%v webhook(s) found", len(webhooks))
+
+	// updating
+	source.Webhooks = webhooks
 	return
 }
 

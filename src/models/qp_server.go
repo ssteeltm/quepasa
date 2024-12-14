@@ -3,7 +3,9 @@ package models
 import (
 	"time"
 
+	"github.com/nocodeleaks/quepasa/library"
 	"github.com/nocodeleaks/quepasa/whatsapp"
+	log "github.com/sirupsen/logrus"
 )
 
 /*
@@ -30,8 +32,25 @@ type QpServer struct {
 	Timestamp time.Time `db:"timestamp" json:"timestamp,omitempty"`
 }
 
+func (source QpServer) NewLogEntry(entry any) *log.Entry {
+	logentry := library.NewLogEntry(entry)
+	logentry = logentry.WithField(LogFields.WId, source.Wid)
+	logentry = logentry.WithField(LogFields.Token, source.Token)
+	logentry.Level = source.GetLogLevel()
+	return logentry
+}
+
 func (source QpServer) GetWId() string {
 	return source.Wid
+}
+
+// used for view
+func (source QpServer) GetLogLevel() log.Level {
+	if source.Devel {
+		return log.DebugLevel
+	} else {
+		return log.InfoLevel
+	}
 }
 
 //#region VIEW TRICKS

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"context"
 	"fmt"
 	"reflect"
 	"strings"
@@ -39,20 +38,20 @@ type QpWhatsappServer struct {
 	db            QpDataServersInterface `json:"-"`
 }
 
-// get default log entry, never nil
+// custom log entry with fields: wid
 func (source *QpWhatsappServer) GetLogger() *log.Entry {
 	if source != nil && source.LogEntry != nil {
 		return source.LogEntry
 	}
 
-	logentry := log.WithContext(context.Background())
-	logentry.Level = log.ErrorLevel
-	logentry.Infof("generating new log entry for %s, with level: %s", reflect.TypeOf(source), logentry.Level)
-
+	logentry := library.NewLogEntry(source)
 	if source != nil {
-		logentry = logentry.WithField("wid", source.Wid)
+		logentry = logentry.WithField(LogFields.WId, source.Wid)
 		source.LogEntry = logentry
 	}
+
+	logentry.Level = log.ErrorLevel
+	logentry.Infof("generating new log entry for %s, with level: %s", reflect.TypeOf(source), logentry.Level)
 
 	return logentry
 }
@@ -86,19 +85,30 @@ func (source *QpWhatsappServer) SetOptions(options *whatsapp.WhatsappOptions) er
 
 // Ensure default handler
 func (server *QpWhatsappServer) HandlerEnsure() {
+	if server == nil {
+		return // invalid state
+	}
+
 	if server.Handler == nil {
 		handler := &QPWhatsappHandlers{
 			server:       server,
 			syncRegister: &sync.Mutex{},
 		}
 
+		logentry := server.GetLogger()
+		logentry.Debug("ensuring messages handler for server")
+
+		// logging
+		handler.LogEntry = logentry
+
+		// updating
 		server.Handler = handler
 	}
 }
 
 func (server *QpWhatsappServer) HasSignalRActiveConnections() bool {
 	if server == nil {
-		return false
+		return false // invalid state
 	}
 
 	return SignalRHub.HasActiveConnections(server.Token)
@@ -221,7 +231,16 @@ func (source *QpWhatsappServer) GetWebHooksByUrl(filter string) (out []*QpWebhoo
 // Ensure default webhook handler
 func (server *QpWhatsappServer) WebHookEnsure() {
 	if server.WebHook == nil {
-		server.WebHook = &QPWebhookHandler{server}
+		webHookHandler := &QPWebhookHandler{server: server}
+
+		logentry := server.GetLogger()
+		logentry.Debug("ensuring webhook handler for server")
+
+		// logging
+		webHookHandler.LogEntry = logentry
+
+		// updating
+		server.WebHook = webHookHandler
 	}
 }
 
@@ -231,8 +250,8 @@ func (server *QpWhatsappServer) GetMessages(timestamp time.Time) (messages []wha
 	if !timestamp.IsZero() && timestamp.Unix() > 0 {
 		err := server.connection.HistorySync(timestamp)
 		if err != nil {
-			logger := server.GetLogger()
-			logger.Warnf("error on requested history sync: %s", err.Error())
+			logentry := server.GetLogger()
+			logentry.Warnf("error on requested history sync: %s", err.Error())
 		}
 	}
 
@@ -249,10 +268,12 @@ func (source *QpWhatsappServer) Initialize() {
 		panic("nil server, code error")
 	}
 
-	source.GetLogger().Info("initializing whatsapp server ...")
+	logentry := source.GetLogger()
+	logentry.Info("initializing whatsapp server ...")
+
 	err := source.Start()
 	if err != nil {
-		source.GetLogger().Errorf("initializing server error: %s", err.Error())
+		logentry.Errorf("initializing server error: %s", err.Error())
 	}
 }
 
@@ -265,13 +286,14 @@ func (source *QpWhatsappServer) UpdateConnection(connection whatsapp.IWhatsappCo
 
 	source.connection = connection
 	if source.Handler == nil {
-		source.GetLogger().Warn("creating handlers ?! not implemented yet")
+		logentry := source.GetLogger()
+		logentry.Warn("creating handlers ?! not implemented yet")
 	}
 
 	source.connection.UpdateHandler(source.Handler)
 
 	// Registrando webhook
-	webhookDispatcher := &QPWebhookHandler{source}
+	webhookDispatcher := &QPWebhookHandler{server: source}
 	if !source.Handler.IsAttached() {
 		source.Handler.Register(webhookDispatcher)
 	}
