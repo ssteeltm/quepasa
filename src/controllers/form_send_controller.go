@@ -72,6 +72,7 @@ func controllerHttpPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	msg.Id = r.Form.Get("id")
 	_, err = server.SendMessage(msg)
 	if err != nil {
 		RespondServerError(server, w, err)

@@ -308,7 +308,7 @@ func (service *QPWhatsappService) GetServersForUser(username string) (servers ma
 // Case insensitive
 func (service *QPWhatsappService) FindByToken(token string) (*QpWhatsappServer, error) {
 	for _, server := range service.Servers {
-		if strings.ToLower(server.Token) == strings.ToLower(token) {
+		if strings.EqualFold(server.Token, token) {
 			return server, nil
 		}
 	}

@@ -755,6 +755,9 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 			if len(msg.Id) > 0 {
 				msg.Id = msg.Id + "-audio"
 			}
+
+			// removing message text, already sended ...
+			msg.Text = ""
 		}
 	}
 
