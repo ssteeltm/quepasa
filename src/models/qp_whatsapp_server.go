@@ -748,7 +748,12 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 			if err != nil {
 				return
 			} else {
-				source.Handler.Message(&textMsg, "attach")
+				source.Handler.Message(&textMsg, "text and audio")
+			}
+
+			// updating id for audio message, if is set
+			if len(msg.Id) > 0 {
+				msg.Id = msg.Id + "-audio"
 			}
 		}
 	}
@@ -756,7 +761,7 @@ func (source *QpWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (resp
 	// sending default msg
 	response, err = conn.Send(msg)
 	if err == nil {
-		source.Handler.Message(msg, "send")
+		source.Handler.Message(msg, "server send")
 	}
 	return
 }

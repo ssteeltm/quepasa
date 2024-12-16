@@ -49,10 +49,7 @@ func (source *WhatsmeowConnection) GetLogger() *log.Entry {
 		return source.LogEntry
 	}
 
-	logentry := log.WithContext(context.Background())
-	logentry.Level = log.ErrorLevel
-	logentry.Infof("generating new log entry for %s, with level: %s", reflect.TypeOf(source), logentry.Level)
-
+	logentry := library.NewLogEntry(source)
 	if source != nil {
 		wid, _ := source.GetWidInternal()
 		if len(wid) > 0 {
@@ -61,6 +58,8 @@ func (source *WhatsmeowConnection) GetLogger() *log.Entry {
 		source.LogEntry = logentry
 	}
 
+	logentry.Level = log.ErrorLevel
+	logentry.Infof("generating new log entry for %s, with level: %s", reflect.TypeOf(source), logentry.Level)
 	return logentry
 }
 
@@ -417,7 +416,9 @@ func (source *WhatsmeowConnection) GetInReplyContextInfo(msg whatsapp.WhatsappMe
 // Default SEND method using WhatsappMessage Interface
 func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.IWhatsappSendResponse, error) {
 	logentry := source.GetLogger()
+	loglevel := logentry.Level
 	logentry = logentry.WithField(LogFields.MessageId, msg.Id)
+	logentry.Level = loglevel
 
 	var err error
 
