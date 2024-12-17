@@ -4,15 +4,15 @@
 * [(1.0.37) Chatwoot To Quepasa](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootToQuepasa.json)
 * [(1.0.21) Post To Chatwoot](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/PostToChatwoot.json)
 * [(1.0.6) Quepasa Automatic](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaAutomatic.json)
-* [(1.0.7) Quepasa Chat Control](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaChatControl.json)
+* [(1.0.8) Quepasa Chat Control](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaChatControl.json)
 * [(1.0.11) Quepasa Inbox Control](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaInboxControl.json)
 * [(1.0.3) Quepasa Qrcode](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaQrcode.json)
-* [(1.0.21) Quepasa To Chatwoot](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaToChatwoot.json)
+* [(1.0.22) Quepasa To Chatwoot](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaToChatwoot.json)
 * [(1.0.13) Get Chatwoot Contacts](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/GetChatwootContacts.json)
 * [(1.0.3) Post To WebCallBack](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/PostToWebCallBack.json)
 * [(1.0.1) Chatwoot Extra](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootExtra.json)
-* [(1.0.0) To Chatwoot Transcript]()
-
+* [(1.0.0) To Chatwoot Transcript Via OpenAI](https://raw.githubusercontent.com/nocodeleaks/quepasa/refs/heads/main/extra/n8n%2Bchatwoot/ToChatwootTranscriptViaOpenAI.json)
+* [(1.0.0) Get Valid Conversation]()
 
 ### Use N8N Environment File to set these variables:
 > use your respectives ids
@@ -52,6 +52,10 @@
 	# C8Q_TOCHATWOOTTRANSCRIPT
 	> (string) Workflow Id - ToChatwootTranscript, used by transcript audios to text
 	> (default) pi4APHD9F05Dv6FR
+	
+	# C8Q_GETVALIDCONVERSATION
+	> (string) Workflow Id - GetValidConversation, used by QuepasaToChatwoot
+	> (default) qjdP01sHPfaPFUq1
 	
 	# C8Q_TOCHATWOOTTRANSCRIPTRESUME
 	> (boolean => true | false) Gets a resume (OpenAI) for audio transcripted messages

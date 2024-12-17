@@ -3,38 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "dataType": "string",
-        "value1": "={{ $json.body?.text ?? $json.payload.content ?? \"\" }}",
-        "rules": {
-          "rules": [
-            {
-              "operation": "startsWith",
-              "value2": "/invite"
-            },
-            {
-              "operation": "regex",
-              "value2": "^\\/api|^\\/\\/",
-              "output": 3
-            },
-            {
-              "value2": "401: logged out from another device",
-              "output": 1
-            }
-          ]
-        },
-        "fallbackOutput": 3
-      },
-      "id": "472aa0dd-5da0-48f3-8c6f-66216a7389f9",
-      "name": "Switch From Chat",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 1,
-      "position": [
-        5140,
-        460
-      ]
-    },
-    {
-      "parameters": {
         "values": {
           "string": [
             {
@@ -50,7 +18,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        7080,
+        7300,
         220
       ]
     },
@@ -71,7 +39,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6320,
+        6540,
         300
       ]
     },
@@ -88,7 +56,7 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        7480,
+        7700,
         280
       ]
     },
@@ -118,7 +86,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        6140,
+        6360,
         300
       ]
     },
@@ -135,7 +103,7 @@
       "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
-        6520,
+        6740,
         380
       ],
       "executeOnce": true,
@@ -153,7 +121,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        6720,
+        6940,
         300
       ]
     },
@@ -174,13 +142,13 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        7080,
+        7300,
         380
       ]
     },
     {
       "parameters": {
-        "content": "## (1.0.7)\n* update quepasa node\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
+        "content": "## (1.0.8)\n* minnor command normalization\n\n## Recommendations \n* Remember set timeout to 15 seconds ",
         "height": 205.7265251035022,
         "width": 561.5346630524019
       },
@@ -218,7 +186,7 @@
       "type": "n8n-nodes-chatwoot.chatwoot",
       "typeVersion": 1,
       "position": [
-        6080,
+        6300,
         780
       ]
     },
@@ -261,7 +229,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        6420,
+        6640,
         820
       ]
     },
@@ -288,7 +256,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        6740,
+        6960,
         840
       ]
     },
@@ -315,7 +283,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        7080,
+        7300,
         760
       ]
     },
@@ -329,7 +297,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        5420,
+        5640,
         960
       ],
       "continueOnFail": true
@@ -350,7 +318,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        7280,
+        7500,
         300
       ]
     },
@@ -370,7 +338,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        6880,
+        7100,
         300
       ]
     },
@@ -385,8 +353,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        5240,
-        880
+        5460,
+        860
       ]
     },
     {
@@ -396,7 +364,7 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        5920,
+        6140,
         300
       ]
     },
@@ -411,7 +379,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        6260,
+        6480,
         720
       ]
     },
@@ -426,7 +394,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        6580,
+        6800,
         740
       ]
     },
@@ -441,7 +409,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2.1,
       "position": [
-        6880,
+        7100,
         760
       ]
     },
@@ -452,39 +420,104 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        5920,
+        6140,
         700
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "98614cee-c8c2-4bf3-a171-44c6fc1ad630",
+              "name": "command",
+              "value": "={{ ($json.body?.text ?? $json.payload.content ?? \"\").replace(/^\\/+|/g, '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "bca6ea5a-fdb1-4446-944b-713337abd1fa",
+      "name": "Prepare Command",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5100,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "invite",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "invite"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8cb3cb26-1acf-4351-917c-7ac828c80997",
+                    "leftValue": "={{ $json.command }}",
+                    "rightValue": "401: logged out from another device",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "logout"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "ignoreCase": true
+        }
+      },
+      "id": "8d40a0aa-ca74-4246-a10c-90f6e60741e1",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        5300,
+        460
       ]
     }
   ],
   "pinData": {},
   "connections": {
-    "Switch From Chat": {
-      "main": [
-        [
-          {
-            "node": "No Operation, do nothing",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Is Logged Out",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [],
-        [
-          {
-            "node": "Execute Workflow",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Set Invite Response": {
       "main": [
         [
@@ -560,7 +593,7 @@
       "main": [
         [
           {
-            "node": "Switch From Chat",
+            "node": "Prepare Command",
             "type": "main",
             "index": 0
           }
@@ -698,6 +731,42 @@
           }
         ]
       ]
+    },
+    "Prepare Command": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Logged Out",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -706,7 +775,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 15
   },
-  "versionId": "f71f58e4-2317-4e9c-9e7e-c8d209858187",
+  "versionId": "7a14df2b-67ce-456d-98e5-929d7aeaa0c8",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
