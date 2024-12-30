@@ -91,6 +91,30 @@ func HandleProtocolMessage(logentry *log.Entry, out *whatsapp.WhatsappMessage, i
 		out.Type = whatsapp.RevokeMessageType
 		return
 
+	case v == waE2E.ProtocolMessage_HISTORY_SYNC_NOTIFICATION:
+		var logtext string
+		out.Type = whatsapp.UnknownMessageType
+		b, err := json.Marshal(in)
+		if err != nil {
+			logentry.Error(err)
+			return
+		}
+
+		logtext = "ProtocolMessage :: " + string(b)
+
+		notif := in.GetHistorySyncNotification()
+		if notif != nil {
+			b, err = json.Marshal(notif)
+			if err != nil {
+				logentry.Error(err)
+				return
+			}
+			logtext = logtext + "History Sync Notification :: " + string(b)
+		}
+
+		out.Text = logtext
+		return
+
 	default:
 		out.Type = whatsapp.UnknownMessageType
 		b, err := json.Marshal(in)

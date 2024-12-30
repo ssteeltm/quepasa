@@ -205,7 +205,7 @@
     },
     {
       "parameters": {
-        "content": "## (1.0.6) Recommendations \n* added skip audio transcript\n",
+        "content": "## (1.0.7) Recommendations \n* propotype is not valid anymore\n",
         "width": 425.48157586978226
       },
       "id": "d7872589-290c-4614-868f-fabe6b64ca52",
@@ -312,12 +312,13 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
               "id": "08fabf93-0038-48cb-abf2-013a924db497",
-              "leftValue": "={{ Object.prototype.toString.call($json) === '[object Array]' }}",
+              "leftValue": "={{ $json instanceof JSONArray }}",
               "rightValue": "=",
               "operator": {
                 "type": "boolean",
@@ -880,7 +881,7 @@
   },
   "active": true,
   "settings": {},
-  "versionId": "463430e1-c1b3-464f-b3ae-7fa4639ac3b6",
+  "versionId": "3a71e29d-c28a-4c15-ba1d-832a28ddf6bd",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

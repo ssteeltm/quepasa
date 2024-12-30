@@ -3,7 +3,7 @@
 * [(1.0.1) Chatwoot Profile Update](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootProfileUpdate.json)
 * [(1.0.37) Chatwoot To Quepasa](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootToQuepasa.json)
 * [(1.0.21) Post To Chatwoot](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/PostToChatwoot.json)
-* [(1.0.6) Quepasa Automatic](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaAutomatic.json)
+* [(1.0.7) Quepasa Automatic](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaAutomatic.json)
 * [(1.0.8) Quepasa Chat Control](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaChatControl.json)
 * [(1.0.11) Quepasa Inbox Control](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaInboxControl.json)
 * [(1.0.3) Quepasa Qrcode](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/QuepasaQrcode.json)
@@ -12,7 +12,7 @@
 * [(1.0.3) Post To WebCallBack](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/PostToWebCallBack.json)
 * [(1.0.1) Chatwoot Extra](https://raw.githubusercontent.com/nocodeleaks/quepasa/main/extra/n8n%2Bchatwoot/ChatwootExtra.json)
 * [(1.0.0) To Chatwoot Transcript Via OpenAI](https://raw.githubusercontent.com/nocodeleaks/quepasa/refs/heads/main/extra/n8n%2Bchatwoot/ToChatwootTranscriptViaOpenAI.json)
-* [(1.0.0) Get Valid Conversation]()
+* [(1.0.0) Get Valid Conversation](https://raw.githubusercontent.com/nocodeleaks/quepasa/refs/heads/main/extra/n8n%2Bchatwoot/GetValidConversation.json)
 
 ### Use N8N Environment File to set these variables:
 > use your respectives ids
