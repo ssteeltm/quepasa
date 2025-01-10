@@ -1,17 +1,10 @@
 package models
 
 import (
-	"context"
-	"reflect"
 	"sort"
-	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
-
-	"github.com/nocodeleaks/quepasa/whatsapp"
-	log "github.com/sirupsen/logrus"
-	"go.mau.fi/whatsmeow/proto/waE2E"
 )
 
 type QpCache struct {
@@ -32,48 +25,7 @@ func (source *QpCache) SetAny(key string, value interface{}, expiration time.Dur
 func (source *QpCache) SetCacheItem(item QpCacheItem, from string) bool {
 	previous, loaded := source.cacheMap.Swap(item.Key, item)
 	if loaded {
-		// debugging messages in cache
-		if strings.HasPrefix(from, "message") {
-
-			prevItem := previous.(QpCacheItem)
-
-			logentry := log.New().WithContext(context.Background())
-			logentry = logentry.WithField(LogFields.MessageId, item.Key)
-			logentry = logentry.WithField("from", from)
-			logentry.Level = log.DebugLevel
-
-			logentry.Debug("updating cache item ...")
-			logentry.Debugf("old type: %s, %v", reflect.TypeOf(prevItem.Value), prevItem.Value)
-			logentry.Debugf("new type: %s, %v", reflect.TypeOf(item.Value), item.Value)
-			logentry.Debugf("equals: %v, deep equals: %v", item.Value == prevItem.Value, reflect.DeepEqual(item.Value, prevItem.Value))
-
-			var prevContent interface{}
-			if prevWaMsg, ok := prevItem.Value.(*whatsapp.WhatsappMessage); ok {
-				prevContent = prevWaMsg.Content
-
-				if nee, ok := prevContent.(*waE2E.Message); ok {
-					prevContent = nee.String()
-					logentry.Debugf("old content as string: %s", prevContent)
-				}
-			}
-
-			var newContent interface{}
-			if newWaMsg, ok := item.Value.(*whatsapp.WhatsappMessage); ok {
-				newContent = newWaMsg.Content
-
-				if nee, ok := newContent.(*waE2E.Message); ok {
-					newContent = nee.String()
-					logentry.Debugf("new content as string: %s", newContent)
-				}
-			}
-
-			if prevContent != nil && newContent != nil {
-				logentry.Infof("content equals: %v, content deep equals: %v", prevContent == newContent, reflect.DeepEqual(prevContent, newContent))
-
-				// if equals, deny triggers
-				return !reflect.DeepEqual(prevContent, newContent)
-			}
-		}
+		return ValidateItemBecauseUNOAPIConflict(item, from, previous)
 	} else {
 		source.counter.Add(1)
 	}
