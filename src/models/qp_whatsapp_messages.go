@@ -8,7 +8,7 @@ import (
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 )
 
-const DEFAULTEXPIRATION time.Duration = time.Duration(124 * time.Hour)
+var DEFAULTEXPIRATION time.Duration = time.Duration(ENV.CacheDays()) * time.Hour
 
 type QpWhatsappMessages struct {
 	QpCache
