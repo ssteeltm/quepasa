@@ -3,7 +3,6 @@ package whatsmeow
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -39,7 +38,7 @@ func (source *WhatsmeowServiceModel) GetLogger() *log.Entry {
 
 var WhatsmeowService *WhatsmeowServiceModel
 
-func Start(options WhatsmeowOptions, logentry *log.Entry) {
+func Start(options WhatsmeowOptions, dbParameters library.DatabaseParameters, logentry *log.Entry) {
 	logentry.Infof("starting Whatsmeow Service, with log level: %s", logentry.Level)
 	if WhatsmeowService != nil {
 		err := fmt.Errorf("whatsmeow service is already started, if you wanna change options, restart the service")
@@ -52,17 +51,10 @@ func Start(options WhatsmeowOptions, logentry *log.Entry) {
 	}
 	dbLog := waLog.Stdout("whatsmeow/database", dbloglevel, true)
 
-	// check if exists old whatsmeow.db
-	var cs string
-	if _, err := os.Stat("whatsmeow.db"); err == nil {
-		cs = "file:whatsmeow.db?_foreign_keys=on"
-	} else {
-		// using new quepasa.sqlite
-		cs = "file:whatsmeow.sqlite?_foreign_keys=on"
-	}
-
-	container, err := sqlstore.New("sqlite3", cs, dbLog)
+	connectionString := dbParameters.GetConnectionString()
+	container, err := sqlstore.New(dbParameters.Driver, connectionString, dbLog)
 	if err != nil {
+		err = fmt.Errorf("error on creating db container: %s", err.Error())
 		panic(err)
 	}
 

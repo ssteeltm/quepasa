@@ -22,7 +22,7 @@ import (
 )
 
 type QpDatabase struct {
-	Config     QpDatabaseConfig `json:"config,omitempty"`
+	Parameters library.DatabaseParameters `json:"parameters,omitempty"`
 	Connection *sqlx.DB
 	Users      QpDataUsersInterface
 	Servers    QpDataServersInterface
@@ -34,16 +34,23 @@ var (
 	Connection *sqlx.DB
 )
 
+var dbParameters = library.DatabaseParameters{
+	Driver:   "sqlite3",
+	DataBase: "quepasa",
+}
+
 // GetDB returns a database connection for the given
 // database environment variables
 func GetDB() *sqlx.DB {
 	Sync.Do(func() {
-		config := GetDBConfig()
+
+		// generates the relative connection string
+		connectionString := dbParameters.GetConnectionString()
 
 		// Tenta realizar a conexão
-		dbconn, err := sqlx.Connect(config.Driver, config.GetConnectionString())
+		dbconn, err := sqlx.Connect(dbParameters.Driver, connectionString)
 		if err != nil {
-			log.Fatalf("error at database connection: %s, msg: %s", config.Driver, err.Error())
+			log.Fatalf("error at database connection: %s, msg: %s", dbParameters.Driver, err.Error())
 			return
 		}
 
@@ -59,34 +66,17 @@ func GetDB() *sqlx.DB {
 
 func GetDatabase() *QpDatabase {
 	db := GetDB()
-	config := GetDBConfig()
+
 	var iusers = QpDataUserSql{db}
 	var iwebhooks = QpDataServerWebhookSql{db}
 	var iservers = QpDataServerSql{db}
 
 	return &QpDatabase{
-		config,
+		dbParameters,
 		db,
 		iusers,
 		iservers,
 		iwebhooks}
-}
-
-func GetDBConfig() QpDatabaseConfig {
-	config := QpDatabaseConfig{}
-
-	config.Driver = os.Getenv(ENV_DBDRIVER)
-	if len(config.Driver) == 0 {
-		config.Driver = "sqlite3"
-	}
-
-	config.Host = os.Getenv(ENV_DBHOST)
-	config.DataBase = os.Getenv(ENV_DBDATABASE)
-	config.Port = os.Getenv(ENV_DBPORT)
-	config.User = os.Getenv(ENV_DBUSER)
-	config.Password = os.Getenv(ENV_DBPASSWORD)
-	config.SSL = os.Getenv(ENV_DBSSLMODE)
-	return config
 }
 
 // MigrateToLatest updates the database to the latest schema
@@ -121,13 +111,12 @@ func MigrateToLatest(logentry *log.Entry) (err error) {
 	logentry.Debugf("full path database: %s", fullPath)
 
 	migrations := Migrations(fullPath)
-	config := GetDBConfig()
 	db := GetDB().DB
 	migrator := &QpMigrator{
 		Migrations: migrations,
 		LogStruct:  library.LogStruct{LogEntry: logentry},
 	}
-	err = migrator.Migrate(db, config.Driver)
+	err = migrator.Migrate(db, dbParameters.Driver)
 	if err != nil {
 		logentry.Fatal(err)
 	}

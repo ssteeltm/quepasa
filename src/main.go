@@ -65,7 +65,8 @@ func main() {
 		DBLogLevel:              models.ENV.WhatsmeowDBLogLevel(),
 	}
 
-	whatsmeow.Start(options, logentry)
+	dbParameters := models.ENV.GetDBParameters()
+	whatsmeow.Start(options, dbParameters, logentry)
 
 	// must execute after whatsmeow started
 	for _, element := range models.Running {
