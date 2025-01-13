@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	library "github.com/nocodeleaks/quepasa/library"
 	whatsapp "github.com/nocodeleaks/quepasa/whatsapp"
 	"google.golang.org/protobuf/proto"
 )
@@ -55,6 +56,27 @@ const (
 type Environment struct{}
 
 var ENV Environment
+
+//#region DATABASE CONFIG
+
+func (*Environment) GetDBParameters() library.DatabaseParameters {
+	parameters := library.DatabaseParameters{}
+
+	parameters.Driver = os.Getenv(ENV_DBDRIVER)
+	if len(parameters.Driver) == 0 {
+		parameters.Driver = "sqlite3"
+	}
+
+	parameters.Host = os.Getenv(ENV_DBHOST)
+	parameters.DataBase = os.Getenv(ENV_DBDATABASE)
+	parameters.Port = os.Getenv(ENV_DBPORT)
+	parameters.User = os.Getenv(ENV_DBUSER)
+	parameters.Password = os.Getenv(ENV_DBPASSWORD)
+	parameters.SSL = os.Getenv(ENV_DBSSLMODE)
+	return parameters
+}
+
+//#endregion
 
 func (*Environment) UseCompatibleMIMEsAsAudio() bool {
 	environment, err := GetEnvBool(ENV_CONVERT_WAVE_TO_OGG, proto.Bool(true))

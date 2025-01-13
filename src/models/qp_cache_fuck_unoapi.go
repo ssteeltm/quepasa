@@ -21,10 +21,10 @@ func ValidateItemBecauseUNOAPIConflict(item QpCacheItem, from string, previous a
 		logentry = logentry.WithField("from", from)
 		logentry.Level = log.DebugLevel
 
-		logentry.Debug("updating cache item ...")
-		logentry.Debugf("old type: %s, %v", reflect.TypeOf(prevItem.Value), prevItem.Value)
-		logentry.Debugf("new type: %s, %v", reflect.TypeOf(item.Value), item.Value)
-		logentry.Debugf("equals: %v, deep equals: %v", item.Value == prevItem.Value, reflect.DeepEqual(item.Value, prevItem.Value))
+		logentry.Info("updating cache item ...")
+		logentry.Infof("old type: %s, %v", reflect.TypeOf(prevItem.Value), prevItem.Value)
+		logentry.Infof("new type: %s, %v", reflect.TypeOf(item.Value), item.Value)
+		logentry.Infof("equals: %v, deep equals: %v", item.Value == prevItem.Value, reflect.DeepEqual(item.Value, prevItem.Value))
 
 		var prevContent interface{}
 		if prevWaMsg, ok := prevItem.Value.(*whatsapp.WhatsappMessage); ok {
@@ -33,10 +33,16 @@ func ValidateItemBecauseUNOAPIConflict(item QpCacheItem, from string, previous a
 			if nee, ok := prevContent.(*waE2E.Message); ok {
 				if neeETM, ok := prevContent.(*waE2E.ExtendedTextMessage); ok {
 					prevContent = neeETM.Text
-					logentry.Debugf("old content from .ExtendedTextMessage as string: %s", prevContent)
+					logentry.Infof("old content from .ExtendedTextMessage as string: %s", prevContent)
 				} else {
-					prevContent = nee.String()
-					logentry.Debugf("old content from .Message as string: %s", prevContent)
+					conversation := nee.GetConversation()
+					if len(conversation) > 0 {
+						prevContent = conversation
+						logentry.Infof("old content from .Message.Conversation: %s", prevContent)
+					} else {
+						prevContent = nee.String()
+						logentry.Infof("old content as string: %s", prevContent)
+					}
 				}
 			}
 		}
@@ -49,10 +55,10 @@ func ValidateItemBecauseUNOAPIConflict(item QpCacheItem, from string, previous a
 				conversation := nee.GetConversation()
 				if len(conversation) > 0 {
 					newContent = conversation
-					logentry.Debugf("new content from .Message.Conversation: %s", newContent)
+					logentry.Infof("new content from .Message.Conversation: %s", newContent)
 				} else {
 					newContent = nee.String()
-					logentry.Debugf("new content as string: %s", newContent)
+					logentry.Infof("new content as string: %s", newContent)
 				}
 			}
 		}

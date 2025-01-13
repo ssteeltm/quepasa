@@ -475,7 +475,7 @@ func (source *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp
 
 	resp, err := source.Client.SendMessage(context.Background(), jid, newMessage, extra)
 	if err != nil {
-		logentry.Errorf("send error: %s", err)
+		logentry.Errorf("whatsmeow connection send error: %s", err)
 		return msg, err
 	}
 
