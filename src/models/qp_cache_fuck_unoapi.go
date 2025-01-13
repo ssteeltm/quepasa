@@ -35,8 +35,14 @@ func ValidateItemBecauseUNOAPIConflict(item QpCacheItem, from string, previous a
 					prevContent = neeETM.Text
 					logentry.Infof("old content from .ExtendedTextMessage as string: %s", prevContent)
 				} else {
-					prevContent = nee.String()
-					logentry.Infof("old content from .Message as string: %s", prevContent)
+					conversation := nee.GetConversation()
+					if len(conversation) > 0 {
+						prevContent = conversation
+						logentry.Infof("old content from .Message.Conversation: %s", prevContent)
+					} else {
+						prevContent = nee.String()
+						logentry.Infof("old content as string: %s", prevContent)
+					}
 				}
 			}
 		}
